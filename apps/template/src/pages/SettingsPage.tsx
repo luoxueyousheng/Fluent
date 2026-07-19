@@ -5,9 +5,9 @@ import {
   SettingsExpander,
   Switch,
   message,
-} from '@fluent-react/ui';
-import { InfoRegular, PaintBrushRegular } from '@fluent-react/icon';
-import { applyBackdrop, hasJade, setThemeMode, useTheme, type ThemeMode } from '@fluent-react/bridge';
+} from '@fluent-jade/ui';
+import { InfoRegular, PaintBrushRegular } from '@fluent-jade/icon';
+import { applyBackdrop, hasJade, setThemeMode, useTheme, type ThemeMode } from '@fluent-jade/bridge';
 
 export function SettingsPage({ hasBackdrop }: { hasBackdrop: boolean }) {
   const { dark, mode, backdrop } = useTheme();

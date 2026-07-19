@@ -6,7 +6,7 @@ import { cn } from '../cn';
 import { useMergedState } from '../useMergedState';
 import {
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 function formatKey(e: KeyboardEvent): string {
   const parts: string[] = [];

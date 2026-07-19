@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import {
   ChevronDownRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { useFlyout } from './Flyout';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';

@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   NavigationRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface NavItemDef {
   key: string;

@@ -3,7 +3,7 @@ import { useRef, useState, type ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   CheckmarkRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { Empty } from './Basics';
 
 export interface ListBoxItem { value: string; label: ReactNode; icon?: ReactNode }

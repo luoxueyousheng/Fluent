@@ -1,7 +1,7 @@
 {
-  "name": "@fluent-react/ui",
+  "name": "@fluent-jade/ui",
   "version": "0.1.0",
-  "description": "WinUI 3 视觉与动效 + antd API 惯例的 React 组件库(Windows 桌面 WebView 优先)",
+  "description": "Fluent UI × JadeView 组件库 — WinUI 3 视觉/动效 + antd API(桌面 WebView 优先)",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -37,6 +37,6 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@fluent-react/icon": "*"
+    "@fluent-jade/icon": "*"
   }
 }

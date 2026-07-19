@@ -4,7 +4,7 @@ import { cn } from '../cn';
 import {
   AddRegular,
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface TabViewItem { key: string; label: string; icon?: ReactNode }
 

@@ -8,7 +8,7 @@ import {
   CheckmarkRegular,
   ChevronDownRegular,
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { useFixedPlacement, useFlyout } from './Flyout';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';

@@ -9,7 +9,7 @@ import {
   ChevronDownRegular,
   ChevronUpRegular,
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { useMergedState } from '../useMergedState';
 import { useFixedPlacement, useFlyout } from './Flyout';
 

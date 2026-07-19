@@ -2,7 +2,7 @@
  * TextBox/TextArea 支持 antd 风 size 三档与 status(error/warning)。 */
 import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 import { cn } from '../cn';
-import { CheckmarkCircleRegular, ErrorCircleRegular } from '@fluent-react/icon';
+import { CheckmarkCircleRegular, ErrorCircleRegular } from '@fluent-jade/icon';
 import { sizeClass, type ControlSize } from './Button';
 import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 

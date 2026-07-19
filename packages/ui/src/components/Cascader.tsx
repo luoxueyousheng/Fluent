@@ -10,7 +10,7 @@ import { useFixedPlacement, useFlyout } from './Flyout';
 import {
   ChevronDownRegular,
   ChevronRightRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface CascaderOption {
   value: string;

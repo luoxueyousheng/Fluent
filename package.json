@@ -1,8 +1,8 @@
 {
-  "name": "fluent-react",
+  "name": "fluent-jade",
   "private": true,
   "version": "0.1.0",
-  "description": "Fluent 2 / WinUI 3 风格 React 组件库(JadeView 宿主,Windows)",
+  "description": "Fluent UI × JadeView — WinUI 3 视觉 + antd API 的 React 组件库(桌面 WebView)",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "npm run dev -w apps/template",
     "build": "npm run build -w apps/template",
-    "build:lib": "npm run build -w @fluent-react/icon && npm run build -w @fluent-react/ui && npm run build -w @fluent-react/bridge",
+    "build:lib": "npm run build -w @fluent-jade/icon && npm run build -w @fluent-jade/ui && npm run build -w @fluent-jade/bridge",
     "typecheck": "tsc -b"
   },
   "devDependencies": {

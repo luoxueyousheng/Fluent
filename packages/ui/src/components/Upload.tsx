@@ -12,7 +12,7 @@ import {
   DismissRegular,
   DocumentRegular,
   ErrorCircleRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { ProgressBar } from './Basics';
 import { useMergedState } from '../useMergedState';
 

@@ -1,7 +1,7 @@
 {
-  "name": "@fluent-react/bridge",
+  "name": "@fluent-jade/bridge",
   "version": "0.1.0",
-  "description": "WebView 宿主桥接(JadeView 默认,通道可配):环境/主题/材质/IPC/mock",
+  "description": "Fluent UI × JadeView 宿主桥接(JadeView 默认,通道可配):环境/主题/材质/IPC/mock",
   "license": "MIT",
   "repository": {
     "type": "git",

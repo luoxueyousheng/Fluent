@@ -6,7 +6,7 @@ import { cn } from '../cn';
 import {
   ChevronDownRegular,
   ChevronRightRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface SettingsCardProps {
   icon?: ReactNode;

@@ -4,7 +4,7 @@ import { cn } from '../cn';
 import {
   ChevronLeftRegular,
   ChevronRightRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { ComboBox } from './ComboBox';
 import { useMergedState } from '../useMergedState';
 

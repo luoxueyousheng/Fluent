@@ -1,5 +1,5 @@
 /* ============================================================================
- * theme.css — Fluent 2 主题(fluent-react,Tailwind CSS v4)
+ * theme.css — Fluent 2 主题(Fluent UI × JadeView, Tailwind CSS v4)
  * 结构:令牌(:root + dark 覆盖) → @theme 工具类映射 → @layer base → @layer components
  * 组件类契约与 fluent-kit(vanilla)保持一致;仅 Windows(无 Linux 自绘壳)。
  * ========================================================================== */

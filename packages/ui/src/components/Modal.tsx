@@ -10,7 +10,7 @@ import { useFocusTrap } from '../focusTrap';
 import { Button } from './Button';
 import {
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface ModalProps {
   open: boolean;

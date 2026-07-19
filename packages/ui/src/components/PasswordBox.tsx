@@ -3,7 +3,7 @@
  * 抬手/移出即遮);'toggle' 为 antd 行为(点击切换,图标 eye/eyeOff);false 关闭。 */
 import { useState, type InputHTMLAttributes } from 'react';
 import { cn } from '../cn';
-import { EyeOffRegular, EyeRegular } from '@fluent-react/icon';
+import { EyeOffRegular, EyeRegular } from '@fluent-jade/icon';
 import { sizeClass, type ControlSize } from './Button';
 import { statusClass, type ControlStatus } from './Field';
 import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';

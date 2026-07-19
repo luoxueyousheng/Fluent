@@ -11,7 +11,7 @@ import {
   TextArea,
   TextBox,
   useToast,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import type { DocDef } from '../types';
 
 const FRUITS = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Mango', 'Peach'];
@@ -22,7 +22,7 @@ const textbox: DocDef = {
   cn: '编辑框',
   description:
     '单行文本输入,WinUI 3 形态:聚焦时底边线加粗为 accent。原生 input 薄封装,附加 antd 风 size 三档与 status 校验描边;多行用 TextArea。',
-  importCode: `import { TextBox, TextArea } from '@fluent-react/ui';`,
+  importCode: `import { TextBox, TextArea } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -33,7 +33,7 @@ const textbox: DocDef = {
         </>
       ),
       code: `
-import { TextBox } from '@fluent-react/ui';
+import { TextBox } from '@fluent-jade/ui';
 
 export function TextBoxBasicExample() {
   return (
@@ -57,7 +57,7 @@ export function TextBoxBasicExample() {
         </>
       ),
       code: `
-import { TextBox } from '@fluent-react/ui';
+import { TextBox } from '@fluent-jade/ui';
 
 export function TextBoxSizeStatusExample() {
   return (
@@ -79,7 +79,7 @@ export function TextBoxSizeStatusExample() {
       demo: <TextBoxNativeDemo />,
       code: `
 import { useState } from 'react';
-import { TextBox } from '@fluent-react/ui';
+import { TextBox } from '@fluent-jade/ui';
 
 export function TextBoxNativeExample() {
   const [v, setV] = useState('');
@@ -108,7 +108,7 @@ export function TextBoxNativeExample() {
         </>
       ),
       code: `
-import { TextArea } from '@fluent-react/ui';
+import { TextArea } from '@fluent-jade/ui';
 
 export function TextAreaExample() {
   return (
@@ -133,7 +133,7 @@ export function TextAreaExample() {
         </div>
       ),
       code: `
-import { TextArea, TextBox } from '@fluent-react/ui';
+import { TextArea, TextBox } from '@fluent-jade/ui';
 
 export function TextBoxColorRadiusExample() {
   return (
@@ -183,7 +183,7 @@ const passwordbox: DocDef = {
   cn: '密码框',
   description:
     '密码输入(WinUI PasswordBox 形态):有内容时尾部浮现显隐钮。默认 reveal="press" 为 WinUI 原生行为——按住窥视、抬手即遮;reveal="toggle" 为 antd 行为——点击切换并换 eye/eyeOff 图标;false 关闭显隐钮。其余属性与 TextBox 一致透传原生 input。',
-  importCode: `import { PasswordBox } from '@fluent-react/ui';`,
+  importCode: `import { PasswordBox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法(按住窥视)',
@@ -195,7 +195,7 @@ const passwordbox: DocDef = {
         </>
       ),
       code: `
-import { PasswordBox } from '@fluent-react/ui';
+import { PasswordBox } from '@fluent-jade/ui';
 
 export function PasswordBoxBasicExample() {
   return (
@@ -219,7 +219,7 @@ export function PasswordBoxBasicExample() {
         </>
       ),
       code: `
-import { PasswordBox } from '@fluent-react/ui';
+import { PasswordBox } from '@fluent-jade/ui';
 
 export function PasswordBoxToggleExample() {
   return (
@@ -244,7 +244,7 @@ export function PasswordBoxToggleExample() {
         </div>
       ),
       code: `
-import { PasswordBox } from '@fluent-react/ui';
+import { PasswordBox } from '@fluent-jade/ui';
 
 export function PasswordBoxColorRadiusExample() {
   return (
@@ -272,7 +272,7 @@ const field: DocDef = {
   cn: '表单字段',
   description:
     '字段容器:标签 + 任意控件 + 底部提示行。validation 显示校验结果(error 红 / success 绿,带图标),hint 显示常规说明;Form.Item 内部即由 Field 渲染。',
-  importCode: `import { Field, TextBox } from '@fluent-react/ui';`,
+  importCode: `import { Field, TextBox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -290,7 +290,7 @@ const field: DocDef = {
         </div>
       ),
       code: `
-import { Field, TextBox } from '@fluent-react/ui';
+import { Field, TextBox } from '@fluent-jade/ui';
 
 export function FieldBasicExample() {
   return (
@@ -326,13 +326,13 @@ const searchbox: DocDef = {
   cn: '搜索框',
   description:
     '搜索框:前置放大镜、输入后浮现清除键;传入 suggestions 即升级为带候选浮层的 AutoSuggest 形态,回车经 onSubmit 提交。',
-  importCode: `import { SearchBox } from '@fluent-react/ui';`,
+  importCode: `import { SearchBox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <SearchBoxDemo />,
       code: `
-import { SearchBox, useToast } from '@fluent-react/ui';
+import { SearchBox, useToast } from '@fluent-jade/ui';
 
 export function SearchBoxBasicExample() {
   const toast = useToast();
@@ -350,7 +350,7 @@ export function SearchBoxBasicExample() {
       description: 'suggestions 提供候选池,输入时实时过滤。',
       demo: <SearchBox suggestions={FRUITS} placeholder="搜索水果" />,
       code: `
-import { SearchBox } from '@fluent-react/ui';
+import { SearchBox } from '@fluent-jade/ui';
 
 // 候选池:输入时实时过滤
 const FRUITS = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Mango', 'Peach'];
@@ -365,7 +365,7 @@ export function SearchBoxSuggestionsExample() {
       demo: <SearchBoxControlled />,
       code: `
 import { useState } from 'react';
-import { SearchBox } from '@fluent-react/ui';
+import { SearchBox } from '@fluent-jade/ui';
 
 export function SearchBoxControlledExample() {
   const [kw, setKw] = useState('');
@@ -390,7 +390,7 @@ export function SearchBoxControlledExample() {
         </div>
       ),
       code: `
-import { SearchBox } from '@fluent-react/ui';
+import { SearchBox } from '@fluent-jade/ui';
 
 export function SearchBoxColorRadiusExample() {
   return (
@@ -438,7 +438,7 @@ const autosuggest: DocDef = {
   cn: '自动建议框',
   description:
     '可输入组合框(WinUI AutoSuggestBox):自由输入 + 实时过滤候选浮层,方向键导航、回车选中、Esc 关闭。与 ComboBox 的区别:值可以是候选之外的任意文本。',
-  importCode: `import { AutoSuggest } from '@fluent-react/ui';`,
+  importCode: `import { AutoSuggest } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -450,7 +450,7 @@ const autosuggest: DocDef = {
         </>
       ),
       code: `
-import { AutoSuggest } from '@fluent-react/ui';
+import { AutoSuggest } from '@fluent-jade/ui';
 
 // 候选池:按包含匹配过滤
 const FRUITS = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Mango', 'Peach'];
@@ -470,7 +470,7 @@ export function AutoSuggestBasicExample() {
       demo: <AutoSuggestControlled />,
       code: `
 import { useState } from 'react';
-import { AutoSuggest } from '@fluent-react/ui';
+import { AutoSuggest } from '@fluent-jade/ui';
 
 const FRUITS = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Grape', 'Mango', 'Peach'];
 
@@ -498,7 +498,7 @@ export function AutoSuggestControlledExample() {
         </div>
       ),
       code: `
-import { AutoSuggest } from '@fluent-react/ui';
+import { AutoSuggest } from '@fluent-jade/ui';
 
 export function AutoSuggestColorRadiusExample() {
   return (
@@ -538,14 +538,14 @@ const form: DocDef = {
   cn: '表单',
   description:
     'antd 形态的轻量表单体系:Form 持有值与校验状态,Form.Item 按 name 自动向唯一子控件注入 value / onChange,rules 声明校验(required / min / max / pattern / validator),提交时全量校验后回调 onFinish。',
-  importCode: `import { Form, Button, TextBox } from '@fluent-react/ui';`,
+  importCode: `import { Form, Button, TextBox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       description: '失焦即校验单字段;点击提交触发全量校验,全部通过走 onFinish,否则走 onFinishFailed。',
       demo: <FormDemo />,
       code: `
-import { Button, Form, TextBox, useToast } from '@fluent-react/ui';
+import { Button, Form, TextBox, useToast } from '@fluent-jade/ui';
 
 export function FormBasicExample() {
   const toast = useToast();
@@ -580,7 +580,7 @@ import {
   Switch,
   TextBox,
   useToast,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 
 export function FormValueAdaptExample() {
   const toast = useToast();

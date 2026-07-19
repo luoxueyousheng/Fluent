@@ -18,14 +18,14 @@ import {
   Timeline,
   Switch,
   Tree,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import {
   ChatRegular,
   CheckmarkCircleRegular,
   InfoRegular,
   PaintBrushRegular,
   SettingsRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import type { DocDef } from '../types';
 
 /* 演示图:内联 SVG 渐变(无外部资源) */
@@ -44,7 +44,7 @@ const card: DocDef = {
   cn: '卡片',
   description:
     '基础内容容器:WinUI 卡片描边 + 内置 Reveal 指针跟随光斑(悬停高亮)。layer 变体使用层级底色(嵌在卡片或彩色区域内时保持对比)。',
-  importCode: `import { Card } from '@fluent-react/ui';`,
+  importCode: `import { Card } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -61,7 +61,7 @@ const card: DocDef = {
         </>
       ),
       code: `
-import { Card } from '@fluent-react/ui';
+import { Card } from '@fluent-jade/ui';
 
 export function CardExample() {
   return (
@@ -91,7 +91,7 @@ export function CardExample() {
         </div>
       ),
       code: `
-import { Card } from '@fluent-react/ui';
+import { Card } from '@fluent-jade/ui';
 
 export function CardRadiusExample() {
   return (
@@ -118,7 +118,7 @@ const expander: DocDef = {
   cn: '展开器',
   description:
     'WinUI Expander:摘要行 + 可折叠内容区,chevron 随开合旋转。基于原生 details/summary,无 JS 状态。',
-  importCode: `import { Expander } from '@fluent-react/ui';`,
+  importCode: `import { Expander } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -130,7 +130,7 @@ const expander: DocDef = {
         </div>
       ),
       code: `
-import { Expander } from '@fluent-react/ui';
+import { Expander } from '@fluent-jade/ui';
 
 export function ExpanderExample() {
   return (
@@ -159,7 +159,7 @@ const splitter: DocDef = {
   cn: '分栏',
   description:
     '可拖分栏(工具窗骨架件):两个面板夹一条 6px 拖柄,首面板像素定宽、min/max 钳制;拖柄键盘可达(方向键 ±16px、Home/End 到极值),双击回默认宽。左树右详情、上编辑下日志类界面的骨架。',
-  importCode: `import { Splitter } from '@fluent-react/ui';`,
+  importCode: `import { Splitter } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '左右分栏',
@@ -177,7 +177,7 @@ const splitter: DocDef = {
         </div>
       ),
       code: `
-import { Splitter, Tree } from '@fluent-react/ui';
+import { Splitter, Tree } from '@fluent-jade/ui';
 
 export function SplitterHorizontalExample() {
   // Splitter 需要一个有确定高度的容器,面板才能撑满
@@ -209,7 +209,7 @@ export function SplitterHorizontalExample() {
         </div>
       ),
       code: `
-import { Splitter } from '@fluent-react/ui';
+import { Splitter } from '@fluent-jade/ui';
 
 export function SplitterVerticalExample() {
   // 同样需要外层容器给出高度,vertical 模式下首面板(上)按 defaultSize 定高
@@ -229,7 +229,7 @@ export function SplitterVerticalExample() {
       demo: <SplitterControlled />,
       code: `
 import { useState } from 'react';
-import { Button, Splitter } from '@fluent-react/ui';
+import { Button, Splitter } from '@fluent-jade/ui';
 
 export function SplitterControlledExample() {
   const [size, setSize] = useState(200);
@@ -269,7 +269,7 @@ const settingscard: DocDef = {
   cn: '设置卡片',
   description:
     'Windows 11 设置页行卡:图标 + 标题/描述 + 右侧控件;传 onClick 则整行可点(导航行,自动补 chevron)。SettingsExpander 在头行下挂一组子设置行。',
-  importCode: `import { SettingsCard, SettingsExpander } from '@fluent-react/ui';`,
+  importCode: `import { SettingsCard, SettingsExpander } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -283,7 +283,7 @@ const settingscard: DocDef = {
         </div>
       ),
       code: `
-import { SettingsCard, Switch } from '@fluent-react/ui';
+import { SettingsCard, Switch } from '@fluent-jade/ui';
 
 export function SettingsCardExample() {
   return (
@@ -315,7 +315,7 @@ export function SettingsCardExample() {
         </div>
       ),
       code: `
-import { SettingsCard, SettingsExpander, Switch } from '@fluent-react/ui';
+import { SettingsCard, SettingsExpander, Switch } from '@fluent-jade/ui';
 
 export function SettingsExpanderExample() {
   return (
@@ -366,7 +366,7 @@ const image: DocDef = {
   cn: '图片',
   description:
     '增强图片:加载骨架 → 淡入;失败换 fallback 或碎图占位;preview 悬停显「预览」,点击进入查看器(滚轮缩放 0.25~4x、旋转、拖拽平移、双击还原、Esc 关闭,遮罩不盖标题栏)。',
-  importCode: `import { Image } from '@fluent-react/ui';`,
+  importCode: `import { Image } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -377,7 +377,7 @@ const image: DocDef = {
         </>
       ),
       code: `
-import { Image } from '@fluent-react/ui';
+import { Image } from '@fluent-jade/ui';
 
 const imageUrl = '/demo.png';       // 占位:替换为真实图片地址
 const previewUrl = '/preview.png';
@@ -402,7 +402,7 @@ export function ImageExample() {
         </>
       ),
       code: `
-import { Image } from '@fluent-react/ui';
+import { Image } from '@fluent-jade/ui';
 
 const fallbackUrl = '/fallback.png'; // 占位:主图失败时的替换图
 
@@ -428,7 +428,7 @@ export function ImageFallbackExample() {
         </>
       ),
       code: `
-import { Image } from '@fluent-react/ui';
+import { Image } from '@fluent-jade/ui';
 
 const tallUrl = '/tall.png'; // 占位:替换为真实图片地址
 const wideUrl = '/wide.png';
@@ -471,7 +471,7 @@ const carousel: DocDef = {
   cn: '轮播',
   description:
     '轨道平移轮播:WinUI PipsPager 圆点(活动点拉长为 accent 药丸)、悬停浮现 Acrylic 箭头;autoplay 在悬停、页面隐藏或滚出视口时自动暂停(IntersectionObserver)。',
-  importCode: `import { Carousel } from '@fluent-react/ui';`,
+  importCode: `import { Carousel } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -485,7 +485,7 @@ const carousel: DocDef = {
         </div>
       ),
       code: `
-import { Carousel } from '@fluent-react/ui';
+import { Carousel } from '@fluent-jade/ui';
 
 const slides = ['/slide-1.png', '/slide-2.png', '/slide-3.png']; // 占位:幻灯片图地址
 
@@ -515,7 +515,7 @@ export function CarouselExample() {
         </div>
       ),
       code: `
-import { Carousel } from '@fluent-react/ui';
+import { Carousel } from '@fluent-jade/ui';
 
 const slides = ['/slide-1.png', '/slide-2.png', '/slide-3.png']; // 占位:幻灯片图地址
 
@@ -551,7 +551,7 @@ const tag: DocDef = {
   name: 'Tag',
   cn: '标签',
   description: '轻量语义标记:五档语义色;closable 附关闭键,常用于筛选条件、条目属性。',
-  importCode: `import { Tag } from '@fluent-react/ui';`,
+  importCode: `import { Tag } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -565,7 +565,7 @@ const tag: DocDef = {
         </>
       ),
       code: `
-import { Tag } from '@fluent-react/ui';
+import { Tag } from '@fluent-jade/ui';
 
 export function TagExample() {
   return (
@@ -584,7 +584,7 @@ export function TagExample() {
       demo: <TagClosable />,
       code: `
 import { useState } from 'react';
-import { Button, Tag } from '@fluent-react/ui';
+import { Button, Tag } from '@fluent-jade/ui';
 
 const initialTags = ['React 19', 'Tailwind v4', 'WinUI 3'];
 
@@ -648,7 +648,7 @@ const badge: DocDef = {
   name: 'Badge',
   cn: '徽标',
   description: '计数 / 状态圆徽:默认红底数字,dot 缩为纯圆点。常挂在图标或按钮角上。',
-  importCode: `import { Badge } from '@fluent-react/ui';`,
+  importCode: `import { Badge } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -666,7 +666,7 @@ const badge: DocDef = {
         </>
       ),
       code: `
-import { Badge } from '@fluent-react/ui';
+import { Badge } from '@fluent-jade/ui';
 
 export function BadgeExample() {
   return (
@@ -700,7 +700,7 @@ export function BadgeExample() {
         </div>
       ),
       code: `
-import { Badge } from '@fluent-react/ui';
+import { Badge } from '@fluent-jade/ui';
 
 export function BadgeColorExample() {
   return (
@@ -729,7 +729,7 @@ const avatar: DocDef = {
   name: 'Avatar',
   cn: '头像',
   description: '头像:有图显图;无图取 name 首字(中文)或首字母(英文)生成占位,底色由 name 哈希取色保持稳定。',
-  importCode: `import { Avatar } from '@fluent-react/ui';`,
+  importCode: `import { Avatar } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -743,7 +743,7 @@ const avatar: DocDef = {
         </>
       ),
       code: `
-import { Avatar } from '@fluent-react/ui';
+import { Avatar } from '@fluent-jade/ui';
 
 const avatarUrl = '/avatar.png'; // 占位:头像图地址
 
@@ -774,7 +774,7 @@ const divider: DocDef = {
   name: 'Divider',
   cn: '分割线',
   description: '内容分区横线;children 作为线中文本。',
-  importCode: `import { Divider } from '@fluent-react/ui';`,
+  importCode: `import { Divider } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -788,7 +788,7 @@ const divider: DocDef = {
         </div>
       ),
       code: `
-import { Divider } from '@fluent-react/ui';
+import { Divider } from '@fluent-jade/ui';
 
 export function DividerExample() {
   return (
@@ -815,7 +815,7 @@ const empty: DocDef = {
   cn: '空状态',
   description:
     '无数据占位:Fluent 线稿插画 + 描述 + 可选操作区;image="simple" 为紧凑变体(列表 / 表格内嵌),也可传自定义插画节点。',
-  importCode: `import { Empty } from '@fluent-react/ui';`,
+  importCode: `import { Empty } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -828,7 +828,7 @@ const empty: DocDef = {
         </>
       ),
       code: `
-import { Button, Empty } from '@fluent-react/ui';
+import { Button, Empty } from '@fluent-jade/ui';
 
 export function EmptyExample() {
   return (
@@ -855,7 +855,7 @@ export function EmptyExample() {
         </Empty>
       ),
       code: `
-import { Button, Empty } from '@fluent-react/ui';
+import { Button, Empty } from '@fluent-jade/ui';
 
 const illustrationUrl = '/empty-illustration.png'; // 占位:自定义插画地址
 
@@ -884,7 +884,7 @@ const skeleton: DocDef = {
   name: 'Skeleton',
   cn: '骨架屏',
   description: '加载占位微光块:用 style/className 摆出目标内容的轮廓,数据就绪后整体替换。',
-  importCode: `import { Skeleton } from '@fluent-react/ui';`,
+  importCode: `import { Skeleton } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -898,7 +898,7 @@ const skeleton: DocDef = {
         </div>
       ),
       code: `
-import { Skeleton } from '@fluent-react/ui';
+import { Skeleton } from '@fluent-jade/ui';
 
 export function SkeletonExample() {
   // 用 className 摆出目标内容的轮廓:圆形头像 + 两行文本
@@ -925,7 +925,7 @@ const timeline: DocDef = {
   cn: '时间轴',
   description:
     '纵向事件流(antd items API):节点圆点 + 连线,label 放时间戳、color 语义色圆点、dot 自定义节点;pending 在尾部挂「进行中」项(旋转圆环)。适合操作历史、部署记录、日志流展示。',
-  importCode: `import { Timeline } from '@fluent-react/ui';`,
+  importCode: `import { Timeline } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -941,7 +941,7 @@ const timeline: DocDef = {
         </div>
       ),
       code: `
-import { Timeline } from '@fluent-react/ui';
+import { Timeline } from '@fluent-jade/ui';
 
 export function TimelineBasicExample() {
   return (
@@ -973,7 +973,7 @@ export function TimelineBasicExample() {
         </div>
       ),
       code: `
-import { Timeline } from '@fluent-react/ui';
+import { Timeline } from '@fluent-jade/ui';
 
 export function TimelinePendingExample() {
   return (

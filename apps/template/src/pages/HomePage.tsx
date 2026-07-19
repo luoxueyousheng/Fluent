@@ -10,8 +10,8 @@ import {
   SearchBox,
   useToast,
   type LogEntry,
-} from '@fluent-react/ui';
-import { inv, useJadeEvent } from '@fluent-react/bridge';
+} from '@fluent-jade/ui';
+import { inv, useJadeEvent } from '@fluent-jade/bridge';
 import { docGroups } from '../docs/registry';
 
 

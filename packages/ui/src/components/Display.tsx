@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import type { ControlSize } from './Button';
 
 export interface TagProps {

@@ -15,7 +15,7 @@ import {
   ImageRegular,
   ZoomInRegular,
   ZoomOutRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'placeholder'> {
   src: string;

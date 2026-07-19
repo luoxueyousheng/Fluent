@@ -12,7 +12,7 @@ import {
   Tabs,
   TabView,
   useToast,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import {
   AddRegular,
   ArrowUploadRegular,
@@ -20,7 +20,7 @@ import {
   DismissRegular,
   HomeRegular,
   StackRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import type { DocDef } from '../types';
 
 const selectorbar: DocDef = {
@@ -29,14 +29,14 @@ const selectorbar: DocDef = {
   cn: '选择栏',
   description:
     'WinUI 3 SelectorBar:一组 40px 平铺项(图标 + 文字),底部 3px 圆角指示条按 Point 缓动滑向选中项(宽度 = 项宽 − 24)。用于页面级少量视图切换;项多或需承载内容面板时用 Tabs。',
-  importCode: `import { SelectorBar, type SelectorBarItemDef } from '@fluent-react/ui';`,
+  importCode: `import { SelectorBar, type SelectorBarItemDef } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <SelectorBarDemo />,
       code: `
 import { useState } from 'react';
-import { SelectorBar } from '@fluent-react/ui';
+import { SelectorBar } from '@fluent-jade/ui';
 
 export function SelectorBarExample() {
   const [v, setV] = useState('recent');
@@ -81,14 +81,14 @@ const tabs: DocDef = {
   cn: '标签页',
   description:
     '内容区视图切换。underline 变体为 WinUI 3 SelectorBar 风格(短横杠指示条只覆盖内容宽度);underline-compact 适合卡片内分区;segmented / segmented-accent 为分段控件形态。配合 TabPanel 承载面板(切换带滑入动效)。',
-  importCode: `import { Tabs, TabPanel } from '@fluent-react/ui';`,
+  importCode: `import { Tabs, TabPanel } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <TabsDemo />,
       code: `
 import { useState } from 'react';
-import { Tabs, TabPanel } from '@fluent-react/ui';
+import { Tabs, TabPanel } from '@fluent-jade/ui';
 
 export function TabsExample() {
   const [v, setV] = useState('a');
@@ -108,7 +108,7 @@ export function TabsExample() {
       demo: <TabsSegmented />,
       code: `
 import { useState } from 'react';
-import { Tabs } from '@fluent-react/ui';
+import { Tabs } from '@fluent-jade/ui';
 
 export function TabsSegmentedExample() {
   const [v, setV] = useState('day');
@@ -128,7 +128,7 @@ export function TabsSegmentedExample() {
       demo: <TabsUnderline />,
       code: `
 import { useState } from 'react';
-import { Tabs } from '@fluent-react/ui';
+import { Tabs } from '@fluent-jade/ui';
 
 export function TabsUnderlineExample() {
   const [v, setV] = useState('all');
@@ -148,7 +148,7 @@ export function TabsUnderlineExample() {
       demo: <TabsVertical />,
       code: `
 import { useState } from 'react';
-import { Tabs } from '@fluent-react/ui';
+import { Tabs } from '@fluent-jade/ui';
 
 export function TabsVerticalExample() {
   const [v, setV] = useState('general');
@@ -172,7 +172,7 @@ export function TabsVerticalExample() {
       demo: <TabsShapes />,
       code: `
 import { useState } from 'react';
-import { Tabs } from '@fluent-react/ui';
+import { Tabs } from '@fluent-jade/ui';
 
 export function TabsShapeExample() {
   const [v, setV] = useState('day');
@@ -279,14 +279,14 @@ const tabview: DocDef = {
   cn: '多文档标签',
   description:
     'WinUI TabView:浏览器式可关闭标签条 + 内容区,标签梯形隆起、悬停浮现关闭键;onAdd 提供「+」新建钮。适合多文档 / 多会话界面。',
-  importCode: `import { TabView } from '@fluent-react/ui';`,
+  importCode: `import { TabView } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <TabViewDemo />,
       code: `
 import { useState } from 'react';
-import { TabView } from '@fluent-react/ui';
+import { TabView } from '@fluent-jade/ui';
 
 export function TabViewExample() {
   // 标签项可带 icon(渲染在标题文字左侧)
@@ -365,13 +365,13 @@ const commandbar: DocDef = {
   cn: '命令栏',
   description:
     'WinUI CommandBar:主命令平铺为图标+文字的弱化按钮(可插竖分隔线),次命令经 secondaryItems 常驻收进「…」溢出菜单(Primary / Secondary Commands 语义,不做自动测宽)。工具窗顶部的操作条。',
-  importCode: `import { CommandBar } from '@fluent-react/ui';`,
+  importCode: `import { CommandBar } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <CommandBarDemo />,
       code: `
-import { CommandBar, useToast } from '@fluent-react/ui';
+import { CommandBar, useToast } from '@fluent-jade/ui';
 
 export function CommandBarExample() {
   const toast = useToast();
@@ -432,14 +432,14 @@ const menubar: DocDef = {
   cn: '菜单栏',
   description:
     '应用菜单栏(文件 / 编辑 / 查看):点击展开下拉菜单,展开状态下悬停其他标签即时切换(经典桌面行为);菜单 portal 到 body(z-850),页面滚动立即收起。通常放在标题栏下方或工具区顶部。',
-  importCode: `import { MenuBar } from '@fluent-react/ui';`,
+  importCode: `import { MenuBar } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       description: '先点开任一菜单,再横向滑过其他标签体验切换。',
       demo: <MenuBarDemo />,
       code: `
-import { MenuBar, useToast } from '@fluent-react/ui';
+import { MenuBar, useToast } from '@fluent-jade/ui';
 
 export function MenuBarExample() {
   const toast = useToast();
@@ -498,13 +498,13 @@ const breadcrumb: DocDef = {
   cn: '面包屑',
   description:
     '层级路径导航:末项为当前页(加粗、不可点),其余项可点击回跳,chevron 分隔。',
-  importCode: `import { Breadcrumb } from '@fluent-react/ui';`,
+  importCode: `import { Breadcrumb } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <BreadcrumbDemo />,
       code: `
-import { Breadcrumb, useToast } from '@fluent-react/ui';
+import { Breadcrumb, useToast } from '@fluent-jade/ui';
 
 export function BreadcrumbExample() {
   const toast = useToast();
@@ -542,14 +542,14 @@ const steps: DocDef = {
   cn: '步骤条',
   description:
     '引导流程进度:已完成打勾、当前 accent 高亮、未到达灰点,antd API(current + items)。',
-  importCode: `import { Steps } from '@fluent-react/ui';`,
+  importCode: `import { Steps } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <StepsDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Steps } from '@fluent-react/ui';
+import { Button, Steps } from '@fluent-jade/ui';
 
 export function StepsExample() {
   const [cur, setCur] = useState(1);
@@ -596,13 +596,13 @@ const pagination: DocDef = {
   cn: '分页',
   description:
     '长列表分页,antd 同款省略算法:最多 7 个页码钮,当前页两侧各留 2,「…」可 ±5 跳页;showSizeChanger 附带每页条数切换。',
-  importCode: `import { Pagination } from '@fluent-react/ui';`,
+  importCode: `import { Pagination } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <Pagination defaultCurrent={1} total={85} />,
       code: `
-import { Pagination } from '@fluent-react/ui';
+import { Pagination } from '@fluent-jade/ui';
 
 export function PaginationExample() {
   return (
@@ -614,7 +614,7 @@ export function PaginationExample() {
       title: '长列表与条数切换',
       demo: <Pagination defaultCurrent={6} total={500} showSizeChanger />,
       code: `
-import { Pagination } from '@fluent-react/ui';
+import { Pagination } from '@fluent-jade/ui';
 
 export function PaginationSizeChangerExample() {
   return (
@@ -628,7 +628,7 @@ export function PaginationSizeChangerExample() {
       demo: <PaginationControlledDemo />,
       code: `
 import { useState } from 'react';
-import { Pagination } from '@fluent-react/ui';
+import { Pagination } from '@fluent-jade/ui';
 
 export function PaginationControlledExample() {
   const [page, setPage] = useState(1);

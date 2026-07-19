@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   ChevronRightRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface BreadcrumbItem { key: string; label: ReactNode }
 

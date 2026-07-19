@@ -8,7 +8,7 @@ import {
   TitleBar,
   useToast,
   type NavEntry,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import {
   DocumentRegular,
   HomeRegular,
@@ -17,7 +17,7 @@ import {
   SearchRegular,
   SettingsRegular,
   StackRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import type { DocDef } from '../types';
 
 const appshell: DocDef = {
@@ -26,7 +26,7 @@ const appshell: DocDef = {
   cn: '应用外壳',
   description:
     '标题栏 + 侧导航合并的一体化外壳,mode 控制形态:multi 多页文档(标题栏最左汉堡驱动展开/收缩(与导航图标列同 x 对齐),返回键其后)/ single 单页应用(仅标题栏 + 内容区,不渲染汉堡与侧导航)。返回键与 mode 解耦(传 onBack 即显示);TitleBar 的宿主能力(controls 三模式 / dragProps)原样透传。本文档站即 multi 形态。',
-  importCode: `import { AppShell, type NavEntry } from '@fluent-react/ui';`,
+  importCode: `import { AppShell, type NavEntry } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '多页模式(multi)',
@@ -34,7 +34,7 @@ const appshell: DocDef = {
       demo: <AppShellMultiDemo />,
       code: `
 import { useState } from 'react';
-import { AppShell, type NavEntry } from '@fluent-react/ui';
+import { AppShell, type NavEntry } from '@fluent-jade/ui';
 
 const ITEMS: NavEntry[] = [
   { key: 'home', label: '首页', icon: <HomeRegular /> },
@@ -59,12 +59,12 @@ export function MultiPageApp() {
       demo: <AppShellFrameDemo />,
       code: `
 // main.tsx:自绘框模式下关闭自动材质(不引 bridge/auto)
-import '@fluent-react/bridge/mock';
-import { ready } from '@fluent-react/bridge';
+import '@fluent-jade/bridge/mock';
+import { ready } from '@fluent-jade/bridge';
 void ready({ backdrop: false });
 
 // App.tsx
-import { AppShell, type WindowController } from '@fluent-react/ui';
+import { AppShell, type WindowController } from '@fluent-jade/ui';
 
 export function FramedApp({ controller }: { controller: WindowController }) {
   return (
@@ -84,7 +84,7 @@ export function FramedApp({ controller }: { controller: WindowController }) {
       description: '不渲染汉堡与侧导航,内容区直接铺满;适合登录页、小工具、单任务窗口。',
       demo: <AppShellSingleDemo />,
       code: `
-import { AppShell } from '@fluent-react/ui';
+import { AppShell } from '@fluent-jade/ui';
 
 export function SinglePageApp() {
   return (
@@ -100,7 +100,7 @@ export function SinglePageApp() {
       description: 'logo 替换内置图标;titleBarActions 放标题栏内交互元素(自动 no-drag,靠右、控制钮之前);onBack 传入即显示返回键(与 mode 解耦),backDisabled 时不占位。',
       demo: <AppShellTitleBarExtrasDemo />,
       code: `
-import { AppShell, Button } from '@fluent-react/ui';
+import { AppShell, Button } from '@fluent-jade/ui';
 
 export function TitleBarExtrasExample() {
   return (
@@ -124,7 +124,7 @@ export function TitleBarExtrasExample() {
       demo: <AppShellHostDemo />,
       code: `
 import { useState } from 'react';
-import { AppShell } from '@fluent-react/ui';
+import { AppShell } from '@fluent-jade/ui';
 
 /* host 模式:预留宽度按宿主按钮区实测调;拖动区属性整体覆盖(非 JadeView 宿主) */
 export function HostReservedExample() {
@@ -158,7 +158,7 @@ export function SelfDrawnMaximizedExample() {
       demo: <AppShellNavDemo />,
       code: `
 import { useState } from 'react';
-import { AppShell, SearchBox, type NavEntry } from '@fluent-react/ui';
+import { AppShell, SearchBox, type NavEntry } from '@fluent-jade/ui';
 
 const ALL: NavEntry[] = [
   { key: 'home', label: '首页', icon: <HomeRegular /> },
@@ -340,7 +340,7 @@ const titlebar: DocDef = {
   cn: '标题栏',
   description:
     'WinUI 3 规格的 40px 标题栏:左起返回键、导航汉堡、logo、标题;右侧窗口控制钮三模式——host(宿主自绘,如 JadeView title-overlay,仅预留空位)/ none(浏览器或宿主系统标题栏,不渲染不预留)/ 传 WindowController 自绘 WinUI 控制钮并把回调注入宿主 IPC。宿主不限定语言:拖动区与窗口控制全部可注入,JadeView / C++ WebView2 / Python pywebview / Go Wails 都能接。z-900 永不被页内浮层遮挡。',
-  importCode: `import { TitleBar, type WindowController } from '@fluent-react/ui';`,
+  importCode: `import { TitleBar, type WindowController } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础结构(返回 + 汉堡 + 自绘控制钮)',
@@ -348,7 +348,7 @@ const titlebar: DocDef = {
       demo: <TitleBarDemo />,
       code: `
 import { useState } from 'react';
-import { TitleBar, type WindowController } from '@fluent-react/ui';
+import { TitleBar, type WindowController } from '@fluent-jade/ui';
 
 export function TitleBarExample() {
   const [collapsed, setCollapsed] = useState(false);
@@ -372,7 +372,7 @@ export function TitleBarExample() {
       description: '按宿主形态选择:title-overlay 宿主自绘选 host;网页 / 宿主保留系统标题栏选 none;无边框窗口自绘选 WindowController。',
       demo: <TitleBarModes />,
       code: `
-import { TitleBar } from '@fluent-react/ui';
+import { TitleBar } from '@fluent-jade/ui';
 
 export function ControlModesExample() {
   return (
@@ -399,7 +399,7 @@ export function ControlModesExample() {
         </p>
       ),
       code: `
-import { TitleBar } from '@fluent-react/ui';
+import { TitleBar } from '@fluent-jade/ui';
 
 /* ① JadeView(火山视窗,Go):frame_style=title-overlay,宿主自绘控制钮 */
 export function JadeViewHost() {
@@ -452,7 +452,7 @@ export function WailsHost() {
       description: 'logo 替换内置图标;children 放标题栏内交互元素(自动 no-drag,靠右、控制钮之前);host 模式的预留宽度经 hostControlsWidth 按宿主按钮区实际宽度调整(默认 146)。',
       demo: <TitleBarSlotDemo />,
       code: `
-import { Button, TitleBar } from '@fluent-react/ui';
+import { Button, TitleBar } from '@fluent-jade/ui';
 
 export function TitleBarSlotExample() {
   return (
@@ -566,7 +566,7 @@ const navview: DocDef = {
   cn: '导航视图',
   description:
     '左侧导航(火山 Demo 外观 + WinUI NavigationView 行为):accent 指示条 Point 缓动滑动并跟随滚动、{header} 分组标题、bottom 钉底项、列表区独立滚动、折叠为 48px 窄条。展开/收缩两种形态:传 onCollapsedChange 渲染内置汉堡;或按 WinUI 3 规格把汉堡放进 TitleBar(onMenu),NavView 只受控接 collapsed——本文档站即此形态。',
-  importCode: `import { NavView, type NavEntry } from '@fluent-react/ui';`,
+  importCode: `import { NavView, type NavEntry } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法(内置汉堡)',
@@ -574,7 +574,7 @@ const navview: DocDef = {
       demo: <NavViewDemo />,
       code: `
 import { useState } from 'react';
-import { NavView, type NavEntry } from '@fluent-react/ui';
+import { NavView, type NavEntry } from '@fluent-jade/ui';
 
 const ITEMS: NavEntry[] = [
   { key: 'home', label: '首页', icon: <HomeRegular /> },
@@ -602,7 +602,7 @@ export function NavViewExample() {
       demo: <NavViewTitleBarDemo />,
       code: `
 import { useState } from 'react';
-import { NavView, TitleBar, type NavEntry } from '@fluent-react/ui';
+import { NavView, TitleBar, type NavEntry } from '@fluent-jade/ui';
 
 export function ShellExample() {
   const [page, setPage] = useState('home');
@@ -625,7 +625,7 @@ export function ShellExample() {
       demo: <NavViewHeaderDemo />,
       code: `
 import { useState } from 'react';
-import { NavView, SearchBox, type NavEntry } from '@fluent-react/ui';
+import { NavView, SearchBox, type NavEntry } from '@fluent-jade/ui';
 
 const ALL: NavEntry[] = [
   { key: 'home', label: '首页', icon: <HomeRegular /> },

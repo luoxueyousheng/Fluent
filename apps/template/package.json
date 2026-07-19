@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fluent-react/bridge": "*",
-    "@fluent-react/icon": "*",
-    "@fluent-react/ui": "*",
+    "@fluent-jade/bridge": "*",
+    "@fluent-jade/icon": "*",
+    "@fluent-jade/ui": "*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

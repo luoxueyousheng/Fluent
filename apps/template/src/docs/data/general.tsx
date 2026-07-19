@@ -1,6 +1,6 @@
 /* 文档数据:通用 — Button / ToggleButton / Icons */
 import { useMemo, useState } from 'react';
-import { Button, SearchBox, ToggleButton, ToggleButtonGroup, useToast } from '@fluent-react/ui';
+import { Button, SearchBox, ToggleButton, ToggleButtonGroup, useToast } from '@fluent-jade/ui';
 import {
   AddRegular,
   CalendarLtrRegular,
@@ -21,7 +21,7 @@ import {
   WarningRegular,
   iconCatalog,
   iconGroups,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 import type { DocDef } from '../types';
 
@@ -31,7 +31,7 @@ const button: DocDef = {
   cn: '按钮',
   description:
     '按钮用于触发一次即时操作。视觉与动效遵循 WinUI 3(渐变描边、按压回弹),API 遵循 antd 惯例:variant 区分层级,danger 表达危险操作,loading 内置加载圆环。',
-  importCode: `import { Button } from '@fluent-react/ui';`,
+  importCode: `import { Button } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -45,7 +45,7 @@ const button: DocDef = {
         </>
       ),
       code: `
-import { Button } from '@fluent-react/ui';
+import { Button } from '@fluent-jade/ui';
 
 export function VariantsExample() {
   return (
@@ -68,7 +68,7 @@ export function VariantsExample() {
         </>
       ),
       code: `
-import { Button } from '@fluent-react/ui';
+import { Button } from '@fluent-jade/ui';
 
 export function DangerExample() {
   return (
@@ -90,7 +90,7 @@ export function DangerExample() {
         </>
       ),
       code: `
-import { Button } from '@fluent-react/ui';
+import { Button } from '@fluent-jade/ui';
 
 export function SizesExample() {
   return (
@@ -113,7 +113,7 @@ export function SizesExample() {
         </>
       ),
       code: `
-import { Button } from '@fluent-react/ui';
+import { Button } from '@fluent-jade/ui';
 
 export function LoadingDisabledExample() {
   return (
@@ -136,7 +136,7 @@ export function LoadingDisabledExample() {
         </>
       ),
       code: `
-import { Button } from '@fluent-react/ui';
+import { Button } from '@fluent-jade/ui';
 
 export function IconButtonExample() {
   return (
@@ -155,7 +155,7 @@ export function IconButtonExample() {
       demo: <ButtonClickDemo />,
       code: `
 import { useState } from 'react';
-import { Button } from '@fluent-react/ui';
+import { Button } from '@fluent-jade/ui';
 
 export function ClickEventExample() {
   const [count, setCount] = useState(0);
@@ -193,7 +193,7 @@ export function ClickEventExample() {
         </div>
       ),
       code: `
-import { Button } from '@fluent-react/ui';
+import { Button } from '@fluent-jade/ui';
 
 export function ButtonColorRadiusExample() {
   return (
@@ -252,7 +252,7 @@ const togglebutton: DocDef = {
   cn: '开关按钮',
   description:
     'WinUI ToggleButton:可按下保持的按钮,选中态为 accent 实底。用于工具条里的粗体 / 置顶 / 静音类即时开关;ToggleButtonGroup 成组(默认合并一体,可分离,单选或多选);表单里的开关用 Switch,页签式导航用 Tabs。',
-  importCode: `import { ToggleButton, ToggleButtonGroup } from '@fluent-react/ui';`,
+  importCode: `import { ToggleButton, ToggleButtonGroup } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -266,7 +266,7 @@ const togglebutton: DocDef = {
         </>
       ),
       code: `
-import { ToggleButton } from '@fluent-react/ui';
+import { ToggleButton } from '@fluent-jade/ui';
 
 export function ToggleButtonBasicExample() {
   return (
@@ -287,7 +287,7 @@ export function ToggleButtonBasicExample() {
       demo: <ToggleButtonControlled />,
       code: `
 import { useState } from 'react';
-import { ToggleButton } from '@fluent-react/ui';
+import { ToggleButton } from '@fluent-jade/ui';
 
 export function ToggleButtonControlledExample() {
   const [muted, setMuted] = useState(false);
@@ -304,7 +304,7 @@ export function ToggleButtonControlledExample() {
       demo: <ToggleButtonSizesDemo />,
       code: `
 import { useState } from 'react';
-import { ToggleButton } from '@fluent-react/ui';
+import { ToggleButton } from '@fluent-jade/ui';
 
 export function ToggleButtonSizesExample() {
   const [clicks, setClicks] = useState(0);
@@ -326,7 +326,7 @@ export function ToggleButtonSizesExample() {
       demo: <ToggleGroupDemo />,
       code: `
 import { useState } from 'react';
-import { ToggleButtonGroup } from '@fluent-react/ui';
+import { ToggleButtonGroup } from '@fluent-jade/ui';
 
 export function ToggleButtonGroupExample() {
   // 合并 + 单选(受控):对齐方式,再点已选项可取消
@@ -375,7 +375,7 @@ export function ToggleButtonGroupExample() {
         </div>
       ),
       code: `
-import { ToggleButton, ToggleButtonGroup } from '@fluent-react/ui';
+import { ToggleButton, ToggleButtonGroup } from '@fluent-jade/ui';
 
 export function ToggleButtonColorRadiusExample() {
   return (
@@ -474,12 +474,12 @@ const icon: DocDef = {
   name: 'Icons',
   cn: '图标',
   description:
-    'Fluent System Icons 独立包 `@fluent-react/icon`(与 `@fluent-react/ui` 组件库分离)。命名导入 *Regular / *Filled,用 `size` 控制尺寸,用 `color` 控制填充色(默认 currentColor)。**禁止 emoji 当图标**。未收录图标可直连 `@fluentui/react-icons/headless/svg/<name>`。',
-  importCode: `import { HomeRegular, SearchRegular, SettingsRegular } from '@fluent-react/icon';`,
+    'Fluent System Icons 独立包 `@fluent-jade/icon`(与 `@fluent-jade/ui` 组件库分离)。命名导入 *Regular / *Filled,用 `size` 控制尺寸,用 `color` 控制填充色(默认 currentColor)。**禁止 emoji 当图标**。未收录图标可直连 `@fluentui/react-icons/headless/svg/<name>`。',
+  importCode: `import { HomeRegular, SearchRegular, SettingsRegular } from '@fluent-jade/icon';`,
   sections: [
     {
       title: '命名导入',
-      description: '每个图标是独立组件。从 `@fluent-react/icon` 导入,不要再从 ui 包取图标。',
+      description: '每个图标是独立组件。从 `@fluent-jade/icon` 导入,不要再从 ui 包取图标。',
       demo: (
         <div className="flex flex-wrap gap-3 items-center text-(--text-1)">
           <HomeRegular size={20} />
@@ -500,7 +500,7 @@ const icon: DocDef = {
 import {
   AddRegular, CalendarLtrRegular, CheckmarkCircleRegular, ChevronLeftRegular, ChevronRightRegular,
   DismissRegular, ErrorCircleRegular, HomeRegular, InfoRegular, SearchRegular, SettingsRegular, WarningRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export function NamedIconsExample() {
   return (
@@ -534,7 +534,7 @@ export function NamedIconsExample() {
         </div>
       ),
       code: `
-import { HomeRegular } from '@fluent-react/icon';
+import { HomeRegular } from '@fluent-jade/icon';
 
 export function IconSizeExample() {
   return (
@@ -562,7 +562,7 @@ export function IconSizeExample() {
         </div>
       ),
       code: `
-import { CheckmarkCircleRegular, ErrorCircleRegular, SearchRegular, WarningRegular } from '@fluent-react/icon';
+import { CheckmarkCircleRegular, ErrorCircleRegular, SearchRegular, WarningRegular } from '@fluent-jade/icon';
 
 export function IconColorExample() {
   return (
@@ -591,7 +591,7 @@ export function IconColorExample() {
         </div>
       ),
       code: `
-import { HomeFilled, HomeRegular, SettingsFilled, SettingsRegular, StarFilled, StarRegular } from '@fluent-react/icon';
+import { HomeFilled, HomeRegular, SettingsFilled, SettingsRegular, StarFilled, StarRegular } from '@fluent-jade/icon';
 
 export function IconFilledExample() {
   return (
@@ -612,8 +612,8 @@ export function IconFilledExample() {
       demo: <IconCatalogDemo />,
       code: `
 import { useMemo, useState } from 'react';
-import { SearchBox, useToast } from '@fluent-react/ui';
-import { ChevronRightRegular, iconCatalog, iconGroups } from '@fluent-react/icon';
+import { SearchBox, useToast } from '@fluent-jade/ui';
+import { ChevronRightRegular, iconCatalog, iconGroups } from '@fluent-jade/icon';
 
 export function IconCatalogExample() {
   const toast = useToast();
@@ -677,7 +677,7 @@ export function IconCatalogExample() {
     {
       title: '包与目录',
       rows: [
-        { name: '@fluent-react/icon', type: 'package', description: '图标包(与 ui 分离)。' },
+        { name: '@fluent-jade/icon', type: 'package', description: '图标包(与 ui 分离)。' },
         { name: 'iconCatalog', type: 'IconCatalogItem[]', description: '本包全部图标清单(name/group/Component)。' },
         { name: 'iconGroups', type: 'string[]', description: '分组标题列表。' },
         { name: '*Regular / *Filled', type: 'FluentIcon', description: '线框 / 实心变体。' },

@@ -6,7 +6,7 @@ import {
   RangePicker,
   TimePicker,
   formatDate,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import type { DocDef } from '../types';
 
 const calendar: DocDef = {
@@ -15,13 +15,13 @@ const calendar: DocDef = {
   cn: '日历',
   description:
     'WinUI CalendarView:日 / 月 / 年三级缩放视图——点标题上钻、点格子下钻;周一起始,今日 accent 描边、选中 accent 实底。原生 Date,无第三方日期库。',
-  importCode: `import { Calendar } from '@fluent-react/ui';`,
+  importCode: `import { Calendar } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <CalendarDemo />,
       code: `import { useState } from 'react';
-import { Calendar, formatDate } from '@fluent-react/ui';
+import { Calendar, formatDate } from '@fluent-jade/ui';
 
 export function CalendarBasicExample() {
   // 受控用法:value + onChange
@@ -40,7 +40,7 @@ export function CalendarBasicExample() {
       title: '禁用日期',
       description: 'disabledDate 按日回调,返回 true 即不可选(示例禁用周末)。',
       demo: <Calendar disabledDate={(d) => d.getDay() === 0 || d.getDay() === 6} />,
-      code: `import { Calendar } from '@fluent-react/ui';
+      code: `import { Calendar } from '@fluent-jade/ui';
 
 export function CalendarDisabledDateExample() {
   // disabledDate 按日回调,返回 true 即不可选(此处禁用周末)
@@ -51,7 +51,7 @@ export function CalendarDisabledDateExample() {
       title: '非受控默认值',
       description: 'defaultValue 只决定初始选中日期,之后的选择由组件内部维护,不需要外部状态。',
       demo: <Calendar defaultValue={new Date()} />,
-      code: `import { Calendar } from '@fluent-react/ui';
+      code: `import { Calendar } from '@fluent-jade/ui';
 
 export function CalendarDefaultValueExample() {
   // 非受控:defaultValue 设定初始选中,后续变化组件内部维护
@@ -86,7 +86,7 @@ const datepicker: DocDef = {
   cn: '日期选择器',
   description:
     '触发器 + Calendar 浮层;有值时尾部图标切换为清除键(allowClear)。浮层自适应方向:下方放不下自动上翻。format 控制显示格式。',
-  importCode: `import { DatePicker } from '@fluent-react/ui';`,
+  importCode: `import { DatePicker } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -96,7 +96,7 @@ const datepicker: DocDef = {
           <DatePicker defaultValue={new Date()} format="YYYY年MM月DD日" aria-label="中文格式" />
         </>
       ),
-      code: `import { DatePicker } from '@fluent-react/ui';
+      code: `import { DatePicker } from '@fluent-jade/ui';
 
 export function DatePickerBasicExample() {
   return (
@@ -114,7 +114,7 @@ export function DatePickerBasicExample() {
         <DatePicker allowClear={false} defaultValue={new Date()}
                     disabledDate={(d) => d.getTime() > Date.now()} aria-label="仅限过去" />
       ),
-      code: `import { DatePicker } from '@fluent-react/ui';
+      code: `import { DatePicker } from '@fluent-jade/ui';
 
 export function DatePickerDisabledExample() {
   // allowClear={false} 不显示清除键;disabledDate 禁掉未来日期
@@ -133,7 +133,7 @@ export function DatePickerDisabledExample() {
       description: 'value + onChange 受控(点清除键回调 null);placeholder 自定义空值占位文案。',
       demo: <DatePickerControlled />,
       code: `import { useState } from 'react';
-import { DatePicker, formatDate } from '@fluent-react/ui';
+import { DatePicker, formatDate } from '@fluent-jade/ui';
 
 export function DatePickerControlledExample() {
   // 受控用法:value + onChange(清除时回调 null)
@@ -181,13 +181,13 @@ const rangepicker: DocDef = {
   cn: '日期范围',
   description:
     '单面板两次点击取一段日期:先点起点、悬停实时预览区间着色、再点终点即提交并关闭(顺序颠倒自动排序)。常配 Table 做日志 / 记录筛选。',
-  importCode: `import { RangePicker } from '@fluent-react/ui';`,
+  importCode: `import { RangePicker } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <RangePickerDemo />,
       code: `import { useState } from 'react';
-import { RangePicker, formatDate } from '@fluent-react/ui';
+import { RangePicker, formatDate } from '@fluent-jade/ui';
 
 export function RangePickerBasicExample() {
   // 受控用法:onChange 在选完终点时提交(起止已排序)
@@ -214,7 +214,7 @@ export function RangePickerBasicExample() {
                        aria-label="近七天" />
         </>
       ),
-      code: `import { RangePicker } from '@fluent-react/ui';
+      code: `import { RangePicker } from '@fluent-jade/ui';
 
 export function RangePickerFormatExample() {
   return (
@@ -267,7 +267,7 @@ const timepicker: DocDef = {
   cn: '时间选择器',
   description:
     '时 / 分双列浮层:先点时、再点分即提交并立即关闭(避免淡出期选中着色迁移)。minuteStep 控制分钟档位。',
-  importCode: `import { TimePicker } from '@fluent-react/ui';`,
+  importCode: `import { TimePicker } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -278,7 +278,7 @@ const timepicker: DocDef = {
           <TimePicker defaultValue={new Date()} aria-label="默认当前时间" />
         </>
       ),
-      code: `import { TimePicker } from '@fluent-react/ui';
+      code: `import { TimePicker } from '@fluent-jade/ui';
 
 export function TimePickerBasicExample() {
   return (
@@ -297,7 +297,7 @@ export function TimePickerBasicExample() {
       description: 'value + onChange 受控;选完分钟列即提交回调。',
       demo: <TimePickerControlled />,
       code: `import { useState } from 'react';
-import { TimePicker, formatDate } from '@fluent-react/ui';
+import { TimePicker, formatDate } from '@fluent-jade/ui';
 
 export function TimePickerControlledExample() {
   // 受控用法:value + onChange(选完分钟提交)

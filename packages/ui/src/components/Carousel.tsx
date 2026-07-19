@@ -6,7 +6,7 @@ import { cn } from '../cn';
 import {
   ChevronLeftRegular,
   ChevronRightRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface CarouselProps {
   autoplay?: boolean;

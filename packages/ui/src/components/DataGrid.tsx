@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   ArrowSortRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { Empty } from './Basics';
 
 export interface DataGridColumn<Row> {

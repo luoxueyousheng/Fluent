@@ -1,6 +1,6 @@
 /* 示例代码块:等宽字体 + 精简 TSX 高亮 + 复制按钮 */
 import { useMemo, useRef, useState } from 'react';
-import { CheckmarkRegular, CopyRegular } from '@fluent-react/icon';
+import { CheckmarkRegular, CopyRegular } from '@fluent-jade/icon';
 import { highlightTsx } from './highlight';
 
 export function CodeBlock({ code, standalone }: { code: string; standalone?: boolean }) {

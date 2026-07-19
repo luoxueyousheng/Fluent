@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppShell, useLog, useToast, type NavEntry } from '@fluent-react/ui';
-import { HomeRegular, SettingsRegular } from '@fluent-react/icon';
-import { ready, configure, useJadeEvent, hasJade, type ToastPayload } from '@fluent-react/bridge';
+import { AppShell, useLog, useToast, type NavEntry } from '@fluent-jade/ui';
+import { HomeRegular, SettingsRegular } from '@fluent-jade/icon';
+import { ready, configure, useJadeEvent, hasJade, type ToastPayload } from '@fluent-jade/bridge';
 import { HomePage } from './pages/HomePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { DocPage } from './docs/DocPage';
@@ -78,7 +78,7 @@ export function App() {
      真机 title-overlay 由宿主画控制钮,浏览器预览不渲染不预留 */
   return (
     <AppShell mode="multi"
-              appName="fluent-react 组件文档"
+              appName="Fluent UI × JadeView"
               sub={booted ? (onHost ? 'JadeView 宿主' : '独立预览(mock)') : '启动中…'}
               controls={onHost ? 'host' : 'none'}
               onBack={goBack} backDisabled={hist.length === 0}

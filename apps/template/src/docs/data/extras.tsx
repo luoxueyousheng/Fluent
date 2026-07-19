@@ -12,8 +12,8 @@ import {
   Transfer,
   VirtualList,
   message,
-} from '@fluent-react/ui';
-import { CheckmarkCircleRegular } from '@fluent-react/icon';
+} from '@fluent-jade/ui';
+import { CheckmarkCircleRegular } from '@fluent-jade/icon';
 import type { DocDef } from '../types';
 
 /* ---- Popconfirm ---- */
@@ -22,7 +22,7 @@ const popconfirm: DocDef = {
   name: 'Popconfirm',
   cn: '气泡确认',
   description: '轻量气泡确认(基于 Popover):锚点旁弹出,比 Modal.confirm 更轻,适合单条删除、状态切换等低风险确认。',
-  importCode: `import { Popconfirm } from '@fluent-react/ui';`,
+  importCode: `import { Popconfirm } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -32,7 +32,7 @@ const popconfirm: DocDef = {
         </Popconfirm>
       ),
       code: `
-import { Button, Popconfirm, message } from '@fluent-react/ui';
+import { Button, Popconfirm, message } from '@fluent-jade/ui';
 
 export function PopconfirmExample() {
   return (
@@ -52,7 +52,7 @@ export function PopconfirmExample() {
         </Popconfirm>
       ),
       code: `
-import { Button, Popconfirm, message } from '@fluent-react/ui';
+import { Button, Popconfirm, message } from '@fluent-jade/ui';
 
 export function PopconfirmDangerExample() {
   return (
@@ -69,7 +69,7 @@ export function PopconfirmDangerExample() {
       demo: <PopconfirmControlled />,
       code: `
 import { useState } from 'react';
-import { Button, Popconfirm, message } from '@fluent-react/ui';
+import { Button, Popconfirm, message } from '@fluent-jade/ui';
 
 export function PopconfirmControlledExample() {
   const [open, setOpen] = useState(false);
@@ -113,7 +113,7 @@ const descriptions: DocDef = {
   name: 'Descriptions',
   cn: '描述列表',
   description: '键值对展示(antd API):适合详情页;bordered 加分割线,column 控制列数,size 三档。',
-  importCode: `import { Descriptions } from '@fluent-react/ui';`,
+  importCode: `import { Descriptions } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -128,7 +128,7 @@ const descriptions: DocDef = {
         ]} />
       ),
       code: `
-import { Descriptions } from '@fluent-react/ui';
+import { Descriptions } from '@fluent-jade/ui';
 
 export function DescriptionsExample() {
   return (
@@ -153,7 +153,7 @@ export function DescriptionsExample() {
         ]} />
       ),
       code: `
-import { Descriptions } from '@fluent-react/ui';
+import { Descriptions } from '@fluent-jade/ui';
 
 export function DescriptionsBorderedExample() {
   return (
@@ -191,7 +191,7 @@ const result: DocDef = {
   name: 'Result',
   cn: '结果页',
   description: '操作结果反馈(antd API):5 种预设状态、icon + title + subTitle + extra。',
-  importCode: `import { Result } from '@fluent-react/ui';`,
+  importCode: `import { Result } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '各状态',
@@ -204,7 +204,7 @@ const result: DocDef = {
         </div>
       ),
       code: `
-import { Button, Result } from '@fluent-react/ui';
+import { Button, Result } from '@fluent-jade/ui';
 
 export function ResultExample() {
   return (
@@ -234,14 +234,14 @@ const tour: DocDef = {
   name: 'Tour',
   cn: '引导游览',
   description: '逐步高亮页面元素并展示说明(antd API):steps 驱动,遮罩镂空,支持键盘 Esc/next/prev。',
-  importCode: `import { Tour } from '@fluent-react/ui';`,
+  importCode: `import { Tour } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <TourDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Tour } from '@fluent-react/ui';
+import { Button, Tour } from '@fluent-jade/ui';
 
 export function TourExample() {
   const [open, setOpen] = useState(false);
@@ -311,7 +311,7 @@ const anchor: DocDef = {
   name: 'Anchor',
   cn: '锚点导航',
   description: '固定侧边栏导航(antd API):滚动时高亮当前区块,affix 固定在视口,offsetTop 偏移。',
-  importCode: `import { Anchor } from '@fluent-react/ui';`,
+  importCode: `import { Anchor } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -327,7 +327,7 @@ const anchor: DocDef = {
         </div>
       ),
       code: `
-import { Anchor } from '@fluent-react/ui';
+import { Anchor } from '@fluent-jade/ui';
 
 export function AnchorExample() {
   return (
@@ -363,14 +363,14 @@ const hotkeyinput: DocDef = {
   name: 'HotkeyInput',
   cn: '快捷键录入',
   description: '监听键盘组合并记录:value/onChange 受控,placeholder 占位,clearable 可清除,disabled 禁用。',
-  importCode: `import { HotkeyInput } from '@fluent-react/ui';`,
+  importCode: `import { HotkeyInput } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <HotkeyDemo />,
       code: `
 import { useState } from 'react';
-import { HotkeyInput } from '@fluent-react/ui';
+import { HotkeyInput } from '@fluent-jade/ui';
 
 export function HotkeyInputExample() {
   const [hotkey, setHotkey] = useState('Ctrl + S');
@@ -417,14 +417,14 @@ const cascader: DocDef = {
   name: 'Cascader',
   cn: '级联选择',
   description: '树形数据逐级展开选择(antd API):changeOnSelect 任意级可选,disabled 禁用某项。',
-  importCode: `import { Cascader } from '@fluent-react/ui';`,
+  importCode: `import { Cascader } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <CascaderDemo />,
       code: `
 import { useState } from 'react';
-import { Cascader, message } from '@fluent-react/ui';
+import { Cascader, message } from '@fluent-jade/ui';
 
 const options = [
   { value: 'zh', label: '中国', children: [
@@ -487,14 +487,14 @@ const transfer: DocDef = {
   name: 'Transfer',
   cn: '穿梭框',
   description: '双列表左右移动数据(antd API):render 自定义行内容,titles 两列标题,disabled 禁用。',
-  importCode: `import { Transfer } from '@fluent-react/ui';`,
+  importCode: `import { Transfer } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <TransferDemo />,
       code: `
 import { useState } from 'react';
-import { Transfer } from '@fluent-react/ui';
+import { Transfer } from '@fluent-jade/ui';
 
 export function TransferExample() {
   const [targetKeys, setTargetKeys] = useState(['2', '5', '8']);
@@ -545,13 +545,13 @@ const virtuallist: DocDef = {
   name: 'VirtualList',
   cn: '虚拟滚动',
   description: '大数据量只渲染可视区 DOM 节点:overscan 额外渲染上下行数。',
-  importCode: `import { VirtualList } from '@fluent-react/ui';`,
+  importCode: `import { VirtualList } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <VirtualListDemo />,
       code: `
-import { VirtualList } from '@fluent-react/ui';
+import { VirtualList } from '@fluent-jade/ui';
 
 const data = Array.from({ length: 10000 }, (_, i) => ({ id: i, text: '列表项 ' + (i + 1) }));
 

@@ -16,7 +16,7 @@ import {
   ErrorCircleRegular,
   InfoRegular,
   WarningRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { Button } from './Button';
 import { _bindImperative } from '../imperative';
 import { installScrollIndicators } from '../scrollIndicator';

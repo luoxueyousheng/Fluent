@@ -21,7 +21,7 @@ import {
   notification,
   useConfirm,
   useToast,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import type { DocDef } from '../types';
 
 const toast: DocDef = {
@@ -30,14 +30,14 @@ const toast: DocDef = {
   cn: '轻提示',
   description:
     '右下角通知横幅(z-2000,盖过模态属预期):四级语义色、默认 5 秒自动关闭、悬停暂停计时、同 id 去重、最多并存 5 条,带 action 的常驻等待处理。组件内用 useToast;组件外用 antd 风命令式 message / notification(duration 单位为秒)。',
-  importCode: `import { useToast, message, notification } from '@fluent-react/ui';`,
+  importCode: `import { useToast, message, notification } from '@fluent-jade/ui';`,
   sections: [
     {
       title: 'useToast',
       description: 'Hook 形态,完整能力(级别 / 标题 / 时长 / action)。',
       demo: <ToastDemo />,
       code: `
-import { Button, useToast } from '@fluent-react/ui';
+import { Button, useToast } from '@fluent-jade/ui';
 
 export function ToastExample() {
   const toast = useToast();
@@ -80,7 +80,7 @@ export function ToastExample() {
         </>
       ),
       code: `
-import { Button, message, notification } from '@fluent-react/ui';
+import { Button, message, notification } from '@fluent-jade/ui';
 
 export function MessageNotificationExample() {
   return (
@@ -105,7 +105,7 @@ export function MessageNotificationExample() {
       demo: <ToastPlacementDemo />,
       code: `
 import type { ReactNode } from 'react';
-import { Button, FluentProvider, useToast, type ToastPlacement } from '@fluent-react/ui';
+import { Button, FluentProvider, useToast, type ToastPlacement } from '@fluent-jade/ui';
 
 export function PlacementExample() {
   const toast = useToast();
@@ -135,7 +135,7 @@ export function AppWithTopToasts({ children }: { children: ReactNode }) {
       description: '底部 3px 进度条随剩余时间耗尽(等级同色);悬停时与计时一起暂停、移出继续。常驻条(带 action 或 duration=0)不显示进度。',
       demo: <ToastProgressDemo />,
       code: `
-import { Button, useToast } from '@fluent-react/ui';
+import { Button, useToast } from '@fluent-jade/ui';
 
 export function AutoCloseProgressExample() {
   const toast = useToast();
@@ -159,7 +159,7 @@ export function AutoCloseProgressExample() {
       demo: <ToastDedupeDemo />,
       code: `
 import { useState } from 'react';
-import { Button, useToast } from '@fluent-react/ui';
+import { Button, useToast } from '@fluent-jade/ui';
 
 export function ToastDedupeExample() {
   const toast = useToast();
@@ -263,7 +263,7 @@ const modalDoc: DocDef = {
   cn: '模态框',
   description:
     'WinUI ContentDialog 形态的模态框。声明式 <Modal> 承载任意内容(antd API:受控 open、标题/内容/页脚三段、遮罩与 Esc 关闭可配、长内容体内滚动、onOk 返回 Promise 自动 loading);纯确认场景用 useConfirm(组件内,resolve 按钮序号)或 modal.confirm(组件外,resolve 布尔)。遮罩从标题栏下方开始,窗口拖动与控制钮始终可用。',
-  importCode: `import { Modal, useConfirm, modal } from '@fluent-react/ui';`,
+  importCode: `import { Modal, useConfirm, modal } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '声明式基础用法',
@@ -277,7 +277,7 @@ import {
   Modal,
   TextBox,
   useToast,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 
 export function ModalBasicExample() {
   const [open, setOpen] = useState(false);
@@ -310,7 +310,7 @@ export function ModalBasicExample() {
       demo: <ModalAsync />,
       code: `
 import { useState } from 'react';
-import { Button, Modal, useToast } from '@fluent-react/ui';
+import { Button, Modal, useToast } from '@fluent-jade/ui';
 
 export function ModalAsyncExample() {
   const [open, setOpen] = useState(false);
@@ -343,7 +343,7 @@ export function ModalAsyncExample() {
       demo: <ModalLong />,
       code: `
 import { useState } from 'react';
-import { Button, Modal } from '@fluent-react/ui';
+import { Button, Modal } from '@fluent-jade/ui';
 
 export function ModalLongContentExample() {
   const [open, setOpen] = useState(false);
@@ -377,7 +377,7 @@ export function ModalLongContentExample() {
       demo: <ModalDangerDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Modal, useToast } from '@fluent-react/ui';
+import { Button, Modal, useToast } from '@fluent-jade/ui';
 
 export function ModalDangerExample() {
   const [open, setOpen] = useState(false);
@@ -419,7 +419,7 @@ import {
   Modal,
   TextBox,
   useToast,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 
 export function ModalLoadingExample() {
   const [open, setOpen] = useState(false);
@@ -460,7 +460,7 @@ export function ModalLoadingExample() {
       description: 'buttons 自定义按钮组,resolve 被点按钮的序号;danger 把首按钮标红;defaultId 指定回车默认按钮。',
       demo: <ConfirmDemo />,
       code: `
-import { Button, useConfirm, useToast } from '@fluent-react/ui';
+import { Button, useConfirm, useToast } from '@fluent-jade/ui';
 
 export function ConfirmExample() {
   const confirm = useConfirm();
@@ -492,7 +492,7 @@ export function ConfirmExample() {
         </Button>
       ),
       code: `
-import { Button, message, modal } from '@fluent-react/ui';
+import { Button, message, modal } from '@fluent-jade/ui';
 
 export function ModalConfirmExample() {
   const handleApply = async () => {
@@ -650,14 +650,14 @@ const drawer: DocDef = {
   cn: '抽屉',
   description:
     '四方位滑出的侧栏面板:placement 定方位(左/右/上/下)、size 定尺寸,遮罩从标题栏下方开始、点遮罩或 Esc 关闭。适合详情查看、次级表单等不打断主界面的场景。',
-  importCode: `import { Drawer } from '@fluent-react/ui';`,
+  importCode: `import { Drawer } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <DrawerDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Drawer, TextBox } from '@fluent-react/ui';
+import { Button, Drawer, TextBox } from '@fluent-jade/ui';
 
 export function DrawerExample() {
   const [open, setOpen] = useState(false);
@@ -681,7 +681,7 @@ export function DrawerExample() {
       demo: <DrawerPlacementDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Drawer } from '@fluent-react/ui';
+import { Button, Drawer } from '@fluent-jade/ui';
 
 type Placement = 'left' | 'right' | 'top' | 'bottom';
 
@@ -764,7 +764,7 @@ const tooltip: DocDef = {
   cn: '工具提示',
   description:
     '悬停延迟浮现的纯文字气泡(CSS data-tip 实现,零 JS 定位)。单个元素子节点直接克隆注入,复杂内容自动包一层 span。仅限简短说明,富内容用 TeachingTip。',
-  importCode: `import { Tooltip } from '@fluent-react/ui';`,
+  importCode: `import { Tooltip } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -775,7 +775,7 @@ const tooltip: DocDef = {
         </>
       ),
       code: `
-import { Button, Tooltip } from '@fluent-react/ui';
+import { Button, Tooltip } from '@fluent-jade/ui';
 
 export function TooltipExample() {
   return (
@@ -804,7 +804,7 @@ const popover: DocDef = {
   cn: '气泡浮层',
   description:
     '富内容气泡(WinUI Flyout 形态,无箭头):Tooltip 只放一句纯文本,Popover 承载标题 + 任意内容(表单控件、按钮、说明段落)。portal 到 body(z-850)不被父容器裁切,锚点下方展开、放不下自动上翻、滚动跟随;支持 click / hover 触发与受控开合。',
-  importCode: `import { Popover } from '@fluent-react/ui';`,
+  importCode: `import { Popover } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法(click 触发)',
@@ -820,7 +820,7 @@ const popover: DocDef = {
         </Popover>
       ),
       code: `
-import { Button, Popover, TextBox, Switch } from '@fluent-react/ui';
+import { Button, Popover, TextBox, Switch } from '@fluent-jade/ui';
 
 export function PopoverExample() {
   return (
@@ -849,7 +849,7 @@ export function PopoverExample() {
         </Popover>
       ),
       code: `
-import { Button, Popover } from '@fluent-react/ui';
+import { Button, Popover } from '@fluent-jade/ui';
 
 export function PopoverHoverExample() {
   return (
@@ -875,7 +875,7 @@ export function PopoverHoverExample() {
       demo: <PopoverControlled />,
       code: `
 import { useState } from 'react';
-import { Button, Popover } from '@fluent-react/ui';
+import { Button, Popover } from '@fluent-jade/ui';
 
 export function PopoverControlledExample() {
   const [open, setOpen] = useState(false);
@@ -900,7 +900,7 @@ export function PopoverControlledExample() {
       demo: <PopoverDefaultOpenDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Popover } from '@fluent-react/ui';
+import { Button, Popover } from '@fluent-jade/ui';
 
 export function PopoverDefaultOpenExample() {
   const [mounted, setMounted] = useState(false);
@@ -964,14 +964,14 @@ const teachingtip: DocDef = {
   cn: '教学提示',
   description:
     '锚定某控件的富内容气泡(WinUI TeachingTip):标题 + 正文 + 操作区,带指向箭头。portal 到 body 的 fixed 定位,滚动/缩放实时跟随锚点,z-700 不被导航遮挡。',
-  importCode: `import { TeachingTip } from '@fluent-react/ui';`,
+  importCode: `import { TeachingTip } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <TeachingDemo />,
       code: `
 import { useState } from 'react';
-import { Button, TeachingTip } from '@fluent-react/ui';
+import { Button, TeachingTip } from '@fluent-jade/ui';
 
 export function TeachingTipExample() {
   const [open, setOpen] = useState(false);
@@ -997,7 +997,7 @@ export function TeachingTipExample() {
       demo: <TeachingPlacementDemo />,
       code: `
 import { useState } from 'react';
-import { Button, TeachingTip } from '@fluent-react/ui';
+import { Button, TeachingTip } from '@fluent-jade/ui';
 
 export function TeachingTipPlacementExample() {
   const [open, setOpen] = useState(false);
@@ -1060,7 +1060,7 @@ const infobar: DocDef = {
   cn: '信息栏',
   description:
     '页面内嵌的常驻状态条(非浮层):四级语义色 + 图标 + 标题/正文,error 级别 role=alert。适合表单顶部错误汇总、页面级公告。',
-  importCode: `import { InfoBar } from '@fluent-react/ui';`,
+  importCode: `import { InfoBar } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -1073,7 +1073,7 @@ const infobar: DocDef = {
         </div>
       ),
       code: `
-import { InfoBar } from '@fluent-react/ui';
+import { InfoBar } from '@fluent-jade/ui';
 
 export function InfoBarExample() {
   return (
@@ -1101,14 +1101,14 @@ const spin: DocDef = {
   cn: '加载容器',
   description:
     '包住任意区域的加载态(antd API):spinning 时内容压暗禁交互、居中 ProgressRing + tip;delay 毫秒内结束的加载不闪遮罩。不包 children 时为独立居中指示器。区别:Skeleton 用于首屏占位,Spin 用于已有内容的刷新 / 提交。',
-  importCode: `import { Spin } from '@fluent-react/ui';`,
+  importCode: `import { Spin } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <SpinDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Card, Spin } from '@fluent-react/ui';
+import { Button, Card, Spin } from '@fluent-jade/ui';
 
 export function SpinExample() {
   const [loading, setLoading] = useState(false);
@@ -1140,7 +1140,7 @@ export function SpinExample() {
         </>
       ),
       code: `
-import { Spin } from '@fluent-react/ui';
+import { Spin } from '@fluent-jade/ui';
 
 export function SpinIndicatorExample() {
   return (
@@ -1163,7 +1163,7 @@ export function SpinIndicatorExample() {
         </div>
       ),
       code: `
-import { Spin } from '@fluent-react/ui';
+import { Spin } from '@fluent-jade/ui';
 
 export function SpinColorExample() {
   return (
@@ -1211,14 +1211,14 @@ const progress: DocDef = {
   cn: '进度',
   description:
     'ProgressBar 横向进度条:确定态按百分比填充、showInfo 右侧显示文字,indeterminate 为往返滑动;ProgressRing 双形态:传 value 为环形进度(可环心显示百分比),不传为不定态旋转圆环(WinUI 弧长呼吸)。',
-  importCode: `import { ProgressBar, ProgressRing } from '@fluent-react/ui';`,
+  importCode: `import { ProgressBar, ProgressRing } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <ProgressDemo />,
       code: `
 import { useState } from 'react';
-import { Button, ProgressBar, ProgressRing } from '@fluent-react/ui';
+import { Button, ProgressBar, ProgressRing } from '@fluent-jade/ui';
 
 export function ProgressExample() {
   const [value, setValue] = useState(65);
@@ -1241,7 +1241,7 @@ export function ProgressExample() {
       demo: <ProgressInfoDemo />,
       code: `
 import { useState } from 'react';
-import { Button, ProgressBar } from '@fluent-react/ui';
+import { Button, ProgressBar } from '@fluent-jade/ui';
 
 export function ProgressInfoExample() {
   const [value, setValue] = useState(42);
@@ -1261,7 +1261,7 @@ export function ProgressInfoExample() {
       demo: <ProgressCircleDemo />,
       code: `
 import { useState } from 'react';
-import { Button, ProgressRing } from '@fluent-react/ui';
+import { Button, ProgressRing } from '@fluent-jade/ui';
 
 export function ProgressRingExample() {
   const [value, setValue] = useState(65);
@@ -1299,7 +1299,7 @@ export function ProgressRingExample() {
         </div>
       ),
       code: `
-import { ProgressBar, ProgressRing } from '@fluent-react/ui';
+import { ProgressBar, ProgressRing } from '@fluent-jade/ui';
 
 export function ProgressColorExample() {
   return (

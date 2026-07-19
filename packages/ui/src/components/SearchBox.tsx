@@ -3,7 +3,7 @@ import { cn } from '../cn';
 import {
   DismissRegular,
   SearchRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { AutoSuggest } from './AutoSuggest';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';

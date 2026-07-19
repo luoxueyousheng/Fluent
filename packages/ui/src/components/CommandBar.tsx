@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import {
   MoreHorizontalRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { MenuList, useFixedPlacement, useFlyout, type MenuItemDef } from './Flyout';
 
 /* ==================== CommandBar ==================== */

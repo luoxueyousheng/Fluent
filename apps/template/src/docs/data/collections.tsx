@@ -11,7 +11,7 @@ import {
   type ColumnType,
   type DataGridColumn,
   type MenuItemDef,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import type { DocDef } from '../types';
 
 interface Row { key: string; name: string; size: number; type: string; state: 'ok' | 'warn' }
@@ -41,14 +41,14 @@ const table: DocDef = {
   cn: '表格',
   description:
     'antd API 的数据表格:columns 声明列(dataIndex / render / sorter / align / width),内置分页与排序(点击表头循环 升 → 降 → 无),翻页与排序时表体淡入刷新;rowSelection 行选择(表头全选带半选态 / radio 单选 / 按行禁用)、toolbar 工具条插槽、rowContextMenu 行右键菜单、striped 斑马纹、size="small" 紧凑密度、loading 加载遮罩、empty 自定义空态、maxHeight 控表体滚动高(表头吸顶)。行高亮与选中样式为 WinUI DataGrid 形态。',
-  importCode: `import { Table, type ColumnType } from '@fluent-react/ui';`,
+  importCode: `import { Table, type ColumnType } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       description: '「名称」「大小」列可排序;类型/状态 align=center 居中,数字列 align=right;pagination 缺省每页 10 条,数据不足一页时不渲染分页条。',
       demo: <div style={{ width: '100%' }}><Table columns={COLS} dataSource={ROWS} pagination={false} /></div>,
       code: `
-import { Table, Tag, type ColumnType } from '@fluent-react/ui';
+import { Table, Tag, type ColumnType } from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number; type: string; state: 'ok' | 'warn' }
 
@@ -84,7 +84,7 @@ export function BasicTableExample() {
       demo: <TableSelection />,
       code: `
 import { useState } from 'react';
-import { Table, type ColumnType } from '@fluent-react/ui';
+import { Table, type ColumnType } from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number; type: string }
 
@@ -129,7 +129,7 @@ export function TableSelectionExample() {
         </div>
       ),
       code: `
-import { Table, type ColumnType } from '@fluent-react/ui';
+import { Table, type ColumnType } from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number; type: string }
 
@@ -161,7 +161,7 @@ export function TableStripedExample() {
       demo: <TableLoading />,
       code: `
 import { useState } from 'react';
-import { Button, Empty, Table, type ColumnType } from '@fluent-react/ui';
+import { Button, Empty, Table, type ColumnType } from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number; type: string }
 
@@ -197,7 +197,7 @@ export function TableLoadingExample() {
       description: 'pagination.pageSize 控制每页条数;onRow 给行挂事件(选择列内点击不会误触发)。',
       demo: <TablePaged />,
       code: `
-import { Table, useToast, type ColumnType } from '@fluent-react/ui';
+import { Table, useToast, type ColumnType } from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number; type: string }
 
@@ -237,7 +237,7 @@ import {
   Table,
   useToast,
   type ColumnType,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number }
 
@@ -281,7 +281,7 @@ export function TableToolbarExample() {
       description: 'rowContextMenu 给每行挂 WinUI 右键菜单;items 可用函数按行生成,onPick 收菜单键与行记录。',
       demo: <TableCtxMenu />,
       code: `
-import { Table, useToast, type ColumnType, type MenuItemDef } from '@fluent-react/ui';
+import { Table, useToast, type ColumnType, type MenuItemDef } from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number }
 
@@ -318,7 +318,7 @@ export function TableContextMenuExample() {
       description: 'pagination 传 showSizeChanger 显示条数下拉,pageSizeOptions 定义档位;切换后回到第 1 页。',
       demo: <TableSizeChanger />,
       code: `
-import { Table, type ColumnType } from '@fluent-react/ui';
+import { Table, type ColumnType } from '@fluent-jade/ui';
 
 interface Row { key: string; name: string; size: number }
 
@@ -345,7 +345,7 @@ export function TableSizeChangerExample() {
       description: '数据没有 key 字段时,rowKey 传字段名或取键函数;maxHeight 限制表体高度,超出滚动、表头吸顶。',
       demo: <TableRowKeyScroll />,
       code: `
-import { Table, type ColumnType } from '@fluent-react/ui';
+import { Table, type ColumnType } from '@fluent-jade/ui';
 
 // 数据源没有 key 字段,行键从 id 派生
 interface FileRow { id: string; name: string; size: number }
@@ -556,14 +556,14 @@ const datagrid: DocDef = {
   cn: '数据网格',
   description:
     '受控底座版表格:排序与选中完全由外部状态驱动(sort / onSort / selected / onSelect),不含分页,适合虚拟化、服务端排序等需要完全掌控数据流的场景。日常业务列表直接用 Table。',
-  importCode: `import { DataGrid, type DataGridColumn } from '@fluent-react/ui';`,
+  importCode: `import { DataGrid, type DataGridColumn } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '受控排序与选中',
       demo: <DataGridDemo />,
       code: `
 import { useState } from 'react';
-import { DataGrid, type DataGridColumn } from '@fluent-react/ui';
+import { DataGrid, type DataGridColumn } from '@fluent-jade/ui';
 
 interface Row { id: string; name: string; size: number }
 

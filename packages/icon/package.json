@@ -1,7 +1,7 @@
 {
-  "name": "@fluent-react/icon",
+  "name": "@fluent-jade/icon",
   "version": "0.1.0",
-  "description": "Fluent System Icons for fluent-react — 命名导入 + size API(headless,无 CSS-in-JS)",
+  "description": "Fluent UI × JadeView 图标包 — Fluent System Icons, size/color API(headless)",
   "license": "MIT",
   "repository": {
     "type": "git",

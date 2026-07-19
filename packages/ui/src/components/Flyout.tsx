@@ -9,7 +9,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import {
   ChevronDownRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 let openFlyoutCloser: (() => void) | null = null;
 

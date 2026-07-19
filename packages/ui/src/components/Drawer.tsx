@@ -5,7 +5,7 @@ import { cn } from '../cn';
 import { useFocusTrap } from '../focusTrap';
 import {
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface DrawerProps {
   open: boolean;

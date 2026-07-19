@@ -6,7 +6,7 @@ import { useState, type ReactNode } from 'react';
 import { Button } from './Button';
 import {
   InfoRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { Popover, type PopoverProps } from './Popover';
 
 export interface PopconfirmProps {

@@ -10,7 +10,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import {
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface TeachingTipProps {
   open: boolean;

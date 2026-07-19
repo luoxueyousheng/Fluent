@@ -146,9 +146,9 @@ export const iconGroups: readonly string[] = [
 export type IconExportName = (typeof iconCatalog)[number]['name'];
 `;
 
-const indexTs = `/* @fluent-react/icon — Fluent System Icons
- * 与 @fluent-react/ui 组件库分离:
- *   import { HomeRegular, SearchRegular } from '@fluent-react/icon';
+const indexTs = `/* @fluent-jade/icon — Fluent System Icons
+ * 与 @fluent-jade/ui 组件库分离:
+ *   import { HomeRegular, SearchRegular } from '@fluent-jade/icon';
  *   <HomeRegular size={20} />
  * 硬性约定:禁止 emoji 当图标。完整目录见 iconCatalog / 官方 Icons Catalog。
  */

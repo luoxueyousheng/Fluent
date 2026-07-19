@@ -7,7 +7,7 @@ import { Button } from './Button';
 import {
   ChevronLeftRegular,
   ChevronRightRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface TransferItem {
   key: string;

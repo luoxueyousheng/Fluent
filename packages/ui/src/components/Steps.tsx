@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   CheckmarkRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface StepItem { title: ReactNode; description?: ReactNode }
 

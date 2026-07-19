@@ -8,7 +8,7 @@ import { cn } from '../cn';
 import { Button } from './Button';
 import {
   DismissRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface TourStep {
   /** 目标元素选择器或 HTMLElement */

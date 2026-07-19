@@ -7,11 +7,11 @@
 **永远不要使用 emoji 当作 UI 图标。**
 
 - 原因:在 WinUI / Fluent 桌面语境里,emoji 会显得廉价、字号/基线不可控、各平台字形不一致,也破坏线稿图标体系。
-- **唯一图标来源**:独立包 **`@fluent-react/icon`**(Fluent System Icons headless),**不要**从 `@fluent-react/ui` 导入图标。
+- **唯一图标来源**:独立包 **`@fluent-jade/icon`**(Fluent System Icons headless),**不要**从 `@fluent-jade/ui` 导入图标。
 - 用法:
 
   ```tsx
-  import { HomeRegular, DismissRegular } from '@fluent-react/icon';
+  import { HomeRegular, DismissRegular } from '@fluent-jade/icon';
   <HomeRegular size={16} />
   // 未 re-export 的图标:
   import { AirplaneRegular } from '@fluentui/react-icons/headless/svg/airplane';

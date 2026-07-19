@@ -19,7 +19,7 @@ import {
   NavigationRegular,
   SquareMultipleRegular,
   SubtractRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 /** 自绘窗口控制钮的宿主回调(缺省的钮不渲染) */
 export interface WindowController {

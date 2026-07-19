@@ -18,7 +18,7 @@ function fire(level: NonNullable<ToastOptions['level']>, content: string, durati
   if (!toastFn) {
     // 未绑定时降级为警告:抛异常会炸掉调用方所在的整棵 React 树
     //(StrictMode 双跑期存在「已清理未重绑」窗口,踩过白屏)
-    console.warn('[fluent-react] message/notification 需要 <FluentProvider>(本次调用已忽略):', content);
+    console.warn('[fluent-jade] message/notification 需要 <FluentProvider>(本次调用已忽略):', content);
     return;
   }
   toastFn({ level, message: content, title, placement, duration: durationSec != null ? durationSec * 1000 : undefined });
@@ -60,7 +60,7 @@ export interface ModalConfirmConfig {
 export const modal = {
   confirm: async ({ title, content, okText = '确定', cancelText = '取消', danger }: ModalConfirmConfig): Promise<boolean> => {
     if (!confirmFn) {
-      console.warn('[fluent-react] modal.confirm 需要 <FluentProvider>(按取消处理):', title);
+      console.warn('[fluent-jade] modal.confirm 需要 <FluentProvider>(按取消处理):', title);
       return false;
     }
     return (await confirmFn({ title, message: content, buttons: [okText, cancelText], danger })) === 0;

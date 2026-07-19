@@ -1,4 +1,4 @@
-@import "@fluent-react/ui/theme.css";
+@import "@fluent-jade/ui/theme.css";
 /* 组件包在 app 根外,显式纳入 Tailwind 扫描(其内使用的工具类才会生成) */
 @source "../../../packages/ui/src";
 @source "../../../packages/bridge/src";

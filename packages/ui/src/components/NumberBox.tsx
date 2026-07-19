@@ -3,7 +3,7 @@
  * 聚焦时滚轮微调;范围钳制,失焦/回车提交文本。 */
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '../cn';
-import { ChevronDownRegular, ChevronUpRegular } from '@fluent-react/icon';
+import { ChevronDownRegular, ChevronUpRegular } from '@fluent-jade/icon';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';
 import { statusClass, type ControlStatus } from './Field';

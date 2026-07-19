@@ -1,7 +1,7 @@
 /* 组件文档页 — HeroUI v2 文档页结构:
  * 标题/描述 → 引入 → 用法各小节(活演示 + 可展开示例代码)→ API(Props / Events 表) */
 import { useState } from 'react';
-import { CodeRegular } from '@fluent-react/icon';
+import { CodeRegular } from '@fluent-jade/icon';
 import type { ApiRow, DocDef, DocSection } from './types';
 import { CodeBlock } from './CodeBlock';
 

@@ -16,7 +16,7 @@ import {
   Upload,
   type UploadFile,
   type UploadRequestOptions,
-} from '@fluent-react/ui';
+} from '@fluent-jade/ui';
 import type { DocDef } from '../types';
 
 /* ---- 有状态演示 ---- */
@@ -96,7 +96,7 @@ const checkbox: DocDef = {
   cn: '检查框',
   description:
     '检查框用于在一组互不排斥的选项中做多项开关。薄封装原生 input[type=checkbox],受控/非受控直接走原生 checked / defaultChecked。',
-  importCode: `import { Checkbox } from '@fluent-react/ui';`,
+  importCode: `import { Checkbox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -109,7 +109,7 @@ const checkbox: DocDef = {
         </>
       ),
       code: `
-import { Checkbox } from '@fluent-react/ui';
+import { Checkbox } from '@fluent-jade/ui';
 
 export function BasicExample() {
   return (
@@ -128,7 +128,7 @@ export function BasicExample() {
       demo: <CheckboxControlled />,
       code: `
 import { useState } from 'react';
-import { Checkbox } from '@fluent-react/ui';
+import { Checkbox } from '@fluent-jade/ui';
 
 export function ControlledExample() {
   const [on, setOn] = useState(true);
@@ -145,7 +145,7 @@ export function ControlledExample() {
       demo: <CheckboxGroupDemo />,
       code: `
 import { useState } from 'react';
-import { CheckboxGroup } from '@fluent-react/ui';
+import { CheckboxGroup } from '@fluent-jade/ui';
 
 export function GroupExample() {
   const [v, setV] = useState(['win']);
@@ -168,7 +168,7 @@ export function GroupExample() {
       demo: <CheckboxIndeterminate />,
       code: `
 import { useState } from 'react';
-import { Checkbox, CheckboxGroup } from '@fluent-react/ui';
+import { Checkbox, CheckboxGroup } from '@fluent-jade/ui';
 
 const OS_LIST = ['win', 'mac', 'linux'];
 
@@ -200,7 +200,7 @@ export function IndeterminateExample() {
       demo: <CheckboxCardDemo />,
       code: `
 import { useState } from 'react';
-import { Checkbox, CheckboxGroup } from '@fluent-react/ui';
+import { Checkbox, CheckboxGroup } from '@fluent-jade/ui';
 
 export function CheckboxCardExample() {
   const [features, setFeatures] = useState(['autosave']);
@@ -240,7 +240,7 @@ export function CheckboxCardExample() {
         </div>
       ),
       code: `
-import { CheckboxGroup } from '@fluent-react/ui';
+import { CheckboxGroup } from '@fluent-jade/ui';
 
 export function VerticalDisabledExample() {
   return (
@@ -277,7 +277,7 @@ export function VerticalDisabledExample() {
         </div>
       ),
       code: `
-import { Checkbox, CheckboxGroup } from '@fluent-react/ui';
+import { Checkbox, CheckboxGroup } from '@fluent-jade/ui';
 
 export function CheckboxColorExample() {
   return (
@@ -382,7 +382,7 @@ const radio: DocDef = {
   cn: '单选框',
   description:
     '单选框用于在互斥选项中选择一项。单个 Radio 是原生 input[type=radio] 的薄封装;成组使用推荐 RadioGroup(antd 惯例的 options + value/onChange)。',
-  importCode: `import { Radio, RadioGroup } from '@fluent-react/ui';`,
+  importCode: `import { Radio, RadioGroup } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -394,7 +394,7 @@ const radio: DocDef = {
         </>
       ),
       code: `
-import { Radio } from '@fluent-react/ui';
+import { Radio } from '@fluent-jade/ui';
 
 export function BasicExample() {
   return (
@@ -412,7 +412,7 @@ export function BasicExample() {
       demo: <RadioGroupDemo />,
       code: `
 import { useState } from 'react';
-import { RadioGroup } from '@fluent-react/ui';
+import { RadioGroup } from '@fluent-jade/ui';
 
 export function GroupExample() {
   const [v, setV] = useState('mica');
@@ -435,7 +435,7 @@ export function GroupExample() {
       demo: <RadioCardDemo />,
       code: `
 import { useState } from 'react';
-import { RadioGroup } from '@fluent-react/ui';
+import { RadioGroup } from '@fluent-jade/ui';
 
 export function RadioCardExample() {
   const [plan, setPlan] = useState('mica');
@@ -455,7 +455,7 @@ export function RadioCardExample() {
       demo: <RadioControlledCard />,
       code: `
 import { useState } from 'react';
-import { Radio } from '@fluent-react/ui';
+import { Radio } from '@fluent-jade/ui';
 
 export function ControlledCardExample() {
   const [net, setNet] = useState('auto');
@@ -485,7 +485,7 @@ export function ControlledCardExample() {
           ]} />
       ),
       code: `
-import { RadioGroup } from '@fluent-react/ui';
+import { RadioGroup } from '@fluent-jade/ui';
 
 export function VerticalUncontrolledExample() {
   return (
@@ -513,7 +513,7 @@ export function VerticalUncontrolledExample() {
         </div>
       ),
       code: `
-import { Radio, RadioGroup } from '@fluent-react/ui';
+import { Radio, RadioGroup } from '@fluent-jade/ui';
 
 export function RadioColorExample() {
   return (
@@ -601,7 +601,7 @@ const toggle: DocDef = {
   cn: '开关',
   description:
     '开关(ToggleSwitch)用于立即生效的双态设置,区别于需要提交的 Checkbox。WinUI 3 形态:40×20 轨道、滑珠悬停胀大、按压拉长。2026-07 起由 Toggle 改名 Switch(antd 惯例,并与 ToggleButton 区分),旧名 Toggle 保留为废弃别名。',
-  importCode: `import { Switch } from '@fluent-react/ui';`,
+  importCode: `import { Switch } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -614,7 +614,7 @@ const toggle: DocDef = {
         </>
       ),
       code: `
-import { Switch } from '@fluent-react/ui';
+import { Switch } from '@fluent-jade/ui';
 
 export function BasicExample() {
   return (
@@ -632,7 +632,7 @@ export function BasicExample() {
       demo: <ToggleControlled />,
       code: `
 import { useState } from 'react';
-import { Switch } from '@fluent-react/ui';
+import { Switch } from '@fluent-jade/ui';
 
 export function ControlledExample() {
   const [on, setOn] = useState(false);
@@ -648,7 +648,7 @@ export function ControlledExample() {
       description: 'card 时标题 / 描述在左、轨道钉右,整卡可点,开启呈 accent 描边 + 浅充——设置项的行卡形态(比 SettingsCard 更轻,自带选中着色)。',
       demo: <SwitchCardDemo />,
       code: `
-import { Switch } from '@fluent-react/ui';
+import { Switch } from '@fluent-jade/ui';
 
 export function SwitchCardExample() {
   return (
@@ -672,7 +672,7 @@ export function SwitchCardExample() {
       demo: <SwitchGroupDemo />,
       code: `
 import { useState } from 'react';
-import { SwitchGroup } from '@fluent-react/ui';
+import { SwitchGroup } from '@fluent-jade/ui';
 
 export function SwitchGroupExample() {
   const [enabled, setEnabled] = useState(['bg', 'update']);
@@ -707,7 +707,7 @@ export function SwitchGroupExample() {
         </div>
       ),
       code: `
-import { SwitchGroup } from '@fluent-react/ui';
+import { SwitchGroup } from '@fluent-jade/ui';
 
 export function UncontrolledDisabledExample() {
   return (
@@ -743,7 +743,7 @@ export function UncontrolledDisabledExample() {
         </div>
       ),
       code: `
-import { Switch, SwitchGroup } from '@fluent-react/ui';
+import { Switch, SwitchGroup } from '@fluent-jade/ui';
 
 export function SwitchColorExample() {
   return (
@@ -823,7 +823,7 @@ const slider: DocDef = {
   cn: '滑块条',
   description:
     '滑块条用于在连续或分档区间内取值。WinUI 3 形态:accent 填充、拖动时浮现位置气泡、可配刻度与两端标签;fillFrom 支持正负平衡形态。双端取值用 RangeSlider。始终受控(value + onChange)。',
-  importCode: `import { Slider, RangeSlider } from '@fluent-react/ui';`,
+  importCode: `import { Slider, RangeSlider } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -831,7 +831,7 @@ const slider: DocDef = {
       demo: <SliderBasic />,
       code: `
 import { useState } from 'react';
-import { Slider } from '@fluent-react/ui';
+import { Slider } from '@fluent-jade/ui';
 
 export function BasicExample() {
   const [v, setV] = useState(40);
@@ -848,7 +848,7 @@ export function BasicExample() {
       demo: <SliderEnd />,
       code: `
 import { useState } from 'react';
-import { Slider } from '@fluent-react/ui';
+import { Slider } from '@fluent-jade/ui';
 
 export function ChangeEndExample() {
   const [v, setV] = useState(30);            // 即时预览
@@ -873,7 +873,7 @@ export function ChangeEndExample() {
       demo: <SliderTicks />,
       code: `
 import { useState } from 'react';
-import { Slider } from '@fluent-react/ui';
+import { Slider } from '@fluent-jade/ui';
 
 export function TicksExample() {
   const [v, setV] = useState(50);
@@ -898,7 +898,7 @@ export function TicksExample() {
       demo: <SliderBalance />,
       code: `
 import { useState } from 'react';
-import { Slider } from '@fluent-react/ui';
+import { Slider } from '@fluent-jade/ui';
 
 export function BalanceExample() {
   const [v, setV] = useState(20);
@@ -924,7 +924,7 @@ export function BalanceExample() {
       demo: <SliderRange />,
       code: `
 import { useState } from 'react';
-import { RangeSlider } from '@fluent-react/ui';
+import { RangeSlider } from '@fluent-jade/ui';
 
 export function RangeExample() {
   const [v, setV] = useState<[number, number]>([200, 600]);
@@ -951,7 +951,7 @@ export function RangeExample() {
       demo: <SliderVerticalDisabled />,
       code: `
 import { useState } from 'react';
-import { Slider } from '@fluent-react/ui';
+import { Slider } from '@fluent-jade/ui';
 
 export function VerticalDisabledExample() {
   const [v, setV] = useState(60);
@@ -971,7 +971,7 @@ export function VerticalDisabledExample() {
       demo: <SliderColorDemo />,
       code: `
 import { useState } from 'react';
-import { RangeSlider, Slider } from '@fluent-react/ui';
+import { RangeSlider, Slider } from '@fluent-jade/ui';
 
 export function SliderColorExample() {
   const [v, setV] = useState(40);
@@ -1023,7 +1023,7 @@ const numberbox: DocDef = {
   cn: '数值输入框',
   description:
     '数值输入框 = 文本输入 + WinUI 3 内联 SpinButton:两个全高调节钮横排在框内右端 [∧][∨],按住 400ms 后连发,聚焦时滚轮微调;失焦或回车提交文本并钳制到 min/max。',
-  importCode: `import { NumberBox } from '@fluent-react/ui';`,
+  importCode: `import { NumberBox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -1035,7 +1035,7 @@ const numberbox: DocDef = {
         </>
       ),
       code: `
-import { NumberBox } from '@fluent-react/ui';
+import { NumberBox } from '@fluent-jade/ui';
 
 export function BasicExample() {
   return (
@@ -1058,7 +1058,7 @@ export function BasicExample() {
         </>
       ),
       code: `
-import { NumberBox } from '@fluent-react/ui';
+import { NumberBox } from '@fluent-jade/ui';
 
 export function SizeStatusExample() {
   return (
@@ -1077,7 +1077,7 @@ export function SizeStatusExample() {
       demo: <NumberBoxControlled />,
       code: `
 import { useState } from 'react';
-import { NumberBox } from '@fluent-react/ui';
+import { NumberBox } from '@fluent-jade/ui';
 
 export function ControlledPrecisionExample() {
   const [v, setV] = useState(2.5);
@@ -1105,7 +1105,7 @@ export function ControlledPrecisionExample() {
         </div>
       ),
       code: `
-import { NumberBox } from '@fluent-react/ui';
+import { NumberBox } from '@fluent-jade/ui';
 
 export function NumberBoxColorRadiusExample() {
   return (
@@ -1144,14 +1144,14 @@ const rating: DocDef = {
   cn: '评分',
   description:
     '评分对应 WinUI RatingControl:整星打分,悬停实时预览,聚焦后方向键调整。readOnly 用于只读展示。',
-  importCode: `import { Rating } from '@fluent-react/ui';`,
+  importCode: `import { Rating } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <RatingDemo />,
       code: `
 import { useState } from 'react';
-import { Rating } from '@fluent-react/ui';
+import { Rating } from '@fluent-jade/ui';
 
 export function BasicExample() {
   const [v, setV] = useState(3);
@@ -1168,7 +1168,7 @@ export function BasicExample() {
         </>
       ),
       code: `
-import { Rating } from '@fluent-react/ui';
+import { Rating } from '@fluent-jade/ui';
 
 export function ReadOnlyExample() {
   return (
@@ -1190,7 +1190,7 @@ export function ReadOnlyExample() {
         </div>
       ),
       code: `
-import { Rating } from '@fluent-react/ui';
+import { Rating } from '@fluent-jade/ui';
 
 export function RatingColorExample() {
   return (
@@ -1247,7 +1247,7 @@ const colorpicker: DocDef = {
   cn: '颜色选择器',
   description:
     '颜色选择器:触发器色块 + 浮层内 SV 面板、色相/透明度滑条、Hex 输入与预设色。内部以 HSV 保存状态(饱和度归零不丢色相);拖拽过程仅更新视觉,抬手时才发出 onChange。浮层 portal 到 body(fixed 跟随锚点),不会被父容器 overflow 裁切。输出 #RRGGBB / #RRGGBBAA。',
-  importCode: `import { ColorPicker } from '@fluent-react/ui';`,
+  importCode: `import { ColorPicker } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -1259,7 +1259,7 @@ const colorpicker: DocDef = {
         </>
       ),
       code: `
-import { ColorPicker } from '@fluent-react/ui';
+import { ColorPicker } from '@fluent-jade/ui';
 
 export function BasicExample() {
   return (
@@ -1278,7 +1278,7 @@ export function BasicExample() {
                      presets={['#0078D4', '#4CC2FF', '#D13438', '#107C10', '#FFB900', '#8764B8']} />
       ),
       code: `
-import { ColorPicker } from '@fluent-react/ui';
+import { ColorPicker } from '@fluent-jade/ui';
 
 export function PresetsExample() {
   return (
@@ -1297,7 +1297,7 @@ export function PresetsExample() {
       demo: <ColorPickerControlled />,
       code: `
 import { useState } from 'react';
-import { ColorPicker } from '@fluent-react/ui';
+import { ColorPicker } from '@fluent-jade/ui';
 
 export function ControlledExample() {
   const [c, setC] = useState('#4CC2FF');
@@ -1330,7 +1330,7 @@ const upload: DocDef = {
   cn: '上传',
   description:
     '文件上传,antd API:fileList 受控、beforeUpload 拦截、customRequest 自定义传输(不传则文件仅收集为 done——桌面应用常态)。Upload.Dragger 为整块拖放区。注意:JadeView 宿主注册 drag-drop 后会接管 DOM 拖放,此时应改走宿主 IPC,点击选择始终可用。',
-  importCode: `import { Upload } from '@fluent-react/ui';`,
+  importCode: `import { Upload } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -1341,7 +1341,7 @@ const upload: DocDef = {
         </Upload>
       ),
       code: `
-import { Button, Upload, type UploadRequestOptions } from '@fluent-react/ui';
+import { Button, Upload, type UploadRequestOptions } from '@fluent-jade/ui';
 
 // 模拟一次带进度的上传;实际使用时交给宿主/后端,进度回调驱动文件行进度条
 const fakeRequest = ({ onProgress, onSuccess }: UploadRequestOptions) => {
@@ -1370,7 +1370,7 @@ export function BasicExample() {
         </div>
       ),
       code: `
-import { Upload, type UploadRequestOptions } from '@fluent-react/ui';
+import { Upload, type UploadRequestOptions } from '@fluent-jade/ui';
 
 // 模拟一次带进度的上传
 const fakeRequest = ({ onProgress, onSuccess }: UploadRequestOptions) => {
@@ -1404,7 +1404,7 @@ export function DraggerExample() {
         </div>
       ),
       code: `
-import { Upload, type UploadRequestOptions } from '@fluent-react/ui';
+import { Upload, type UploadRequestOptions } from '@fluent-jade/ui';
 
 // 模拟一次带进度的上传
 const fakeRequest = ({ onProgress, onSuccess }: UploadRequestOptions) => {
@@ -1435,7 +1435,7 @@ export function AutoDismissExample() {
       demo: <UploadControlled />,
       code: `
 import { useState } from 'react';
-import { Button, Upload, type UploadFile, type UploadRequestOptions } from '@fluent-react/ui';
+import { Button, Upload, type UploadFile, type UploadRequestOptions } from '@fluent-jade/ui';
 
 // 模拟一次带进度的上传
 const fakeRequest = ({ onProgress, onSuccess }: UploadRequestOptions) => {
@@ -1478,7 +1478,7 @@ export function ControlledListExample() {
       demo: <UploadMiscDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Upload } from '@fluent-react/ui';
+import { Button, Upload } from '@fluent-jade/ui';
 
 export function ListModesExample() {
   const [names, setNames] = useState<string[]>([]);

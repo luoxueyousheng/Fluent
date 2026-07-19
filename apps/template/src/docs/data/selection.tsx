@@ -11,8 +11,8 @@ import {
   useToast,
   type MenuItemDef,
   type TreeDataNode,
-} from '@fluent-react/ui';
-import { CopyRegular, DismissRegular, DocumentRegular } from '@fluent-react/icon';
+} from '@fluent-jade/ui';
+import { CopyRegular, DismissRegular, DocumentRegular } from '@fluent-jade/icon';
 import type { DocDef } from '../types';
 
 const CITY = [
@@ -52,7 +52,7 @@ const combobox: DocDef = {
   cn: '组合框',
   description:
     '组合框在候选列表中单选一项。打开定位复刻 WinUI 3:浮层上移覆盖触发器、选中项与控件原位中线对齐、长列表先滚中、视口 8px 钳制;选项行为 JadeDemo 风格(选中项左缘 accent 竖杠)。仅从候选中取值,自由输入用 AutoSuggest。',
-  importCode: `import { ComboBox } from '@fluent-react/ui';`,
+  importCode: `import { ComboBox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -63,7 +63,7 @@ const combobox: DocDef = {
         </>
       ),
       code: `
-import { ComboBox } from '@fluent-react/ui';
+import { ComboBox } from '@fluent-jade/ui';
 
 const options = [
   { value: 'bj', label: '北京' },
@@ -86,7 +86,7 @@ export function ComboBoxBasicExample() {
       demo: <ComboControlled />,
       code: `
 import { useState } from 'react';
-import { ComboBox } from '@fluent-react/ui';
+import { ComboBox } from '@fluent-jade/ui';
 
 const options = [
   { value: 'bj', label: '北京' },
@@ -120,7 +120,7 @@ export function ComboBoxControlledExample() {
         </>
       ),
       code: `
-import { ComboBox } from '@fluent-react/ui';
+import { ComboBox } from '@fluent-jade/ui';
 
 const options = [
   { value: 'bj', label: '北京' },
@@ -149,7 +149,7 @@ export function ComboBoxSizeExample() {
         </div>
       ),
       code: `
-import { ComboBox } from '@fluent-react/ui';
+import { ComboBox } from '@fluent-jade/ui';
 
 export function ComboBoxColorRadiusExample() {
   return (
@@ -186,14 +186,14 @@ const multiselect: DocDef = {
   cn: '多选组合框',
   description:
     '在候选中勾选多项(antd Select mode="multiple" 规范):触发器内平铺已选 Tag(可单独摘除,maxTagCount 收纳为 +N),下拉为勾选行、点选不关闭浮层;浮层 portal 到 body 随触发器宽。单选场景用 ComboBox。',
-  importCode: `import { MultiSelect } from '@fluent-react/ui';`,
+  importCode: `import { MultiSelect } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <MultiSelectDemo />,
       code: `
 import { useState } from 'react';
-import { MultiSelect } from '@fluent-react/ui';
+import { MultiSelect } from '@fluent-jade/ui';
 
 const options = [
   { value: 'bj', label: '北京' },
@@ -220,7 +220,7 @@ export function MultiSelectBasicExample() {
       description: 'maxTagCount 控制平铺上限,超出折叠为 +N。',
       demo: <MultiSelect options={CITY} defaultValue={['bj', 'sh', 'gz', 'sz']} maxTagCount={2} aria-label="收纳示例" />,
       code: `
-import { MultiSelect } from '@fluent-react/ui';
+import { MultiSelect } from '@fluent-jade/ui';
 
 const options = [
   { value: 'bj', label: '北京' },
@@ -252,7 +252,7 @@ export function MultiSelectMaxTagExample() {
         </>
       ),
       code: `
-import { MultiSelect } from '@fluent-react/ui';
+import { MultiSelect } from '@fluent-jade/ui';
 
 const options = [
   { value: 'bj', label: '北京' },
@@ -284,7 +284,7 @@ export function MultiSelectStateExample() {
         </div>
       ),
       code: `
-import { MultiSelect } from '@fluent-react/ui';
+import { MultiSelect } from '@fluent-jade/ui';
 
 export function MultiSelectColorRadiusExample() {
   return (
@@ -323,14 +323,14 @@ const listbox: DocDef = {
   cn: '列表框',
   description:
     '平铺可视的选择列表(选项常驻,不收进浮层),选中项左缘 accent 竖杠。multi 开启多选(点击切换,值为数组);方向键移动光标、空格/回车切换。',
-  importCode: `import { ListBox } from '@fluent-react/ui';`,
+  importCode: `import { ListBox } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '单选',
       demo: <ListSingle />,
       code: `
 import { useState } from 'react';
-import { ListBox } from '@fluent-react/ui';
+import { ListBox } from '@fluent-jade/ui';
 
 const items = [
   { value: 'bj', label: '北京' },
@@ -354,7 +354,7 @@ export function ListBoxSingleExample() {
       demo: <ListMulti />,
       code: `
 import { useState } from 'react';
-import { ListBox } from '@fluent-react/ui';
+import { ListBox } from '@fluent-jade/ui';
 
 const items = [
   { value: 'bj', label: '北京' },
@@ -379,7 +379,7 @@ export function ListBoxMultiExample() {
       demo: <ListIcon />,
       code: `
 import { useState } from 'react';
-import { ListBox } from '@fluent-react/ui';
+import { ListBox } from '@fluent-jade/ui';
 
 // items 的 icon 字段渲染为前置图标
 const files = [
@@ -427,14 +427,14 @@ const dropdown: DocDef = {
   cn: '下拉菜单',
   description:
     '菜单族三件套:DropDownButton 按钮触发菜单(split 分裂为主操作 + 独立箭头);ContextMenuArea 包住任意区域接管右键;MenuList 为裸菜单浮层,配合 useFlyout 自组。菜单项统一用 MenuItemDef(divider 分隔、danger 红字)。',
-  importCode: `import { DropDownButton, ContextMenuArea, MenuList, useFlyout } from '@fluent-react/ui';`,
+  importCode: `import { DropDownButton, ContextMenuArea, MenuList, useFlyout } from '@fluent-jade/ui';`,
   sections: [
     {
       title: 'DropDownButton',
       description: 'split 形态:左半段直接执行主操作,右侧箭头展开菜单。',
       demo: <DropdownDemo />,
       code: `
-import { DropDownButton, useToast, type MenuItemDef } from '@fluent-react/ui';
+import { DropDownButton, useToast, type MenuItemDef } from '@fluent-jade/ui';
 
 const items: MenuItemDef[] = [
   { key: 'open', label: '打开', icon: <DocumentRegular size={14} /> },
@@ -468,7 +468,7 @@ export function DropDownButtonExample() {
       description: 'ContextMenuArea 在包裹区域内接管 contextmenu,菜单在指针位置弹出。',
       demo: <CtxDemo />,
       code: `
-import { ContextMenuArea, useToast, type MenuItemDef } from '@fluent-react/ui';
+import { ContextMenuArea, useToast, type MenuItemDef } from '@fluent-jade/ui';
 
 const items: MenuItemDef[] = [
   { key: 'open', label: '打开', icon: <DocumentRegular size={14} /> },
@@ -553,13 +553,13 @@ const tree: DocDef = {
   cn: '树形控件',
   description:
     '层级数据展示与选择,antd API(treeData / expandedKeys / selectedKeys 受控或非受控),WinUI TreeView 形态:选中行药丸底色、chevron 旋转过渡。',
-  importCode: `import { Tree, type TreeDataNode } from '@fluent-react/ui';`,
+  importCode: `import { Tree, type TreeDataNode } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: <TreeDemo />,
       code: `
-import { Tree, useToast, type TreeDataNode } from '@fluent-react/ui';
+import { Tree, useToast, type TreeDataNode } from '@fluent-jade/ui';
 
 const treeData: TreeDataNode[] = [
   {
@@ -594,7 +594,7 @@ export function TreeBasicExample() {
       demo: <TreeControlledDemo />,
       code: `
 import { useState } from 'react';
-import { Tree, type TreeDataNode } from '@fluent-react/ui';
+import { Tree, type TreeDataNode } from '@fluent-jade/ui';
 
 const treeData: TreeDataNode[] = [
   {

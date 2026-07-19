@@ -10,7 +10,7 @@ import {
   InfoRegular,
   SubtractRegular,
   WarningRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
 type InputBase = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'children' | 'color'>;

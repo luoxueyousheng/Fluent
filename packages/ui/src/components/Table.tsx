@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import {
   ArrowSortRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 import { Checkbox, Empty } from './Basics';
 import { Pagination } from './Pagination';
 import { Spin } from './Spin';

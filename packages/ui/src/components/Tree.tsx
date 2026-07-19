@@ -4,7 +4,7 @@ import { useState, type ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   ChevronRightRegular,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface TreeDataNode {
   key: string;

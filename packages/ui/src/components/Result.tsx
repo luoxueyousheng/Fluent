@@ -9,7 +9,7 @@ import {
   ListRegular,
   WarningRegular,
   type FluentIcon,
-} from '@fluent-react/icon';
+} from '@fluent-jade/icon';
 
 export interface ResultProps {
   /** 结果状态 */

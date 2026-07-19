@@ -1,4 +1,4 @@
-/* fluent-react 模板冒烟:Edge 无头加载 preview 页,遍历导航页,收集控制台错误,截图 */
+/* fluent-jade 模板冒烟:Edge 无头加载 preview 页,遍历导航页,收集控制台错误,截图 */
 import puppeteer from 'puppeteer-core';
 
 const BASE = process.argv[2] || 'http://127.0.0.1:4173/';
