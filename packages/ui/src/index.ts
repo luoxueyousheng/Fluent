@@ -9,7 +9,7 @@ export {
 export { Form, type FormProps, type FormItemProps, type Rule } from './components/Form';
 export {
   Checkbox, Radio, Switch, Toggle, ProgressBar, ProgressRing, InfoBar,
-  Card, Expander, Badge, Skeleton, Empty,
+  Card, CardHeader, CardBody, CardFooter, Expander, Badge, Skeleton, Empty,
   type CheckboxProps, type EmptyProps, type ProgressBarProps, type ProgressRingProps,
 } from './components/Basics';
 export { CheckboxGroup, type CheckboxGroupProps } from './components/CheckboxGroup';
@@ -20,7 +20,7 @@ export {
 } from './components/FluentProvider';
 export { NavView, type NavViewProps, type NavItemDef, type NavEntry, type NavHeaderDef } from './components/NavView';
 export { Breadcrumb, type BreadcrumbProps, type BreadcrumbItem } from './components/Breadcrumb';
-export { Tag, Avatar, Divider, type TagProps, type AvatarProps } from './components/Display';
+export { Tag, Avatar, AvatarGroup, Divider, type TagProps, type AvatarProps, type AvatarGroupItem, type AvatarGroupProps } from './components/Display';
 export { Rating, type RatingProps } from './components/Rating';
 export { TeachingTip, Tooltip, type TeachingTipProps } from './components/TeachingTip';
 export { RadioGroup, type RadioGroupProps } from './components/RadioGroup';
@@ -76,3 +76,7 @@ export { HotkeyInput, type HotkeyInputProps } from './components/HotkeyInput';
 export { Cascader, type CascaderProps, type CascaderOption } from './components/Cascader';
 export { Transfer, type TransferProps, type TransferItem } from './components/Transfer';
 export { VirtualList, type VirtualListProps } from './components/VirtualList';
+export { Marquee, type MarqueeProps } from './components/Marquee';
+export { BentoGrid, BentoCard, type BentoGridProps, type BentoCardProps } from './components/BentoGrid';
+export { ThemeToggler, type ThemeTogglerProps } from './components/ThemeToggler';
+export { Dock, DockIcon, type DockProps, type DockIconProps } from './components/Dock';

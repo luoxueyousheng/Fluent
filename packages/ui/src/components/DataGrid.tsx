@@ -3,7 +3,8 @@
 import type { ReactNode } from 'react';
 import { cn } from '../cn';
 import {
-  ArrowSortRegular,
+  ChevronDownRegular,
+  ChevronUpRegular,
 } from '@fluent-jade/icon';
 import { Empty } from './Basics';
 
@@ -12,7 +13,7 @@ export interface DataGridColumn<Row> {
   title: ReactNode;
   width: string;                       // grid 轨道,如 '2fr' / '100px'
   sortable?: boolean;
-  /** 列对齐:left 默认 / center 居中 / right 右齐(数字列) */
+  /** 列对齐:left 左齐 / center 居中 / right 右齐(数字列) */
   align?: 'left' | 'center' | 'right';
   render?: (row: Row) => ReactNode;
 }
@@ -27,8 +28,21 @@ export interface DataGridProps<Row extends { id: string }> {
   className?: string;
 }
 
-const cellAlign = (align?: 'left' | 'center' | 'right') =>
-  align === 'right' ? 'num' : align === 'center' ? 'align-center' : undefined;
+/** left / center / right → CSS 类;right 兼容旧类名 num */
+export const cellAlign = (align?: 'left' | 'center' | 'right') =>
+  align === 'right' ? 'num align-right'
+    : align === 'center' ? 'align-center'
+    : align === 'left' ? 'align-left'
+    : undefined;
+
+function SortInd({ active }: { active?: 'asc' | 'desc' }) {
+  return (
+    <span className="sort-ind" data-dir={active} aria-hidden>
+      <ChevronUpRegular size={10} className="sort-up" />
+      <ChevronDownRegular size={10} className="sort-down" />
+    </span>
+  );
+}
 
 export function DataGrid<Row extends { id: string }>({
   columns, rows, selected, onSelect, sort, onSort, className,
@@ -38,20 +52,23 @@ export function DataGrid<Row extends { id: string }>({
   return (
     <div className={cn('datagrid', className)} role="grid">
       <div className="dg-row dg-head" style={gridCols} role="row">
-        {columns.map((c) => (
-          <div key={c.key}
-               className={cn('dg-cell', c.sortable && 'sortable', cellAlign(c.align))}
-               data-sort={sort?.key === c.key ? sort.dir : undefined}
-               role="columnheader"
-               aria-sort={sort?.key === c.key ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
-               onClick={() => {
-                 if (!c.sortable || !onSort) return;
-                 onSort(c.key, sort?.key === c.key && sort.dir === 'asc' ? 'desc' : 'asc');
-               }}>
-            {c.title}
-            {c.sortable && <ArrowSortRegular size={12} className="sort-ind" />}
-          </div>
-        ))}
+        {columns.map((c) => {
+          const active = sort?.key === c.key ? sort.dir : undefined;
+          return (
+            <div key={c.key}
+                 className={cn('dg-cell', c.sortable && 'sortable', cellAlign(c.align))}
+                 data-sort={active}
+                 role="columnheader"
+                 aria-sort={active === 'asc' ? 'ascending' : active === 'desc' ? 'descending' : undefined}
+                 onClick={() => {
+                   if (!c.sortable || !onSort) return;
+                   onSort(c.key, active === 'asc' ? 'desc' : 'asc');
+                 }}>
+              {c.title}
+              {c.sortable && <SortInd active={active} />}
+            </div>
+          );
+        })}
       </div>
       <div className="dg-body">
         {rows.length === 0 && <Empty image="simple" />}

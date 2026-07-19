@@ -15,7 +15,7 @@ export interface AppShellProps {
   /** 自绘窗口框:圆角 + 边框 + 阴影(阴影区留白经 --frame-margin/--frame-radius 调)。
    *  前提是宿主创建「无边框 + 窗口级透明」的窗口(窗口 alpha 透明,不是网页背景透明),
    *  由 Web 层画整个窗框;该模式与 Mica/Acrylic 材质互斥(材质需要系统窗口参与),
-   *  bridge 侧用 ensureInit({ backdrop: false })。挂在 #root/body 直下时自动给
+   *  bridge 侧用 ready({ backdrop: false })。挂在 #root/body 直下时自动给
    *  <html> 置 data-frame(页面背景转透明);嵌套演示不影响全局。 */
   frame?: boolean;
 

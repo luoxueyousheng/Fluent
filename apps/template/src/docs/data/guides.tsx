@@ -76,16 +76,17 @@ const start: DocDef = {
   sections: [
     {
       title: '挂载 Provider 与样式(宿主接入零配置)',
-      description: 'theme.css 是唯一样式入口;FluentProvider 提供 Toast / 确认框渲染宿主;bridge/auto 一行完成宿主接入默认行为——浏览器 mock(真机自动让位)+ 初始化(环境 / 主题 / 支持材质时自动 Mica)。不需要再手写 configure / init / applyBackdrop。',
+      description: '`theme.css` 是唯一样式入口;`FluentProvider` 提供 Toast / 确认框渲染宿主;`bridge/auto` 一行完成宿主接入——浏览器 mock(真机自动让位)+ 初始化 + 默认 Mica 材质。不需要再手写 configure / init / applyBackdrop。',
       demo: note('FluentProvider 必须包在应用最外层;bridge/auto 引一次即可,需要初始化结果时调 ready()。'),
       code: `
-// main.tsx —— 全部接线就这三行 import
+// main.tsx —— 三行 import 完成全部接线
 import { createRoot } from 'react-dom/client';
 import { FluentProvider } from '@fluent-jade/ui';
 import '@fluent-jade/ui/theme.css';
 import '@fluent-jade/bridge/auto';   // 零配置:mock + init + 默认 Mica
 import { App } from './App';
 
+// 不需要 await —— auto 在后台自动完成
 createRoot(document.getElementById('root')!).render(
   <FluentProvider>
     <App />
@@ -141,64 +142,88 @@ const host: DocDef = {
   name: '宿主接入',
   cn: '',
   description:
-    '业务侧只关心三件事:一行接入、像 fetch 一样调宿主、需要时再订制。默认对接 JadeView(`window.jade`)。',
+    '业务侧只关心四件事:一行接入、初始化、像 fetch 一样调宿主、需要时再订制。默认对接 JadeView(`window.jade`)。',
   importCode: `import '@fluent-jade/bridge/auto';`,
   sections: [
     {
-      title: '1. 一行接入',
-      description: 'auto = mock(真机自动让位) + 初始化 + 自动 Mica。需要结果再调 ready()。',
-      demo: note('文档站就是这个形态:main.tsx 引 auto,业务里 ready() 取结果。'),
+      title: '1. 一行接入(零配置)',
+      description: '`bridge/auto` = 浏览器 mock(mock 后端供脱离宿主开发) + 自动初始化 + 默认 Mica 材质。引入一次即可,应用启动时自动完成全部初始化。',
+      demo: note('文档站就是这个形态:main.tsx 引入 auto,不需要额外配置。'),
       code: `
-// main.tsx
+// main.tsx —— 三行 import 完成所有接线
 import '@fluent-jade/bridge/auto';
 import { FluentProvider } from '@fluent-jade/ui';
 import '@fluent-jade/ui/theme.css';
 
-// 需要时再取初始化结果(幂等)
-import { ready } from '@fluent-jade/bridge';
-const { hasJade, hasBackdrop } = await ready();
-`,
+createRoot(document.getElementById('root')!).render(
+  <FluentProvider>
+    <App />
+  </FluentProvider>,
+);`,
     },
     {
-      title: '2. 调用宿主(像 fetch)',
-      description: 'host.json 成功直接拿 data、失败抛 HostError;host 返回 { ok, data, error } 不抛错。事件用 useJadeEvent。',
-      demo: note('推荐业务写 host.json + try/catch;全局 configure.onError 只做兜底 Toast。'),
+      title: '2. 取初始化结果(ready)',
+      description: '`ready()` 是幂等函数,返回 `{ hasJade, ENV, hasBackdrop }`。只需要在真正需要这些信息的时机调用,不需要在模块顶层 await。',
+      demo: note('mock 模式下 hasJade=false,ENV 用默认值;真机下 hasJade=true,ENV 为宿主环境。'),
       code: `
-import { host, HostError, useJadeEvent } from '@fluent-jade/bridge';
+import { ready } from '@fluent-jade/bridge';
 
-// 成功 → data;失败 → throw
-try {
-  const data = await host.json<{ users: User[] }>('load_users', { q: '管理员' });
-  console.log(data.users);
-} catch (e) {
-  if (e instanceof HostError) console.error(e.code, e.message);
+async function initApp() {
+  const { hasJade, ENV, hasBackdrop } = await ready();
+  console.log('是否在真机:', hasJade);
+  console.log('系统:', ENV.os, ENV.arch);          // "windows amd64"
+  console.log('支持材质:', hasBackdrop);            // Windows 11 true
 }
 
-// 不抛错写法
-const r = await host('export_report', { rows: 200 });
-if (r.ok) console.log(r.data);
-
-// 订阅宿主推送
-useJadeEvent<{ percent: number }>('progress', (p) => setPct(p.percent));
-`,
+// 或按需加载时调用(ready 只会初始化一次)
+document.querySelector('#start-btn')?.addEventListener('click', async () => {
+  const { hasJade } = await ready();
+  if (!hasJade) return alert('请在 JadeView 中运行');
+});`,
     },
     {
-      title: '3. 可选订制',
-      description: '只有通道名不同、要接错误回调、或改初始材质时才需要。',
-      demo: note('configure 随时可调;改初始材质请 ready({ backdrop }) 或 backdrop: false。'),
+      title: '3. 调用宿主(invoke / on)',
+      description: '主推 Result 式:`invoke` 返回 `{ ok, data, error, ms }`,检查 `r.ok` 决定分支——比 try/catch 更简洁,天然覆盖所有路径。`invoke.json` 是快捷版:成功直接拿 data、失败抛 `HostError`。`on` / `useOn` 订阅推送。',
+      demo: note('主推 invoke() 模式,代码更平,不需要在每个调用处套 try/catch。'),
+      code: `
+import { invoke, useOn } from '@fluent-jade/bridge';
+
+// 主推——Result 式:检查 ok 决定分支
+const r = await invoke<{ users: User[] }>('load_users', { q: '管理员' });
+if (!r.ok) {
+  console.error(r.error?.code, r.error?.message);
+  return;
+}
+console.log(r.data.users);   // 类型安全
+
+// 异步订阅推送(推荐 useOn,组件卸载自动退订)
+useOn<{ percent: number }>('progress', (p) => setPct(p.percent));
+
+// on 用于非 React 环境
+const off = on('toast', (p) => console.log(p));
+off(); // 退订`,
+    },
+    {
+      title: '4. 可选订制(configure)',
+      description: '只有默认通道名不同、要接错误回调、或改初始材质时才需要调用 `configure`。必须在 `ready()` 之前调用才生效。',
+      demo: note('configure 可随时调,但对通道的改动只在下次 ready() 生效;改初始材质请传参给 ready()。'),
       code: `
 import { configure, ready, setThemeMode, applyBackdrop, useTheme } from '@fluent-jade/bridge';
 
+// 可选:改默认通道名、接错误回调
 configure({
-  onError: (ch, err) => console.error(ch, err),   // 接 Toast
+  onError: (ch, err) => toast({ level: 'error', message: err.message }),
   // channels: { setTheme: 'my-set-theme' },     // 通道名不同再改
 });
 
-await ready({ backdrop: 'micaAlt' });             // 或 false 关自动材质
+// 可选:改初始材质(默认 mica)
+await ready({ backdrop: 'micaAlt' });             // 或 backdrop: false 关闭自动材质
+
+// 运行时切换主题/材质
 await setThemeMode('dark');
 await applyBackdrop('acrylic');
-const { dark, mode, backdrop } = useTheme();
-`,
+
+const { dark, mode, backdrop } = useTheme();`,
     },
   ],
   props: [],
@@ -207,9 +232,10 @@ const { dark, mode, backdrop } = useTheme();
       title: '前端 API(常用)',
       rows: [
         { name: "import '@fluent-jade/bridge/auto'", type: 'side-effect', description: '推荐入口:mock + init + 自动 Mica。' },
-        { name: 'host.json(ch, body?, opts?)', type: 'Promise<T>', description: '成功返回 data;失败抛 HostError。' },
-        { name: 'host(ch, body?, opts?)', type: 'Promise<HostResponse<T>>', description: '{ ok, data, error, ms };不抛错。' },
-        { name: 'useJadeEvent(event, cb)', type: 'hook', description: '订阅宿主事件,卸载自动退订。' },
+        { name: 'invoke(ch, body?, opts?)', type: 'Promise<HostResponse<T>>', description: '⭐ 主推:Result 式 { ok, data, error, ms },检查 ok 决定分支。' },
+        { name: 'invoke.json(ch, body?, opts?)', type: 'Promise<T>', description: '快捷版:成功 data,失败抛 HostError。' },
+        { name: 'on(event, cb)', type: '() => void', description: '对齐 jade.on;返回退订函数。' },
+        { name: 'useOn(event, cb)', type: 'hook', description: '组件内 on,卸载自动退订。' },
         { name: 'ready() / configure()', type: '可选', description: '取初始化结果 / 改通道与回调。' },
         { name: 'useTheme / setThemeMode / applyBackdrop', type: '可选', description: '主题与材质 UI 才用。' },
       ],

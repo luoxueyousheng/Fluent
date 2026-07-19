@@ -37,6 +37,8 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@fluent-jade/icon": "*"
+    "@fluent-jade/bridge": "*",
+    "@fluent-jade/icon": "*",
+    "motion": "^12.42.2"
   }
 }

@@ -199,24 +199,37 @@ export function InfoBar({ level = 'info', title, children, className }: {
   );
 }
 
-export function Card({ layer, radius, className, onPointerMove, ...rest }: HTMLAttributes<HTMLDivElement> & {
+export function Card({ layer, radius, reveal, className, onPointerMove, ...rest }: HTMLAttributes<HTMLDivElement> & {
   layer?: boolean;
   /** 圆角:none / sm / md(默认) / lg */
   radius?: Radius;
+  /** 指针跟随 Reveal 光效(默认关闭) */
+  reveal?: boolean;
 }) {
-  /* 内置 Reveal 光斑:pointer 写 --mx/--my,CSS 画径向高光(见 theme §19) */
   return (
     <div
-      className={cn('card', 'reveal', layer && 'layer', radiusClass(radius), className)}
-      onPointerMove={(e) => {
+      className={cn('card', reveal && 'reveal', layer && 'layer', radiusClass(radius), className)}
+      onPointerMove={reveal ? (e) => {
         const r = e.currentTarget.getBoundingClientRect();
         e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
         e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
         onPointerMove?.(e);
-      }}
+      } : onPointerMove}
       {...rest}
     />
   );
+}
+
+export function CardHeader(props: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('card-header', props.className)} {...props} />;
+}
+
+export function CardBody(props: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('card-body', props.className)} {...props} />;
+}
+
+export function CardFooter(props: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('card-footer', props.className)} {...props} />;
 }
 
 export function Expander({ summary, children, defaultOpen, className }: {

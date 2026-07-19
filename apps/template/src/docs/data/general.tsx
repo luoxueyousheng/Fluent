@@ -1,6 +1,6 @@
 /* 文档数据:通用 — Button / ToggleButton / Icons */
 import { useMemo, useState } from 'react';
-import { Button, SearchBox, ToggleButton, ToggleButtonGroup, useToast } from '@fluent-jade/ui';
+import { Button, SearchBox, ToggleButton, ToggleButtonGroup, ThemeToggler, useToast } from '@fluent-jade/ui';
 import {
   AddRegular,
   CalendarLtrRegular,
@@ -18,6 +18,7 @@ import {
   StarFilled,
   StarRegular,
   TextFontRegular,
+  WeatherMoonRegular, WeatherSunnyRegular,
   WarningRegular,
   iconCatalog,
   iconGroups,
@@ -37,12 +38,12 @@ const button: DocDef = {
       title: '基础用法',
       description: '四种变体:default 标准按钮、accent 主题色主按钮、subtle 无边框弱化按钮、link 超链接样式。一个操作区只放一个 accent 按钮。',
       demo: (
-        <>
+        <div className="flex flex-wrap gap-2 items-center">
           <Button>标准按钮</Button>
           <Button variant="accent">主按钮</Button>
           <Button variant="subtle">弱化按钮</Button>
           <Button variant="link">链接按钮</Button>
-        </>
+        </div>
       ),
       code: `
 import { Button } from '@fluent-jade/ui';
@@ -258,12 +259,12 @@ const togglebutton: DocDef = {
       title: '基础用法',
       description: '非受控 defaultChecked;iconOnly 收窄为方形图标钮。',
       demo: (
-        <>
+        <div className="flex flex-wrap gap-2 items-center">
           <ToggleButton defaultChecked>置顶窗口</ToggleButton>
           <ToggleButton>自动换行</ToggleButton>
           <ToggleButton iconOnly defaultChecked aria-label="收藏"><HomeRegular /></ToggleButton>
           <ToggleButton disabled>不可用</ToggleButton>
-        </>
+        </div>
       ),
       code: `
 import { ToggleButton } from '@fluent-jade/ui';
@@ -762,4 +763,90 @@ function IconCatalogDemo() {
   );
 }
 
-export const generalDocs: DocDef[] = [button, togglebutton, icon];
+function ThemeTogglerControlledPreview() {
+  const [t, setT] = useState<'light' | 'dark'>('light');
+  return (
+    <div className="flex flex-col items-center gap-3 p-4">
+      <ThemeToggler theme={t} onThemeChange={setT} />
+      <span className="text-xs text-(--text-3) flex items-center gap-1">
+        {t === 'dark' ? <WeatherMoonRegular size={14} /> : <WeatherSunnyRegular size={14} />}
+        {t === 'dark' ? '暗色' : '亮色'}
+      </span>
+    </div>
+  );
+}
+
+const themetoggler: DocDef = {
+  key: 'theme-toggler',
+  name: 'ThemeToggler',
+  cn: '主题切换',
+  description:
+    '带 View Transitions 动效的明暗主题切换按钮(Chrome 111+)。点击时以 clip-path 形状揭示新主题,不支持时静默降级。通过 onToggle 同步宿主。',
+  importCode: `import { ThemeToggler } from '@fluent-jade/ui';`,
+  sections: [
+    {
+      title: '基础用法',
+      description: '默认圆形 clip-path,点击在亮/暗间切换。自动使用 bridge.setThemeMode 同步到 JadeView 宿主,无需额外配置。',
+      demo: (
+        <div className="flex justify-center p-6">
+          <ThemeToggler />
+        </div>
+      ),
+      code: `
+import { ThemeToggler } from '@fluent-jade/ui';
+
+export function ThemeTogglerDemo() {
+  // 自动同步到 bridge 宿主,零配置
+  return <ThemeToggler />;
+}`,
+    },
+    {
+      title: '从中心展开',
+      description: 'fromCenter 让 clip-path 从视口中心展开(默认从按钮位置)。',
+      demo: (
+        <div className="flex justify-center p-6">
+          <ThemeToggler fromCenter />
+        </div>
+      ),
+      code: `
+import { ThemeToggler } from '@fluent-jade/ui';
+
+export function ThemeTogglerCenterDemo() {
+  return <ThemeToggler fromCenter />;
+}`,
+    },
+    {
+      title: '受控模式',
+      description: '通过 theme / onThemeChange 受控接入外部状态管理。非受控模式下已自动同步宿主,受控模式适用于需要自定义切换逻辑的场景。',
+      demo: <ThemeTogglerControlledPreview />,
+      code: `
+import { useState } from 'react';
+import { ThemeToggler } from '@fluent-jade/ui';
+import { setThemeMode, useTheme } from '@fluent-jade/bridge';
+
+// 非受控模式:零配置,自动同步宿主
+export function AutoDemo() {
+  return <ThemeToggler />;
+}
+
+// 受控模式:自定义切换逻辑
+export function ControlledDemo() {
+  const { mode } = useTheme();
+  return (
+    <ThemeToggler
+      theme={mode === 'dark' ? 'dark' : 'light'}
+      onThemeChange={(t) => setThemeMode(t)}
+    />
+  );
+}`,
+    },
+  ],
+  props: [
+    { name: 'duration', type: 'number', default: '400', description: '过渡动画时长(毫秒)。' },
+    { name: 'fromCenter', type: 'boolean', default: 'false', description: '从视口中心展开而非按钮位置。' },
+    { name: 'theme', type: "'light' | 'dark'", description: '受控主题值,缺省则内部自动管理。' },
+    { name: 'onThemeChange', type: '(theme: "light" | "dark") => void', description: '主题切换回调(受控模式)。' },
+  ],
+};
+
+export const generalDocs: DocDef[] = [button, togglebutton, icon, themetoggler];

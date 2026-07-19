@@ -1,9 +1,11 @@
 /* Transfer — 穿梭框(antd API):双列表左右移动数据。
  * dataSource 全量数据、targetKeys 目标列键集、render 定义行内容。
- * 支持搜索、全选、自定义操作按钮;onChange(targetKeys,direction,moveKeys)。 */
+ * 支持搜索、全选、自定义操作按钮;onChange(targetKeys,direction,moveKeys)。
+ * 勾选统一使用库内 Checkbox。 */
 import { useCallback, useMemo, useState } from 'react';
 import { cn } from '../cn';
 import { Button } from './Button';
+import { Checkbox } from './Basics';
 import {
   ChevronLeftRegular,
   ChevronRightRegular,
@@ -83,7 +85,7 @@ export function Transfer({
     const checked = side === 'left' ? leftChecked : rightChecked;
     const setChecked = side === 'left' ? setLeftChecked : setRightChecked;
     const enabled = items.filter((i) => !i.disabled);
-    if (enabled.every((i) => checked.has(i.key))) {
+    if (enabled.length > 0 && enabled.every((i) => checked.has(i.key))) {
       setChecked(new Set());
     } else {
       setChecked(new Set(enabled.map((i) => i.key)));
@@ -100,15 +102,24 @@ export function Transfer({
 
   const renderList = (items: TransferItem[], side: 'left' | 'right', title: string) => {
     const checked = side === 'left' ? leftChecked : rightChecked;
+    const enabled = items.filter((i) => !i.disabled);
+    const allChecked = enabled.length > 0 && enabled.every((i) => checked.has(i.key));
+    const someChecked = enabled.some((i) => checked.has(i.key));
+    const indeterminate = someChecked && !allChecked;
+
     return (
       <div className="transfer-list" style={listStyle}>
         <div className="transfer-list-head">
-          <label className="transfer-check-all">
-            <input type="checkbox" checked={items.length > 0 && items.filter((i) => !i.disabled).every((i) => checked.has(i.key))}
-                   onChange={() => toggleAll(side)} />
+          <Checkbox
+            className="transfer-check-all"
+            checked={allChecked}
+            indeterminate={indeterminate}
+            disabled={disabled || enabled.length === 0}
+            onChange={() => toggleAll(side)}
+          >
             <span className="transfer-title">{title}</span>
             <span className="transfer-count">{checked.size}/{items.length} {items.length > 1 ? units : unit}</span>
-          </label>
+          </Checkbox>
         </div>
         {showSearch && (
           <div className="transfer-search">
@@ -125,12 +136,15 @@ export function Transfer({
           {items.length === 0 ? (
             <div className="transfer-empty">{notFound}</div>
           ) : items.map((item) => (
-            <label key={item.key} className={cn('transfer-item', item.disabled && 'disabled')}>
-              <input type="checkbox" checked={checked.has(item.key)}
-                     disabled={item.disabled || disabled}
-                     onChange={() => toggleItem(item.key, side)} />
-              <span>{render ? render(item) : item.title}</span>
-            </label>
+            <div key={item.key} className={cn('transfer-item', item.disabled && 'disabled')}>
+              <Checkbox
+                checked={checked.has(item.key)}
+                disabled={item.disabled || disabled}
+                onChange={() => toggleItem(item.key, side)}
+              >
+                <span className="transfer-item-label">{render ? render(item) : item.title}</span>
+              </Checkbox>
+            </div>
           ))}
         </div>
       </div>

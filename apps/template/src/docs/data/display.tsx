@@ -2,14 +2,19 @@
 import { useState } from 'react';
 import {
   Avatar,
+  AvatarGroup,
   Badge,
+  BentoGrid, BentoCard,
   Button,
-  Card,
+  Calendar,
+  Card, CardHeader, CardBody, CardFooter,
   Carousel,
   Divider,
+  Dock, DockIcon,
   Empty,
   Expander,
   Image,
+  Marquee,
   SettingsCard,
   SettingsExpander,
   Skeleton,
@@ -22,9 +27,16 @@ import {
 import {
   ChatRegular,
   CheckmarkCircleRegular,
+  HomeRegular,
   InfoRegular,
   PaintBrushRegular,
+  SearchRegular,
   SettingsRegular,
+  DocumentRegular,
+  AlertRegular,
+  ShareRegular,
+  CalendarLtrRegular,
+  GlobeRegular,
 } from '@fluent-jade/icon';
 import type { DocDef } from '../types';
 
@@ -42,23 +54,23 @@ const card: DocDef = {
   key: 'card',
   name: 'Card',
   cn: '卡片',
-  description:
-    '基础内容容器:WinUI 卡片描边 + 内置 Reveal 指针跟随光斑(悬停高亮)。layer 变体使用层级底色(嵌在卡片或彩色区域内时保持对比)。',
-  importCode: `import { Card } from '@fluent-jade/ui';`,
+	  description:
+	    '基础内容容器:WinUI 卡片描边。可选 Reveal 指针跟随光斑(reveal 属性开启)。layer 变体使用层级底色(嵌在卡片或彩色区域内时保持对比)。配套 CardHeader / CardBody / CardFooter 子组件排版。',
+	  importCode: `import { Card, CardHeader, CardBody, CardFooter } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
       demo: (
-        <>
-          <Card style={{ padding: 16, width: 220 }}>
+        <div className="flex flex-wrap gap-3">
+          <Card className="w-[220px]">
             <b>标准卡片</b>
-            <p style={{ color: 'var(--text-2)', marginTop: 6 }}>卡片描边 + 指针跟随光斑。</p>
+            <p style={{ color: 'var(--text-2)', marginTop: 6 }}>WinUI 描边卡片,默认无光效。</p>
           </Card>
-          <Card layer style={{ padding: 16, width: 220 }}>
+          <Card layer className="w-[220px]">
             <b>layer 卡片</b>
             <p style={{ color: 'var(--text-2)', marginTop: 6 }}>层级底色变体。</p>
           </Card>
-        </>
+        </div>
       ),
       code: `
 import { Card } from '@fluent-jade/ui';
@@ -66,16 +78,40 @@ import { Card } from '@fluent-jade/ui';
 export function CardExample() {
   return (
     <>
-      <Card className="w-[220px] p-4">
+      <Card className="w-[220px]">
         <b>标准卡片</b>
-        <p className="mt-1.5 text-(--text-2)">卡片描边 + 指针跟随光斑。</p>
+        <p className="mt-1.5 text-(--text-2)">WinUI 描边卡片,默认无光效。</p>
       </Card>
-      {/* layer 变体:嵌在卡片或彩色区域内时保持对比 */}
-      <Card layer className="w-[220px] p-4">
+      <Card layer className="w-[220px]">
         <b>layer 卡片</b>
         <p className="mt-1.5 text-(--text-2)">层级底色变体。</p>
       </Card>
     </>
+  );
+}`,
+    },
+    {
+      title: 'Reveal 光效',
+      description: '加 reveal 属性开启指针跟随径向光斑(悬停高亮),适合需要视觉焦点的卡片。',
+      demo: (
+        <Card reveal className="w-[280px]">
+          <b>鼠标移上来看看</b>
+          <p className="mt-1.5 text-(--text-2) leading-[1.6]">
+            指针移到卡片上会跟随出现高光斑点,WinUI 3 风格的 Reveal 效果。
+          </p>
+        </Card>
+      ),
+      code: `
+import { Card } from '@fluent-jade/ui';
+
+export function CardRevealExample() {
+  return (
+    <Card reveal className="w-[280px]">
+      <b>鼠标移上来看看</b>
+      <p className="mt-1.5 text-(--text-2) leading-[1.6]">
+        指针移到卡片上会跟随出现高光斑点,WinUI 3 风格的 Reveal 效果。
+      </p>
+    </Card>
   );
 }`,
     },
@@ -104,11 +140,51 @@ export function CardRadiusExample() {
   );
 }`,
     },
+    {
+      title: 'CardHeader / CardBody / CardFooter',
+      description: 'Header 顶边全出血(分割线标题行)、Body 自适应撑高、Footer 底部全出血(按钮右对齐)。三个子组件均可选,不传则 Card padding 内直接放内容。',
+      demo: (
+        <Card className="w-[320px]">
+          <CardHeader>卡片标题</CardHeader>
+          <CardBody>
+            <p className="text-(--text-2) leading-[1.6]">这是 CardBody 区域,内容自动撑高。可用 flex 布局与相邻卡片等高。</p>
+          </CardBody>
+          <CardFooter>
+            <Button size="small" variant="subtle">取消</Button>
+            <Button size="small" variant="accent">确定</Button>
+          </CardFooter>
+        </Card>
+      ),
+      code: `
+import { Card, CardHeader, CardBody, CardFooter } from '@fluent-jade/ui';
+import { Button } from '@fluent-jade/ui';
+
+export function CardStructExample() {
+  return (
+    <Card className="w-[320px]">
+      <CardHeader>卡片标题</CardHeader>
+      <CardBody>
+        <p className="text-(--text-2) leading-[1.6]">
+          这是 CardBody 区域,内容自动撑高。
+        </p>
+      </CardBody>
+      <CardFooter>
+        <Button size="small" variant="subtle">取消</Button>
+        <Button size="small" variant="accent">确定</Button>
+      </CardFooter>
+    </Card>
+  );
+}`,
+    },
   ],
   props: [
     { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'layer', type: 'boolean', default: 'false', description: '层级底色变体。' },
+    { name: 'reveal', type: 'boolean', default: 'false', description: '指针跟随 Reveal 光效(悬停高亮)。' },
     { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '透传 div 属性。' },
+    { name: 'CardHeader', type: 'HTMLAttributes<HTMLDivElement>', description: '标题行:全出血 + 分割线 + 600 字重。' },
+    { name: 'CardBody', type: 'HTMLAttributes<HTMLDivElement>', description: '内容区:flex:1 自动撑高。' },
+    { name: 'CardFooter', type: 'HTMLAttributes<HTMLDivElement>', description: '操作栏:全出血 + 分割线 + 按钮右对齐。' },
   ],
 };
 
@@ -123,7 +199,7 @@ const expander: DocDef = {
     {
       title: '基础用法',
       demo: (
-        <div style={{ width: 360 }}>
+        <div className="w-full max-w-[260px]">
           <Expander summary="什么是 Mica 材质?" defaultOpen>
             <p style={{ color: 'var(--text-2)' }}>Mica 以桌面壁纸为底进行着色,仅作用于窗口背景,性能开销低于 Acrylic。</p>
           </Expander>
@@ -556,13 +632,13 @@ const tag: DocDef = {
     {
       title: '基础用法',
       demo: (
-        <>
+        <div className="flex flex-wrap gap-3 items-center">
           <Tag>默认</Tag>
           <Tag color="accent">主题</Tag>
           <Tag color="success">成功</Tag>
           <Tag color="caution">警示</Tag>
           <Tag color="critical">危险</Tag>
-        </>
+        </div>
       ),
       code: `
 import { Tag } from '@fluent-jade/ui';
@@ -653,7 +729,7 @@ const badge: DocDef = {
     {
       title: '基础用法',
       demo: (
-        <>
+        <div className="flex items-center gap-3">
           <span style={{ position: 'relative', display: 'inline-flex' }}>
             <ChatRegular size={22} />
             <Badge style={{ position: 'absolute', top: -6, right: -10 }}>8</Badge>
@@ -663,7 +739,7 @@ const badge: DocDef = {
             <Badge dot style={{ position: 'absolute', top: -2, right: -2 }} />
           </span>
           <Badge>99+</Badge>
-        </>
+        </div>
       ),
       code: `
 import { Badge } from '@fluent-jade/ui';
@@ -729,7 +805,7 @@ const avatar: DocDef = {
   name: 'Avatar',
   cn: '头像',
   description: '头像:有图显图;无图取 name 首字(中文)或首字母(英文)生成占位,底色由 name 哈希取色保持稳定。',
-  importCode: `import { Avatar } from '@fluent-jade/ui';`,
+  importCode: `import { Avatar, AvatarGroup } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '基础用法',
@@ -761,11 +837,141 @@ export function AvatarExample() {
   );
 }`,
     },
+    {
+      title: '圆角',
+      description: 'radius 控制圆角:缺省为圆形(50%);传 none / sm / md / lg 变为方形圆角。',
+      demo: (
+        <>
+          <Avatar name="张伟" />
+          <Avatar name="张伟" radius="lg" />
+          <Avatar name="张伟" radius="md" />
+          <Avatar name="张伟" radius="sm" />
+          <Avatar name="张伟" radius="none" />
+        </>
+      ),
+      code: `
+import { Avatar } from '@fluent-jade/ui';
+
+export function AvatarRadiusExample() {
+  return (
+    <>
+      <Avatar name="张伟" />          {/* 缺省:圆形 */}
+      <Avatar name="张伟" radius="lg" />
+      <Avatar name="张伟" radius="md" />
+      <Avatar name="张伟" radius="sm" />
+      <Avatar name="张伟" radius="none" />
+    </>
+  );
+}`,
+    },
+    {
+      title: '重叠组(AvatarGroup)',
+      description: '重叠排列的头像组,超出时显示 +N 溢出计数。源自 MagicUI。',
+      demo: (
+        <div className="flex flex-col items-start gap-3">
+          <AvatarGroup avatarUrls={[
+            { name: '林婉清', profileUrl: '#' },
+            { name: '赵子龙', profileUrl: '#' },
+            { name: '周文轩', profileUrl: '#' },
+          ]} />
+          <AvatarGroup avatarUrls={[
+            { name: '林婉清' }, { name: '赵子龙' }, { name: '周文轩' },
+          ]} numPeople={99} />
+        </div>
+      ),
+      code: `
+import { AvatarGroup } from '@fluent-jade/ui';
+
+export function AvatarGroupExample() {
+  return (
+    <>
+      {/* 基础重叠 */}
+      <AvatarGroup avatarUrls={[
+        { name: '林婉清', profileUrl: '#' },
+        { name: '赵子龙', profileUrl: '#' },
+        { name: '周文轩', profileUrl: '#' },
+      ]} />
+      {/* 溢出计数 */}
+      <AvatarGroup avatarUrls={[
+        { name: '林婉清' }, { name: '赵子龙' }, { name: '周文轩' },
+      ]} numPeople={99} />
+    </>
+  );
+}`,
+    },
+    {
+      title: '自动折叠',
+      description: 'maxLen 限制可见数量,超出自动显示 +N 溢出计数。',
+      demo: (
+        <AvatarGroup avatarUrls={[
+          { name: '林婉清' }, { name: '赵子龙' }, { name: '周文轩' },
+          { name: '孙小美' }, { name: '李思远' },
+        ]} maxLen={3} />
+      ),
+      code: `
+import { AvatarGroup } from '@fluent-jade/ui';
+
+export function AvatarGroupAutoFoldExample() {
+  return (
+    <AvatarGroup
+      avatarUrls={[
+        { name: '林婉清' }, { name: '赵子龙' }, { name: '周文轩' },
+        { name: '孙小美' }, { name: '李思远' },
+      ]}
+      maxLen={3}
+    />
+  );
+}`,
+    },
+    {
+      title: '重叠组带头像图片',
+      demo: (
+        <AvatarGroup avatarUrls={[
+          { imageUrl: 'https://avatar.vercel.sh/wanqing', name: '林婉清' },
+          { imageUrl: 'https://avatar.vercel.sh/zilong', name: '赵子龙' },
+          { imageUrl: 'https://avatar.vercel.sh/wenxuan', name: '周文轩' },
+        ]} />
+      ),
+      code: `
+import { AvatarGroup } from '@fluent-jade/ui';
+
+export function AvatarGroupImageExample() {
+  return (
+    <AvatarGroup avatarUrls={[
+      { imageUrl: 'https://avatar.vercel.sh/wanqing', name: '林婉清' },
+      { imageUrl: 'https://avatar.vercel.sh/zilong', name: '赵子龙' },
+      { imageUrl: 'https://avatar.vercel.sh/wenxuan', name: '周文轩' },
+    ]} />
+  );
+}`,
+    },
   ],
   props: [
     { name: 'src', type: 'string', description: '头像图地址。' },
-    { name: 'name', type: 'string', description: '无图时生成首字占位与稳定底色。' },
+    { name: 'name', type: 'string', description: '无图时生成首字占位于稳定底色。' },
     { name: 'size', type: "'small' | 'middle' | 'large' | number", default: "'middle'", description: '三档或自定义像素。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", description: '圆角:缺省圆形;传此值变为方形圆角。' },
+  ],
+  extraApis: [
+    {
+      title: 'AvatarGroup',
+      rows: [
+        { name: 'avatarUrls', type: 'AvatarGroupItem[]', description: '头像数据:{ imageUrl?, name, profileUrl? }。' },
+        { name: 'numPeople', type: 'number', description: '手动指定 +N 溢出数(优先级高于 maxLen)。' },
+        { name: 'maxLen', type: 'number', description: '最多显示 N 个头像,超出自动折叠为 +N。' },
+        { name: 'size', type: "'small' | 'middle' | 'large' | number", default: "'middle'", description: '头像尺寸。' },
+        { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", description: '圆角:缺省圆形;传此值变为方形圆角。' },
+        { name: 'gap', type: 'number | string', default: "'-16px'", description: '项间距(正数分开,负数重叠)。' },
+      ],
+    },
+    {
+      title: 'AvatarGroupItem',
+      rows: [
+        { name: 'imageUrl', type: 'string', description: '头像图片地址。' },
+        { name: 'name', type: 'string', description: '无图时显示首字占位。' },
+        { name: 'profileUrl', type: 'string', description: '点击跳转链接。' },
+      ],
+    },
   ],
 };
 
@@ -1014,6 +1220,635 @@ export function TimelinePendingExample() {
   ],
 };
 
+const marquee: DocDef = {
+  key: 'marquee',
+  name: 'Marquee',
+  cn: '走马灯',
+  description:
+    '无限滚动无缝轮播,纯 CSS 动画零 JS 运行时。支持水平/垂直、反向、悬停暂停、自定义时长与间距。源自 MagicUI,适配 Fluent 风格。',
+  importCode: `import { Marquee, Card, Avatar } from '@fluent-jade/ui';`,
+  sections: [
+    {
+      title: '基础用法',
+      description: '纯 CSS 动画,零 JS 运行时。默认水平滚动,pauseOnHover 悬停暂停,duration 控制速度。',
+      demo: (
+        <div className="w-full flex items-center justify-center">
+          <Marquee pauseOnHover duration={20} className="w-full max-w-[320px]">
+            {['React 19', 'Tailwind v4', 'TypeScript', 'WinUI 3', 'Fluent', 'JadeView'].map((t) => (
+              <span key={t}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-md
+                           bg-(--fill-subtle) text-[13px] whitespace-nowrap border border-(--stroke)">
+                {t}
+              </span>
+            ))}
+          </Marquee>
+        </div>
+      ),
+      code: `
+import { Marquee } from '@fluent-jade/ui';
+
+const items = ['React 19', 'Tailwind v4', 'TypeScript', 'WinUI 3', 'Fluent', 'JadeView'];
+
+export function MarqueeExample() {
+  return (
+    <Marquee pauseOnHover duration={20}>
+      {items.map((t) => (
+        <span key={t}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-md
+                     bg-(--fill-subtle) text-[13px] whitespace-nowrap
+                     border border-(--stroke)">
+          {t}
+        </span>
+      ))}
+    </Marquee>
+  );
+}`,
+    },
+    {
+      title: '评价卡片(水平)',
+      description: '两行水平滚动,方向相反。每张卡片包含头像、名称、身份和评论文本。左右渐变遮罩淡出。',
+      demo: (() => {
+        const reviews = [
+          { name: '林婉清', handle: '@wanqing', body: '设计风格很正,组件质量出乎意料地好。' },
+          { name: '赵子龙', handle: '@zilong', body: '接入非常顺畅,几乎没有学习成本。' },
+          { name: '周文轩', handle: '@wenxuan', body: 'Fluent 风格统一,团队反馈很好。' },
+          { name: '孙小美', handle: '@xiaomei', body: '开箱即用,文档写得很清楚。' },
+          { name: '李思远', handle: '@siyuan', body: '品质很高,细节做得很到位。' },
+          { name: '王若溪', handle: '@ruoxi', body: '第一次用就被惊艳到了。' },
+        ];
+        const mid = Math.floor(reviews.length / 2);
+        const firstRow = reviews.slice(0, mid);
+        const secondRow = reviews.slice(mid);
+        const ReviewCard = ({ name, handle, body }: typeof reviews[0]) => (
+          <Card className="h-full w-64 cursor-pointer hover:bg-(--fill-subtle)">
+            <div className="flex items-center gap-2">
+              <Avatar name={name} size={32} />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{name}</span>
+                <span className="text-xs text-(--text-3)">{handle}</span>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-(--text-2)">{body}</p>
+          </Card>
+        );
+        return (
+          <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+            <Marquee pauseOnHover duration={20}>
+              {firstRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+            </Marquee>
+            <Marquee reverse pauseOnHover duration={20}>
+              {secondRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+            </Marquee>
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-(--card)" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-(--card)" />
+          </div>
+        );
+      })(),
+      code: `
+import { Marquee, Card, Avatar } from '@fluent-jade/ui';
+
+const reviews = [
+  { name: '林婉清', handle: '@wanqing', body: '设计风格很正,组件质量出乎意料地好。' },
+  { name: '赵子龙', handle: '@zilong', body: '接入非常顺畅,几乎没有学习成本。' },
+  { name: '周文轩', handle: '@wenxuan', body: 'Fluent 风格统一,团队反馈很好。' },
+  { name: '孙小美', handle: '@xiaomei', body: '开箱即用,文档写得很清楚。' },
+  { name: '李思远', handle: '@siyuan', body: '品质很高,细节做得很到位。' },
+  { name: '王若溪', handle: '@ruoxi', body: '第一次用就被惊艳到了。' },
+];
+
+function ReviewCard({ name, handle, body }: typeof reviews[0]) {
+  return (
+    <Card className="h-full w-64 cursor-pointer hover:bg-(--fill-subtle)">
+      <div className="flex items-center gap-2">
+        <Avatar name={name} size={32} />
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{name}</span>
+          <span className="text-xs text-(--text-3)">{handle}</span>
+        </div>
+      </div>
+      <p className="mt-2 text-sm text-(--text-2)">{body}</p>
+    </Card>
+  );
+}
+
+export function MarqueeDemo() {
+  const mid = Math.floor(reviews.length / 2);
+  const firstRow = reviews.slice(0, mid);
+  const secondRow = reviews.slice(mid);
+  return (
+    <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+      <Marquee pauseOnHover duration={20}>
+        {firstRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+      </Marquee>
+      <Marquee reverse pauseOnHover duration={20}>
+        {secondRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+      </Marquee>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-(--card)" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-(--card)" />
+    </div>
+  );
+}`,
+    },
+    {
+      title: '垂直滚动',
+      description: '两列垂直滚动,方向相反。卡片宽度更窄,上下渐变遮罩淡出。',
+      demo: (() => {
+        const reviews = [
+          { name: '林婉清', handle: '@wanqing', body: '设计风格很正,组件质量出乎意料地好。' },
+          { name: '赵子龙', handle: '@zilong', body: '接入非常顺畅,几乎没有学习成本。' },
+          { name: '周文轩', handle: '@wenxuan', body: 'Fluent 风格统一,团队反馈很好。' },
+        ];
+        const mid = Math.floor(reviews.length / 2);
+        const firstRow = reviews.slice(0, mid);
+        const secondRow = reviews.slice(mid);
+        const ReviewCard = ({ name, handle, body }: typeof reviews[0]) => (
+          <Card className="h-full w-fit cursor-pointer hover:bg-(--fill-subtle) sm:w-36">
+            <div className="flex items-center gap-2">
+              <Avatar name={name} size={32} />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{name}</span>
+                <span className="text-xs text-(--text-3)">{handle}</span>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-(--text-2)">{body}</p>
+          </Card>
+        );
+        return (
+          <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden">
+            <Marquee pauseOnHover vertical duration={20}>
+              {firstRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+            </Marquee>
+            <Marquee reverse pauseOnHover vertical duration={20}>
+              {secondRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+            </Marquee>
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-(--card)" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-(--card)" />
+          </div>
+        );
+      })(),
+      code: `
+import { Marquee, Card, Avatar } from '@fluent-jade/ui';
+
+const reviews = [
+  { name: '林婉清', handle: '@wanqing', body: '设计风格很正,组件质量出乎意料地好。' },
+  { name: '赵子龙', handle: '@zilong', body: '接入非常顺畅,几乎没有学习成本。' },
+  { name: '周文轩', handle: '@wenxuan', body: 'Fluent 风格统一,团队反馈很好。' },
+];
+
+function ReviewCard({ name, handle, body }: typeof reviews[0]) {
+  return (
+    <Card className="h-full w-fit cursor-pointer hover:bg-(--fill-subtle) sm:w-36">
+      <div className="flex items-center gap-2">
+        <Avatar name={name} size={32} />
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{name}</span>
+          <span className="text-xs text-(--text-3)">{handle}</span>
+        </div>
+      </div>
+      <p className="mt-2 text-sm text-(--text-2)">{body}</p>
+    </Card>
+  );
+}
+
+export function MarqueeVerticalDemo() {
+  const mid = Math.floor(reviews.length / 2);
+  const firstRow = reviews.slice(0, mid);
+  const secondRow = reviews.slice(mid);
+  return (
+    <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden">
+      <Marquee pauseOnHover vertical duration={20}>
+        {firstRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+      </Marquee>
+      <Marquee reverse pauseOnHover vertical duration={20}>
+        {secondRow.map((r) => <ReviewCard key={r.handle} {...r} />)}
+      </Marquee>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-(--card)" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-(--card)" />
+    </div>
+  );
+}`,
+    },
+    {
+      title: '3D 卡片墙',
+      description: '四列垂直 Marquee 配合 CSS perspective + 3D transform 形成景深效果,适合品牌展示或评价墙。源自 MagicUI 设计。',
+      demo: (() => {
+        const reviews = [
+          { name: '林婉清', handle: '@wanqing', body: '设计风格很正,组件质量出乎意料地好。' },
+          { name: '赵子龙', handle: '@zilong', body: '接入非常顺畅,几乎没有学习成本。' },
+          { name: '周文轩', handle: '@wenxuan', body: 'Fluent 风格统一,团队反馈很好。' },
+        ];
+        const mid = Math.floor(reviews.length / 2);
+        const rows = [reviews.slice(0, mid), reviews.slice(mid), reviews.slice(0, mid), reviews.slice(mid)];
+        const ReviewCard = ({ name, handle, body }: typeof reviews[0]) => (
+          <Card className="h-full w-fit cursor-pointer hover:bg-(--fill-subtle) sm:w-36">
+            <div className="flex items-center gap-2">
+              <Avatar name={name} size={32} />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{name}</span>
+                <span className="text-xs text-(--text-3)">{handle}</span>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-(--text-2)">{body}</p>
+          </Card>
+        );
+        return (
+          <div className="relative flex h-96 w-full flex-row items-center justify-center gap-4 overflow-hidden [perspective:300px] bg-(--card)">
+            <div className="flex flex-row items-center gap-4"
+                 style={{ transform: 'translateX(-100px) translateY(0px) translateZ(-100px) rotateX(20deg) rotateY(-10deg) rotateZ(20deg)' }}>
+              {rows.map((row, ri) => (
+                <Marquee key={ri} vertical pauseOnHover
+                         reverse={ri % 2 === 1}
+                         duration={20}>
+                  {row.map((r) => <ReviewCard key={r.handle} {...r} />)}
+                </Marquee>
+              ))}
+            </div>
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-(--card)" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-(--card)" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-(--card)" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-(--card)" />
+          </div>
+        );
+      })(),
+      code: `
+import { Marquee, Card, Avatar } from '@fluent-jade/ui';
+
+const reviews = [
+  { name: '林婉清', handle: '@wanqing', body: '设计风格很正,组件质量出乎意料地好。' },
+  { name: '赵子龙', handle: '@zilong', body: '接入非常顺畅,几乎没有学习成本。' },
+  { name: '周文轩', handle: '@wenxuan', body: 'Fluent 风格统一,团队反馈很好。' },
+];
+
+function ReviewCard({ name, handle, body }: typeof reviews[0]) {
+  return (
+    <Card className="h-full w-fit cursor-pointer hover:bg-(--fill-subtle) sm:w-36">
+      <div className="flex items-center gap-2">
+        <Avatar name={name} size={32} />
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{name}</span>
+          <span className="text-xs text-(--text-3)">{handle}</span>
+        </div>
+      </div>
+      <p className="mt-2 text-sm text-(--text-2)">{body}</p>
+    </Card>
+  );
+}
+
+export function Marquee3DDemo() {
+  const mid = Math.floor(reviews.length / 2);
+  const rows = [reviews.slice(0, mid), reviews.slice(mid), reviews.slice(0, mid), reviews.slice(mid)];
+  return (
+    <div className="relative flex h-96 w-full flex-row items-center justify-center gap-4 overflow-hidden [perspective:300px] bg-(--card)">
+      <div className="flex flex-row items-center gap-4"
+           style={{ transform: 'translateX(-100px) translateY(0px) translateZ(-100px) rotateX(20deg) rotateY(-10deg) rotateZ(20deg)' }}>
+        {rows.map((row, i) => (
+          <Marquee key={i} vertical pauseOnHover
+                   reverse={i % 2 === 1}
+                   duration={20}>
+            {row.map((r) => <ReviewCard key={r.handle} {...r} />)}
+          </Marquee>
+        ))}
+      </div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-(--card)" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-(--card)" />
+      <div className="pointer-events-none absolute inset-x-0 left-0 w-1/4 bg-gradient-to-r from-(--card)" />
+      <div className="pointer-events-none absolute inset-x-0 right-0 w-1/4 bg-gradient-to-l from-(--card)" />
+    </div>
+  );
+}`,
+    },
+  ],
+  props: [
+    { name: 'children', type: 'ReactNode', description: '滚动内容(会重复 repeat 次)。' },
+    { name: 'reverse', type: 'boolean', default: 'false', description: '反向滚动。' },
+    { name: 'pauseOnHover', type: 'boolean', default: 'false', description: '悬停暂停动画。' },
+    { name: 'vertical', type: 'boolean', default: 'false', description: '垂直滚动。' },
+    { name: 'repeat', type: 'number', default: '4', description: '内容重复次数(无缝至少 2)。' },
+    { name: 'duration', type: 'number | string', default: "'40s'", description: '单次动画时长。' },
+    { name: 'gap', type: 'number | string', default: "'1rem'", description: '子项间距。' },
+  ],
+};
+
+const bento: DocDef = {
+  key: 'bento-grid',
+  name: 'BentoGrid',
+  cn: '杂志栅格',
+  description:
+    '杂志风格栅格卡片布局:三列 auto-rows 网格,每张卡片带悬停动效——内容区上移、图标缩小、CTA 按钮从底部滑入。源自 MagicUI,适配 Fluent 设计令牌。',
+  importCode: `import { BentoGrid, BentoCard } from '@fluent-jade/ui';`,
+  sections: [
+    {
+      title: '基础用法',
+      description: 'BentoGrid 默认三列,CSS Grid 自动行高 22rem。BentoCard 接收 name / description / Icon / background / href / cta 属性。',
+      demo: (() => {
+        const files = [
+          { name: '需求文档.pdf', body: '产品需求规格说明书 v2.3,包含功能描述与验收标准。' },
+          { name: '财务预算.xlsx', body: 'Q3 部门预算表,包含人力、设备、运营各项支出明细。' },
+          { name: '品牌logo.svg', body: '企业 VI 标准矢量文件,包含主标识与辅助图形规范。' },
+        ];
+        return (
+          <BentoGrid>
+            <BentoCard
+              name="文件管理"
+              description="自动保存你的文件,支持全文搜索与版本回溯。"
+              Icon={DocumentRegular}
+              href="#"
+              cta="了解更多"
+              className="lg:col-span-1"
+              background={
+                <Marquee pauseOnHover className="absolute inset-0 [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)]"
+                         duration={20} style={{ padding: 0 }}>
+                  {files.map((f) => (
+                    <div key={f.name}
+                      className="flex flex-col gap-1 p-3 w-28 rounded-xl border border-(--stroke)
+                                 bg-(--card) blur-[1px] hover:blur-none transition-all duration-300">
+                      <span className="text-xs font-medium truncate">{f.name}</span>
+                      <span className="text-[11px] text-(--text-3) line-clamp-2">{f.body}</span>
+                    </div>
+                  ))}
+                </Marquee>
+              }
+            />
+            <BentoCard
+              name="通知中心"
+              description="重要事件实时推送,不错过任何关键更新。"
+              Icon={AlertRegular}
+              href="#"
+              cta="了解更多"
+              className="lg:col-span-2"
+              background={
+                <div className="absolute top-4 right-4 flex flex-col gap-2 w-48
+                                [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)]">
+                  {[
+                    { title: '新成员加入', time: '2 分钟前', color: 'accent' },
+                    { title: '文件已更新', time: '15 分钟前', color: 'success' },
+                    { title: '系统维护通知', time: '1 小时前', color: 'warning' },
+                  ].map((n) => (
+                    <div key={n.title}
+                      className="flex items-center gap-2 p-2 rounded-md bg-(--card) border border-(--stroke)">
+                      <span className={`w-1.5 h-1.5 rounded-full bg-(--${n.color})`} />
+                      <span className="text-xs flex-1 truncate">{n.title}</span>
+                      <span className="text-[11px] text-(--text-3) shrink-0">{n.time}</span>
+                    </div>
+                  ))}
+                </div>
+              }
+            />
+            <BentoCard
+              name="日历视图"
+              description="按日期筛选文件,时间线一目了然。"
+              Icon={CalendarLtrRegular}
+              href="#"
+              cta="了解更多"
+              className="lg:col-span-1"
+              background={
+                <Calendar className="absolute top-6 right-0 origin-top scale-75 rounded-md
+                                    [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)]
+                                    transition-all duration-300 group-hover:scale-90" />
+              }
+            />
+            <BentoCard
+              name="集成生态"
+              description="支持 100+ 第三方集成,持续扩展中。"
+              Icon={GlobeRegular}
+              href="#"
+              cta="了解更多"
+              className="lg:col-span-2"
+              background={
+                <div className="absolute inset-0 flex items-center justify-center opacity-20
+                                [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)]">
+                  <div className="grid grid-cols-4 gap-4 p-8">
+                    {[ChatRegular, ShareRegular, SettingsRegular, PaintBrushRegular].map((I, i) => (
+                      <I key={i} size={32} />
+                    ))}
+                  </div>
+                </div>
+              }
+            />
+          </BentoGrid>
+        );
+      })(),
+      code: `
+import { BentoGrid, BentoCard, Calendar, Marquee } from '@fluent-jade/ui';
+import { DocumentRegular, AlertRegular, CalendarLtrRegular, GlobeRegular } from '@fluent-jade/icon';
+
+const files = [
+  { name: '需求文档.pdf', body: '产品需求规格说明书 v2.3,包含功能描述与验收标准。' },
+  { name: '财务预算.xlsx', body: 'Q3 部门预算表,包含人力、设备、运营各项支出明细。' },
+  { name: '品牌logo.svg', body: '企业 VI 标准矢量文件,包含主标识与辅助图形规范。' },
+];
+
+export function BentoDemo() {
+  const features = [
+    {
+      name: '文件管理', Icon: DocumentRegular,
+      description: '自动保存你的文件,支持全文搜索与版本回溯。',
+      href: '#', cta: '了解更多',
+      className: 'lg:col-span-1',
+      background: (
+        <Marquee pauseOnHover className="absolute inset-0 [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)]"
+                 duration={20} style={{ padding: 0 }}>
+          {files.map((f) => (
+            <div key={f.name}
+              className="flex flex-col gap-1 p-3 w-28 rounded-xl border border-(--stroke)
+                         bg-(--card) blur-[1px] hover:blur-none transition-all duration-300">
+              <span className="text-xs font-medium truncate">{f.name}</span>
+              <span className="text-[11px] text-(--text-3) line-clamp-2">{f.body}</span>
+            </div>
+          ))}
+        </Marquee>
+      ),
+    },
+    {
+      name: '通知中心', Icon: AlertRegular,
+      description: '重要事件实时推送,不错过任何关键更新。',
+      href: '#', cta: '了解更多',
+      className: 'lg:col-span-2',
+      background: (
+        <div className="absolute top-4 right-4 flex flex-col gap-2 w-48
+                        [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)]">
+          {[
+            { title: '新成员加入', time: '2 分钟前' },
+            { title: '文件已更新', time: '15 分钟前' },
+            { title: '系统维护通知', time: '1 小时前' },
+          ].map((n) => (
+            <div key={n.title} className="flex items-center gap-2 p-2 rounded-md
+                                          bg-(--card) border border-(--stroke)">
+              <span className="w-1.5 h-1.5 rounded-full bg-(--accent)" />
+              <span className="text-xs flex-1 truncate">{n.title}</span>
+              <span className="text-[11px] text-(--text-3) shrink-0">{n.time}</span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      name: '日历视图', Icon: CalendarLtrRegular,
+      description: '按日期筛选文件,时间线一目了然。',
+      href: '#', cta: '了解更多',
+      className: 'lg:col-span-1',
+      background: (
+        <Calendar className="absolute top-6 right-0 origin-top scale-75 rounded-md
+                            [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)]
+                            transition-all duration-300 group-hover:scale-90" />
+      ),
+    },
+    {
+      name: '集成生态', Icon: GlobeRegular,
+      description: '支持 100+ 第三方集成,持续扩展中。',
+      href: '#', cta: '了解更多',
+      className: 'lg:col-span-2',
+      background: (
+        <div className="absolute inset-0 flex items-center justify-center opacity-20
+                        [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)]">
+          <div className="grid grid-cols-4 gap-4 p-8">
+            {[ChatRegular, ShareRegular, SettingsRegular, PaintBrushRegular].map((I, i) => (
+              <I key={i} size={32} />
+            ))}
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <BentoGrid>
+      {features.map((f) => <BentoCard key={f.name} {...f} />)}
+    </BentoGrid>
+  );
+}`,
+    },
+  ],
+  props: [
+    { name: 'BentoGrid', type: '组件', description: 'CSS Grid 容器,默认三列 auto-rows-[22rem] gap-4。' },
+    { name: 'BentoCard', type: '组件', description: '特性卡片:悬停内容上移 + 图标缩小 + CTA 滑入。' },
+    { name: 'name', type: 'string', description: '卡片标题 (BentoCard)。' },
+    { name: 'description', type: 'string', description: '描述文案 (BentoCard)。' },
+    { name: 'Icon', type: 'ComponentType<{size?}>', description: 'Fluent 图标组件引用,非实例 (BentoCard)。' },
+    { name: 'background', type: 'ReactNode', description: '卡片背景内容(如图表/列表/Marquee) (BentoCard)。' },
+    { name: 'href', type: 'string', description: '点击跳转链接 (BentoCard)。' },
+    { name: 'cta', type: 'string', description: '按钮文案 (BentoCard)。' },
+    { name: 'className', type: 'string', description: '栅格跨列控制,如 lg:col-span-1 / lg:col-span-2。' },
+  ],
+};
+
+const dock: DocDef = {
+  key: 'dock',
+  name: 'Dock',
+  cn: '停靠栏',
+  description:
+    'MacOS Dock 风格停靠栏。鼠标 X 位置驱动相邻图标弹簧放大(motion spring)。对齐 MagicUI API:iconSize / iconMagnification / iconDistance / direction / disableMagnification。',
+  importCode: `import { Dock, DockIcon } from '@fluent-jade/ui';`,
+  sections: [
+    {
+      title: '基础用法',
+      description: '在栏上滑动鼠标,靠近的图标会放大。label 显示悬停 tip。中间可用分隔线。',
+      demo: (
+        <Dock>
+          <DockIcon label="首页"><HomeRegular size={20} /></DockIcon>
+          <DockIcon label="搜索"><SearchRegular size={20} /></DockIcon>
+          <span className="dock-sep" />
+          <DockIcon label="消息"><ChatRegular size={20} /></DockIcon>
+          <DockIcon label="设置"><SettingsRegular size={20} /></DockIcon>
+        </Dock>
+      ),
+      code: `
+import { Dock, DockIcon } from '@fluent-jade/ui';
+import { HomeRegular, SearchRegular, ChatRegular, SettingsRegular } from '@fluent-jade/icon';
+
+export function DockExample() {
+  return (
+    <Dock>
+      <DockIcon label="首页"><HomeRegular size={20} /></DockIcon>
+      <DockIcon label="搜索"><SearchRegular size={20} /></DockIcon>
+      <span className="dock-sep" />
+      <DockIcon label="消息"><ChatRegular size={20} /></DockIcon>
+      <DockIcon label="设置"><SettingsRegular size={20} /></DockIcon>
+    </Dock>
+  );
+}`,
+    },
+    {
+      title: '自定义放大',
+      description: 'iconMagnification 最大尺寸;iconDistance 影响半径(越小越敏感)。',
+      demo: (
+        <Dock iconMagnification={60} iconDistance={100}>
+          <DockIcon label="首页"><HomeRegular size={20} /></DockIcon>
+          <DockIcon label="搜索"><SearchRegular size={20} /></DockIcon>
+          <DockIcon label="消息"><ChatRegular size={20} /></DockIcon>
+          <DockIcon label="设置"><SettingsRegular size={20} /></DockIcon>
+        </Dock>
+      ),
+      code: `
+import { Dock, DockIcon } from '@fluent-jade/ui';
+import { HomeRegular, SearchRegular, ChatRegular, SettingsRegular } from '@fluent-jade/icon';
+
+export function DockMagnifyExample() {
+  return (
+    <Dock iconMagnification={60} iconDistance={100}>
+      <DockIcon label="首页"><HomeRegular size={20} /></DockIcon>
+      <DockIcon label="搜索"><SearchRegular size={20} /></DockIcon>
+      <DockIcon label="消息"><ChatRegular size={20} /></DockIcon>
+      <DockIcon label="设置"><SettingsRegular size={20} /></DockIcon>
+    </Dock>
+  );
+}`,
+    },
+    {
+      title: '点击事件 / 链接',
+      description: '推荐把 onClick 挂在 Dock 上,子项用 value 标识;也可单项 onClick。href 做跳转。',
+      demo: (
+        <Dock onClick={(v) => console.log('dock click', v)}>
+          <DockIcon value="home" label="首页"><HomeRegular size={20} /></DockIcon>
+          <DockIcon value="search" label="搜索"><SearchRegular size={20} /></DockIcon>
+          <DockIcon value="settings" label="设置" href="#settings"><SettingsRegular size={20} /></DockIcon>
+        </Dock>
+      ),
+      code: `
+import { Dock, DockIcon } from '@fluent-jade/ui';
+import { HomeRegular, SearchRegular, SettingsRegular } from '@fluent-jade/icon';
+
+export function DockClickExample() {
+  return (
+    <Dock onClick={(value) => console.log(value)}>
+      <DockIcon value="home" label="首页">
+        <HomeRegular size={20} />
+      </DockIcon>
+      <DockIcon value="search" label="搜索">
+        <SearchRegular size={20} />
+      </DockIcon>
+      {/* 也可单项 onClick;与 Dock.onClick 并存时先单项 */}
+      <DockIcon value="settings" label="设置" href="#settings">
+        <SettingsRegular size={20} />
+      </DockIcon>
+    </Dock>
+  );
+}`,
+    },
+  ],
+  props: [
+    { name: 'iconSize', type: 'number', default: '40', description: '图标默认尺寸(px)。' },
+    { name: 'iconMagnification', type: 'number', default: '52', description: '鼠标靠近时最大放大尺寸(px)。' },
+    { name: 'iconDistance', type: 'number', default: '140', description: '影响半径(px)。' },
+    { name: 'direction', type: "'top' | 'middle' | 'bottom'", default: "'middle'", description: '图标垂直对齐。' },
+    { name: 'disableMagnification', type: 'boolean', default: 'false', description: '关闭放大效果。' },
+    { name: 'onClick', type: '(value, e) => void', description: '统一点击;value 取自 DockIcon.value,缺省回退 label。' },
+  ],
+  extraApis: [
+    {
+      title: 'DockIcon',
+      rows: [
+        { name: 'value', type: 'string', description: '业务标识,供 Dock.onClick 使用。' },
+        { name: 'label', type: 'string', description: '悬停 tip(配色/层级对齐 Tooltip)。' },
+        { name: 'onClick', type: '(e) => void', description: '单项点击;与 Dock.onClick 并存时先触发。' },
+        { name: 'href', type: 'string', description: '点击跳转链接。' },
+        { name: 'external', type: 'boolean', default: 'false', description: '新标签页打开(需 href)。' },
+        { name: 'className', type: 'string', description: '自定义类名。' },
+      ],
+    },
+  ],
+};
+
 export const displayDocs: DocDef[] = [
-  card, expander, splitter, settingscard, image, carousel, tag, badge, avatar, divider, empty, skeleton, timeline,
+  card, expander, splitter, settingscard, image, carousel, tag, badge, avatar, divider, empty, skeleton, timeline, marquee, bento, dock,
 ];

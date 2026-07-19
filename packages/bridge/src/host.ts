@@ -1,4 +1,4 @@
-/* 业务调用:fetch 风格 host / host.json;旧 inv 兼容 */
+/* 业务调用:对齐 JadeView invoke / on 命名 */
 import { cfg } from './config';
 import {
   HostError, HostErrorCode,
@@ -39,7 +39,7 @@ function raceAbort<T>(p: Promise<T>, signal?: AbortSignal): Promise<T> {
   });
 }
 
-async function hostCall<T = unknown>(
+async function invokeCall<T = unknown>(
   channel: string,
   payload: unknown = {},
   opts: HostCallOptions = {},
@@ -59,44 +59,50 @@ async function hostCall<T = unknown>(
     const data = parsePayload<T>(raw);
     const ms = Math.round(performance.now() - t0);
     cfg.onLog?.(
-      `host('${channel}') ${ms}ms → ${typeof data === 'string' ? data : JSON.stringify(data)}`,
+      `invoke('${channel}') ${ms}ms → ${typeof data === 'string' ? data : JSON.stringify(data)}`,
       true,
     );
     return { ok: true, data, error: null, channel, ms };
   } catch (e) {
     const error = toHostError(channel, e);
     const ms = Math.round(performance.now() - t0);
-    cfg.onLog?.(`host('${channel}') 失败 ${ms}ms: ${error.message}`, false);
+    cfg.onLog?.(`invoke('${channel}') 失败 ${ms}ms: ${error.message}`, false);
     if (!opts.silent) cfg.onError?.(channel, error);
     return { ok: false, data: null, error, channel, ms };
   }
 }
 
-/** 成功返回 data;失败抛 HostError(默认 silent,由调用方 try/catch) */
-export async function hostJson<T = unknown>(
+/** 成功返回 data;失败抛 HostError(默认 silent) */
+export async function invokeJson<T = unknown>(
   channel: string,
   payload: unknown = {},
   opts: HostCallOptions = {},
 ): Promise<T> {
-  const r = await hostCall<T>(channel, payload, { ...opts, silent: opts.silent ?? true });
+  const r = await invokeCall<T>(channel, payload, { ...opts, silent: opts.silent ?? true });
   if (!r.ok) throw r.error ?? new HostError(channel, '宿主调用失败', HostErrorCode.HOST_ERROR);
   return r.data as T;
 }
 
 /**
- * fetch 风格宿主调用
+ * 调用宿主(对齐 jade.invoke 命名)
  * @example
- * const r = await host('load_users', { q });
+ * const r = await invoke('load_users', { q });
  * if (r.ok) use(r.data);
- * const data = await host.json('load_users', { q });
+ * const data = await invoke.json('load_users', { q });
  */
-export const host: {
+export const invoke: {
   <T = unknown>(channel: string, payload?: unknown, opts?: HostCallOptions): Promise<HostResponse<T>>;
-  json: typeof hostJson;
-} = Object.assign(hostCall, { json: hostJson });
+  json: typeof invokeJson;
+} = Object.assign(invokeCall, { json: invokeJson });
 
-/** @deprecated 新代码用 host / host.json。失败返回 null 并触发 onError */
-export async function inv<T = unknown>(channel: string, payload: unknown = {}): Promise<T | null> {
-  const r = await hostCall<T>(channel, payload);
-  return r.ok ? (r.data as T) : null;
+
+/**
+ * 订阅宿主推送(对齐 jade.on 命名);返回退订函数
+ * @example
+ * const off = on('progress', (p) => setPct(p.percent));
+ * off();
+ */
+export function on<T = unknown>(event: string, cb: (payload: T) => void): () => void {
+  if (!hasJade) return () => {};
+  return window.jade!.on(event, (p) => cb(parsePayload<T>(p)));
 }

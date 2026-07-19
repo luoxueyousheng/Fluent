@@ -7,7 +7,8 @@ import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'reac
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import {
-  ArrowSortRegular,
+  ChevronDownRegular,
+  ChevronUpRegular,
 } from '@fluent-jade/icon';
 import { Checkbox, Empty } from './Basics';
 import { Pagination } from './Pagination';
@@ -22,13 +23,25 @@ export interface ColumnType<T> {
   key?: string;
   render?: (value: any, record: T, index: number) => ReactNode;
   sorter?: (a: T, b: T) => number;
-  /** 列对齐:left 默认 / center 居中 / right 右齐(数字列,挂 .num 等宽数字) */
+  /** 列对齐:left 左齐 / center 居中 / right 右齐(数字列,挂 .num 等宽数字) */
   align?: 'left' | 'center' | 'right';
   width?: string;               // grid 轨道,如 '2fr' / '120px';缺省 1fr
 }
 
 const cellAlign = (align?: 'left' | 'center' | 'right') =>
-  align === 'right' ? 'num' : align === 'center' ? 'align-center' : undefined;
+  align === 'right' ? 'num align-right'
+    : align === 'center' ? 'align-center'
+    : align === 'left' ? 'align-left'
+    : undefined;
+
+function SortInd({ active }: { active?: 'asc' | 'desc' }) {
+  return (
+    <span className="sort-ind" data-dir={active} aria-hidden>
+      <ChevronUpRegular size={10} className="sort-up" />
+      <ChevronDownRegular size={10} className="sort-down" />
+    </span>
+  );
+}
 
 export interface TableRowSelection<T> {
   /** checkbox 多选(默认)/ radio 单选 */
@@ -177,15 +190,16 @@ export function Table<T extends object>({
           )}
           {columns.map((c, i) => {
             const k = colKey(c, i);
+            const active = sort?.key === k ? sort.dir : undefined;
             return (
               <div key={k}
                    className={cn('dg-cell', c.sorter && 'sortable', cellAlign(c.align))}
-                   data-sort={sort?.key === k ? sort.dir : undefined}
+                   data-sort={active}
                    role="columnheader"
-                   aria-sort={sort?.key === k ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
+                   aria-sort={active === 'asc' ? 'ascending' : active === 'desc' ? 'descending' : undefined}
                    onClick={() => c.sorter && cycleSort(k)}>
                 {c.title}
-                {c.sorter && <ArrowSortRegular size={12} className="sort-ind" />}
+                {c.sorter && <SortInd active={active} />}
               </div>
             );
           })}

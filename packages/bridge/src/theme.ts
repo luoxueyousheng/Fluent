@@ -1,6 +1,6 @@
 /* 主题 / 材质 */
 import { cfg } from './config';
-import { hasJade, host, inv } from './host';
+import { hasJade, invokeJson } from './host';
 import type { BackdropType, ThemeMode } from './types';
 
 const mqDark = typeof matchMedia !== 'undefined' ? matchMedia('(prefers-color-scheme: dark)') : null;
@@ -25,8 +25,8 @@ export async function applyTheme(): Promise<void> {
   notifyTheme();
   if (!hasJade) return;
   const mode = { light: 'Light', dark: 'Dark', system: 'System' }[themeMode];
-  await inv(cfg.channels.setTheme, { mode });
-  if (cfg.channels.applyTitlebar) await inv(cfg.channels.applyTitlebar, { dark });
+  await invokeJson(cfg.channels.setTheme, { mode });
+  if (cfg.channels.applyTitlebar) await invokeJson(cfg.channels.applyTitlebar, { dark });
   if (currentBackdrop === 'none') await applyBackdrop('none');
 }
 
@@ -50,7 +50,7 @@ export async function applyBackdrop(type: BackdropType): Promise<void> {
   notifyTheme();
   const payload: Record<string, unknown> = { type };
   if (type === 'none') payload.color = cfg.solidColor(effectiveDark());
-  await inv(cfg.channels.setBackdrop, payload);
+  await invokeJson(cfg.channels.setBackdrop, payload);
 }
 
 /** 供 init 写初始材质状态(无宿主调用) */

@@ -1,6 +1,6 @@
 /* 启动:configure / ready / ENV */
 import { cfg, configure } from './config';
-import { hasJade, inv, parsePayload } from './host';
+import { hasJade, invokeJson, parsePayload } from './host';
 import { applyBackdrop, applyTheme, setBackdropState } from './theme';
 import type { InitOptions, InitResult, JadeEnv } from './types';
 
@@ -20,7 +20,7 @@ async function init(options: InitOptions = {}): Promise<InitResult> {
   if (!hasJade) document.documentElement.dataset.mock = '';
 
   if (hasJade && !window.__JV_ENV && cfg.channels.env) {
-    const env = await inv(cfg.channels.env);
+    const env = await invokeJson(cfg.channels.env);
     try { Object.assign(ENV, parsePayload(env)); } catch { /* 默认 */ }
   }
 
@@ -40,5 +40,3 @@ export function ready(options: InitOptions = {}): Promise<InitResult> {
   return (initPromise ??= init(options));
 }
 
-/** @deprecated 使用 ready */
-export const ensureInit = ready;

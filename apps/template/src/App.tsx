@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AppShell, useLog, useToast, type NavEntry } from '@fluent-jade/ui';
 import { HomeRegular, SettingsRegular } from '@fluent-jade/icon';
-import { ready, configure, useJadeEvent, hasJade, type ToastPayload } from '@fluent-jade/bridge';
+import { ready, configure, useOn, hasJade, type ToastPayload } from '@fluent-jade/bridge';
 import { HomePage } from './pages/HomePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { DocPage } from './docs/DocPage';
@@ -48,7 +48,7 @@ export function App() {
     });
   }, [toast, log]);
 
-  useJadeEvent<ToastPayload>('toast', (p) => toast(p));
+  useOn<ToastPayload>('toast', (p) => toast(p));
 
   /* 路由:hash 为真源(浏览器前进/后退经 hashchange 回灌);
      标题栏返回键走独立历史栈,不与浏览器历史双写 */

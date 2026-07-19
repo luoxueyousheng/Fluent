@@ -11,7 +11,7 @@ import {
   useToast,
   type LogEntry,
 } from '@fluent-jade/ui';
-import { host, useJadeEvent } from '@fluent-jade/bridge';
+import { invoke, useOn } from '@fluent-jade/bridge';
 import { docGroups } from '../docs/registry';
 
 
@@ -23,7 +23,7 @@ export function HomePage({ entries, clearLog, onOpen }: {
 }) {
   const toast = useToast();
   const [exportPct, setExportPct] = useState(0);
-  useJadeEvent<{ task: string; percent: number }>('progress', (p) => {
+  useOn<{ task: string; percent: number }>('progress', (p) => {
     if (p.task === 'export') setExportPct(p.percent);
   });
 
@@ -83,11 +83,11 @@ export function HomePage({ entries, clearLog, onOpen }: {
       <Divider>宿主通信演示</Divider>
       <Expander summary="IPC 调用与日志(独立预览时由 mock 宿主响应)">
         <div className="row" style={{ marginBottom: 10 }}>
-          <Button variant="accent" onClick={() => void host('export_report', { rows: 200 })}>导出报表(进度推送)</Button>
-          <Button onClick={() => void host('risky_op')}>故意失败</Button>
+          <Button variant="accent" onClick={() => void invoke('export_report', { rows: 200 })}>导出报表(进度推送)</Button>
+          <Button onClick={() => void invoke('risky_op')}>故意失败</Button>
           <Button onClick={async () => {
             try {
-              const r = await host.json('ping');
+              const r = await invoke.json('ping');
               toast({ level: 'info', title: 'ping', message: JSON.stringify(r) });
             } catch (e) {
               toast({ level: 'error', title: 'ping 失败', message: String(e) });

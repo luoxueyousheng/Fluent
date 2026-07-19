@@ -555,35 +555,35 @@ const datagrid: DocDef = {
   name: 'DataGrid',
   cn: '数据网格',
   description:
-    '受控底座版表格:排序与选中完全由外部状态驱动(sort / onSort / selected / onSelect),不含分页,适合虚拟化、服务端排序等需要完全掌控数据流的场景。日常业务列表直接用 Table。',
+    '受控底座版表格:排序与选中完全由外部状态驱动(sort / onSort / selected / onSelect),不含分页,适合虚拟化、服务端排序等需要完全掌控数据流的场景。日常业务列表直接用 Table。列 align 支持 left / center / right。',
   importCode: `import { DataGrid, type DataGridColumn } from '@fluent-jade/ui';`,
   sections: [
     {
       title: '受控排序与选中',
+      description: '名称左齐、类型居中、大小右齐;可排序列表头用上下 chevron 指示。',
       demo: <DataGridDemo />,
       code: `
 import { useState } from 'react';
 import { DataGrid, type DataGridColumn } from '@fluent-jade/ui';
 
-interface Row { id: string; name: string; size: number }
+interface Row { id: string; name: string; type: string; size: number }
 
 const rows: Row[] = [
-  { id: '1', name: 'theme.css', size: 48 },
-  { id: '2', name: 'Button.tsx', size: 2 },
-  { id: '3', name: 'Table.tsx', size: 6 },
-  { id: '4', name: 'bridge.ts', size: 4 },
+  { id: '1', name: 'theme.css', type: '样式', size: 48 },
+  { id: '2', name: 'Button.tsx', type: '组件', size: 2 },
+  { id: '3', name: 'Table.tsx', type: '组件', size: 6 },
+  { id: '4', name: 'bridge.ts', type: '逻辑', size: 4 },
 ];
 
 const columns: DataGridColumn<Row>[] = [
-  { key: 'name', title: '名称', width: '2fr', sortable: true },
+  { key: 'name', title: '名称', width: '2fr', sortable: true, align: 'left' },
+  { key: 'type', title: '类型', width: '1fr', align: 'center' },
   { key: 'size', title: '大小 (KB)', width: '1fr', sortable: true, align: 'right' },
 ];
 
 export function DataGridExample() {
-  // 排序与选中均为受控:组件只发事件,数据流由外部掌握
   const [sort, setSort] = useState<{ key: string; dir: 'asc' | 'desc' } | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
-  // 根据 sort 状态自行排好序再传入(服务端排序场景改为请求接口)
   const shown = sort
     ? [...rows].sort((a, b) => {
         const d = sort.key === 'size' ? a.size - b.size : a.name.localeCompare(b.name);
@@ -602,22 +602,36 @@ export function DataGridExample() {
     { name: 'columns', type: 'DataGridColumn<Row>[]', description: '列:{ key, title, width, sortable?, align?, render? }(width 必填)。' },
     { name: 'rows', type: 'Row[](需含 id: string)', description: '当前显示的行(排序自行处理后传入)。' },
     { name: 'selected', type: 'string | null', description: '受控选中行 id。' },
-    { name: 'sort', type: "{ key; dir: 'asc' | 'desc' } | null", description: '受控排序态(驱动表头箭头)。' },
+    { name: 'sort', type: "{ key; dir: 'asc' | 'desc' } | null", description: '受控排序态(驱动表头 chevron)。' },
   ],
   events: [
     { name: 'onSelect', type: '(id: string, row: Row) => void', description: '行点击。' },
     { name: 'onSort', type: "(key: string, dir) => void", description: '点击可排序表头(方向已循环好)。' },
+  ],
+  extraApis: [
+    {
+      title: 'DataGridColumn',
+      rows: [
+        { name: 'key', type: 'string', description: '列键。' },
+        { name: 'title', type: 'ReactNode', description: '表头标题。' },
+        { name: 'width', type: 'string', description: 'grid 轨道,如 2fr / 100px(必填)。' },
+        { name: 'sortable', type: 'boolean', description: '是否可排序。' },
+        { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: '列对齐:左 / 中 / 右。' },
+        { name: 'render', type: '(row) => ReactNode', description: '自定义单元格。' },
+      ],
+    },
   ],
 };
 
 function DataGridDemo() {
   const [sort, setSort] = useState<{ key: string; dir: 'asc' | 'desc' } | null>(null);
   const [sel, setSel] = useState<string | null>(null);
-  const cols: DataGridColumn<{ id: string; name: string; size: number }>[] = [
-    { key: 'name', title: '名称', width: '2fr', sortable: true },
+  const cols: DataGridColumn<{ id: string; name: string; type: string; size: number }>[] = [
+    { key: 'name', title: '名称', width: '2fr', sortable: true, align: 'left' },
+    { key: 'type', title: '类型', width: '1fr', align: 'center' },
     { key: 'size', title: '大小 (KB)', width: '1fr', sortable: true, align: 'right' },
   ];
-  const rows = ROWS.map((r) => ({ id: r.key, name: r.name, size: r.size }));
+  const rows = ROWS.map((r) => ({ id: r.key, name: r.name, type: r.type, size: r.size }));
   const shown = sort
     ? [...rows].sort((a, b) => {
         const d = sort.key === 'size' ? a.size - b.size : a.name.localeCompare(b.name);
