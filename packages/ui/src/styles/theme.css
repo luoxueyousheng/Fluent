@@ -242,6 +242,7 @@ html[data-mock] body { background: var(--bg) !important; }
 
 .title-bar {
   display: flex; align-items: center; gap: var(--sp-m);
+  cursor: default; user-select: none;   /* 拖拽区:箭头指针,文字不可选(否则 I 形编辑指针) */
   padding: 0 var(--sp-l);                /* controls=host 时组件以内联样式预留右侧宿主按钮区 */
   position: relative; z-index: 900;      /* 高于一切页内浮层:标题栏永不被遮挡 */
 }
