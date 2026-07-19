@@ -1,13 +1,16 @@
 /* Table — antd API 规范(columns/dataSource/rowKey/pagination/onRow/rowSelection/
  * loading),WinUI DataGrid 形态(复用 dg-* 类):layer 表头、灰 hover、
  * 排序循环 升→降→无;striped 斑马纹、size=small 紧凑密度、loading 套 Spin、
- * maxHeight 控表体滚动高(表头本就吸顶)。 */
-import { useMemo, useRef, useState, type ReactNode } from 'react';
+ * maxHeight 控表体滚动高(表头本就吸顶);toolbar 工具条插槽、
+ * rowContextMenu 行右键菜单(表级单浮层)、pagination 透传每页条数选择。 */
+import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import { Icon } from './Icon';
 import { Checkbox, Empty } from './Basics';
 import { Pagination } from './Pagination';
 import { Spin } from './Spin';
+import { useFlyout, MenuList, type MenuItemDef } from './Flyout';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -31,12 +34,26 @@ export interface TableRowSelection<T> {
   getCheckboxProps?: (record: T) => { disabled?: boolean };
 }
 
+/** 行右键菜单:items 可按行生成;onPick 收菜单键 + 行记录 */
+export interface TableContextMenu<T> {
+  items: MenuItemDef[] | ((record: T) => MenuItemDef[]);
+  onPick: (key: string, record: T) => void;
+}
+
 export interface TableProps<T> {
   columns: ColumnType<T>[];
   dataSource: T[];
   rowKey?: (keyof T & string) | ((record: T) => string);
-  pagination?: false | { pageSize?: number };
-  onRow?: (record: T) => { onClick?: () => void };
+  pagination?: false | { pageSize?: number; showSizeChanger?: boolean; pageSizeOptions?: number[] };
+  onRow?: (record: T) => {
+    onClick?: () => void;
+    onDoubleClick?: () => void;
+    onContextMenu?: (e: React.MouseEvent) => void;
+  };
+  /** 表格上方工具条插槽(放 Button / SearchBox / CommandBar 等) */
+  toolbar?: ReactNode;
+  /** 行右键菜单(整表一个浮层,按行取菜单项) */
+  rowContextMenu?: TableContextMenu<T>;
   /** 行选择:表头全选(带半选态),radio 为单选 */
   rowSelection?: TableRowSelection<T>;
   /** 加载态:套 Spin 遮罩 */
@@ -59,13 +76,32 @@ let tblSeq = 0;
 export function Table<T extends object>({
   columns, dataSource, rowKey = 'key' as keyof T & string,
   pagination = { pageSize: 10 }, onRow, rowSelection,
-  loading, striped, size, empty, maxHeight, className,
+  loading, striped, size, empty, maxHeight, toolbar, rowContextMenu, className,
 }: TableProps<T>) {
   const [sort, setSort] = useState<SortState>(null);
   const [page, setPage] = useState(1);
-  const pageSize = pagination === false ? dataSource.length : (pagination.pageSize ?? 10);
+  // 每页条数:初值取 pageSize(缺省 10),之后由分页器的条数选择驱动
+  const [innerSize, setInnerSize] = useState(
+    pagination === false ? 10 : (pagination.pageSize ?? pagination.pageSizeOptions?.[0] ?? 10),
+  );
+  const pageSize = pagination === false ? dataSource.length : innerSize;
   const nameRef = useRef('');
   if (!nameRef.current) nameRef.current = `tbl-${++tblSeq}`;
+
+  /* 行右键菜单:整表一个 MenuList 浮层(逐行包 ContextMenuArea 会破坏
+     dg-body 直接子级结构,斑马纹 nth-child 会错) */
+  const rootRef = useRef<HTMLDivElement>(null);
+  const ctxMenuRef = useRef<HTMLDivElement>(null);
+  const ctxFly = useFlyout(rootRef, ctxMenuRef);
+  const [ctx, setCtx] = useState<{ x: number; y: number; record: T } | null>(null);
+  useLayoutEffect(() => {
+    if (!ctxFly.isOpen || !ctx) return;
+    const m = ctxMenuRef.current;
+    if (!m) return;
+    const r = m.getBoundingClientRect();
+    m.style.left = `${Math.max(8, Math.min(ctx.x, innerWidth - r.width - 8))}px`;
+    m.style.top = `${Math.max(48, Math.min(ctx.y, innerHeight - r.height - 8))}px`;
+  }, [ctxFly.isOpen, ctx]);
 
   /* 行选择(受控/非受控) */
   const selType = rowSelection?.type ?? 'checkbox';
@@ -121,7 +157,8 @@ export function Table<T extends object>({
   };
 
   const body = (
-    <div className={className}>
+    <div className={className} ref={rootRef}>
+      {toolbar != null && <div className="tbl-toolbar">{toolbar}</div>}
       <div className={cn('datagrid', striped && 'striped', size === 'small' && 'compact')} role="grid">
         <div className="dg-row dg-head" style={gridCols} role="row">
           {rowSelection && (
@@ -161,6 +198,14 @@ export function Table<T extends object>({
               <div key={k} className="dg-row" role="row" tabIndex={0}
                    aria-selected={rowSelection ? selected : undefined}
                    style={gridCols} onClick={extra?.onClick}
+                   onDoubleClick={extra?.onDoubleClick}
+                   onContextMenu={(e) => {
+                     extra?.onContextMenu?.(e);
+                     if (!rowContextMenu) return;
+                     e.preventDefault();
+                     setCtx({ x: e.clientX, y: e.clientY, record: r });
+                     ctxFly.open();
+                   }}
                    onKeyDown={(e) => { if (e.key === 'Enter') extra?.onClick?.(); }}>
                 {rowSelection && (
                   <div className="dg-cell dg-sel" onClick={(e) => e.stopPropagation()}>
@@ -189,11 +234,21 @@ export function Table<T extends object>({
           })}
         </div>
       </div>
-      {pagination !== false && sorted.length > pageSize && (
+      {pagination !== false && (sorted.length > pageSize || pagination.showSizeChanger) && (
         <div className="row" style={{ justifyContent: 'flex-end', marginTop: 12 }}>
           <Pagination current={page} total={sorted.length} pageSize={pageSize}
-                      onChange={(p) => setPage(p)} />
+                      showSizeChanger={pagination.showSizeChanger}
+                      pageSizeOptions={pagination.pageSizeOptions}
+                      onChange={(p, s) => { setPage(p); if (s !== pageSize) { setInnerSize(s); setPage(1); } }} />
         </div>
+      )}
+      {rowContextMenu && ctxFly.isOpen && ctx && createPortal(
+        <MenuList ref={ctxMenuRef}
+                  items={typeof rowContextMenu.items === 'function' ? rowContextMenu.items(ctx.record) : rowContextMenu.items}
+                  closing={ctxFly.closing}
+                  onPick={(k) => { ctxFly.close(); rowContextMenu.onPick(k, ctx.record); }}
+                  style={{ position: 'fixed', left: ctx.x, top: ctx.y, zIndex: 850 }} />,
+        document.body,
       )}
     </div>
   );

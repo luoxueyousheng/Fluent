@@ -1,6 +1,6 @@
 /* 文档数据:集合 — Table / DataGrid */
 import { useState } from 'react';
-import { Button, DataGrid, Empty, Table, Tag, useToast, type ColumnType, type DataGridColumn } from '@fluent-react/ui';
+import { Button, DataGrid, Empty, SearchBox, Table, Tag, useToast, type ColumnType, type DataGridColumn, type MenuItemDef } from '@fluent-react/ui';
 import type { DocDef } from '../types';
 
 interface Row { key: string; name: string; size: number; type: string; state: 'ok' | 'warn' }
@@ -29,7 +29,7 @@ const table: DocDef = {
   name: 'Table',
   cn: '表格',
   description:
-    'antd API 的数据表格:columns 声明列(dataIndex / render / sorter / align / width),内置分页与排序(点击表头循环 升 → 降 → 无),翻页与排序时表体淡入刷新;rowSelection 行选择(表头全选带半选态 / radio 单选 / 按行禁用)、striped 斑马纹、size="small" 紧凑密度、loading 加载遮罩、empty 自定义空态、maxHeight 控表体滚动高(表头吸顶)。行高亮与选中样式为 WinUI DataGrid 形态。',
+    'antd API 的数据表格:columns 声明列(dataIndex / render / sorter / align / width),内置分页与排序(点击表头循环 升 → 降 → 无),翻页与排序时表体淡入刷新;rowSelection 行选择(表头全选带半选态 / radio 单选 / 按行禁用)、toolbar 工具条插槽、rowContextMenu 行右键菜单、striped 斑马纹、size="small" 紧凑密度、loading 加载遮罩、empty 自定义空态、maxHeight 控表体滚动高(表头吸顶)。行高亮与选中样式为 WinUI DataGrid 形态。',
   importCode: `import { Table, type ColumnType } from '@fluent-react/ui';`,
   sections: [
     {
@@ -215,6 +215,115 @@ export function TablePagedExample() {
 }`,
     },
     {
+      title: '工具条与操作列',
+      description: 'toolbar 在表格上方放按钮 / 搜索等;操作列用 column.render 渲染按钮(编辑 / 删除等行级动作)。',
+      demo: <TableToolbarActions />,
+      code: `
+import { useState } from 'react';
+import { Button, SearchBox, Table, useToast, type ColumnType } from '@fluent-react/ui';
+
+interface Row { key: string; name: string; size: number }
+
+const DATA: Row[] = [
+  { key: '1', name: 'theme.css', size: 48 },
+  { key: '2', name: 'Button.tsx', size: 2 },
+  { key: '3', name: 'Table.tsx', size: 6 },
+  { key: '4', name: 'bridge.ts', size: 4 },
+];
+
+export function TableToolbarExample() {
+  const toast = useToast();
+  const [rows, setRows] = useState(DATA);
+  const [q, setQ] = useState('');
+  const shown = rows.filter((r) => r.name.includes(q));
+  const columns: ColumnType<Row>[] = [
+    { title: '名称', dataIndex: 'name', width: '2fr' },
+    { title: '大小 (KB)', dataIndex: 'size', align: 'right' },
+    {
+      title: '操作', key: 'actions', width: '150px',
+      render: (_v, r) => (
+        <span className="flex gap-1">
+          <Button size="small" onClick={() => toast({ level: 'info', title: '编辑', message: r.name })}>编辑</Button>
+          <Button size="small" danger onClick={() => setRows((cur) => cur.filter((x) => x.key !== r.key))}>删除</Button>
+        </span>
+      ),
+    },
+  ];
+  return (
+    <Table columns={columns} dataSource={shown} pagination={false}
+           toolbar={<>
+             <Button variant="accent" onClick={() => setRows(DATA)}>重置</Button>
+             <Button onClick={() => toast({ level: 'success', title: '导出', message: shown.length + ' 行' })}>导出</Button>
+             <SearchBox placeholder="筛选名称" value={q} onChange={setQ} />
+           </>} />
+  );
+}`,
+    },
+    {
+      title: '行右键菜单',
+      description: 'rowContextMenu 给每行挂 WinUI 右键菜单;items 可用函数按行生成,onPick 收菜单键与行记录。',
+      demo: <TableCtxMenu />,
+      code: `
+import { Table, useToast, type ColumnType, type MenuItemDef } from '@fluent-react/ui';
+
+interface Row { key: string; name: string; size: number }
+
+const rows: Row[] = [
+  { key: '1', name: 'theme.css', size: 48 },
+  { key: '2', name: 'Button.tsx', size: 2 },
+  { key: '3', name: 'Table.tsx', size: 6 },
+  { key: '4', name: 'bridge.ts', size: 4 },
+];
+
+const columns: ColumnType<Row>[] = [
+  { title: '名称', dataIndex: 'name', width: '2fr' },
+  { title: '大小 (KB)', dataIndex: 'size', align: 'right' },
+];
+
+export function TableContextMenuExample() {
+  const toast = useToast();
+  return (
+    <Table columns={columns} dataSource={rows} pagination={false}
+           rowContextMenu={{
+             items: (r): MenuItemDef[] => [
+               { key: 'open', label: '打开 ' + r.name },
+               { key: 'copy', label: '复制路径' },
+               { key: 'd1', divider: true },
+               { key: 'del', label: '删除', danger: true },
+             ],
+             onPick: (key, r) => toast({ level: 'info', title: '菜单:' + key, message: r.name }),
+           }} />
+  );
+}`,
+    },
+    {
+      title: '每页条数选择',
+      description: 'pagination 传 showSizeChanger 显示条数下拉,pageSizeOptions 定义档位;切换后回到第 1 页。',
+      demo: <TableSizeChanger />,
+      code: `
+import { Table, type ColumnType } from '@fluent-react/ui';
+
+interface Row { key: string; name: string; size: number }
+
+const rows: Row[] = Array.from({ length: 23 }, (_, i) => ({
+  key: String(i + 1),
+  name: 'file-' + (i + 1) + '.ts',
+  size: ((i * 7) % 40) + 1,
+}));
+
+const columns: ColumnType<Row>[] = [
+  { title: '名称', dataIndex: 'name', width: '2fr' },
+  { title: '大小 (KB)', dataIndex: 'size', align: 'right' },
+];
+
+export function TableSizeChangerExample() {
+  return (
+    <Table columns={columns} dataSource={rows}
+           pagination={{ pageSize: 5, showSizeChanger: true, pageSizeOptions: [5, 10, 20] }} />
+  );
+}`,
+    },
+    {
       title: '自定义行键与滚动高度',
       description: '数据没有 key 字段时,rowKey 传字段名或取键函数;maxHeight 限制表体高度,超出滚动、表头吸顶。',
       demo: <TableRowKeyScroll />,
@@ -248,16 +357,25 @@ export function TableRowKeyExample() {
     { name: 'columns', type: 'ColumnType<T>[]', description: '列定义(必填)。' },
     { name: 'dataSource', type: 'T[]', description: '数据源(必填)。' },
     { name: 'rowKey', type: 'string | (record) => string', default: "'key'", description: '行唯一键字段或取键函数。' },
-    { name: 'pagination', type: 'false | { pageSize?: number }', default: '{ pageSize: 10 }', description: '内置分页;false 关闭。' },
+    { name: 'pagination', type: 'false | { pageSize?, showSizeChanger?, pageSizeOptions? }', default: '{ pageSize: 10 }', description: '内置分页;showSizeChanger 显示每页条数下拉;false 关闭。' },
+    { name: 'toolbar', type: 'ReactNode', description: '表格上方工具条插槽(按钮 / 搜索等)。' },
+    { name: 'rowContextMenu', type: 'TableContextMenu<T>', description: '行右键菜单配置,见下表。' },
     { name: 'rowSelection', type: 'TableRowSelection<T>', description: '行选择配置,见下表。' },
     { name: 'loading', type: 'boolean', description: '加载遮罩(Spin,150ms 延迟)。' },
     { name: 'striped', type: 'boolean', default: 'false', description: '斑马纹。' },
     { name: 'size', type: "'small' | 'middle'", default: "'middle'", description: 'small 紧凑密度(行高 32)。' },
     { name: 'empty', type: 'ReactNode', default: '<Empty image="simple" />', description: '无数据占位。' },
     { name: 'maxHeight', type: 'number', default: '320', description: '表体滚动高度上限(表头吸顶)。' },
-    { name: 'onRow', type: '(record) => { onClick? }', description: '行级事件工厂。' },
+    { name: 'onRow', type: '(record) => { onClick?, onDoubleClick?, onContextMenu? }', description: '行级事件工厂。' },
   ],
   extraApis: [
+    {
+      title: 'TableContextMenu',
+      rows: [
+        { name: 'items', type: 'MenuItemDef[] | (record) => MenuItemDef[]', description: '菜单项;函数形式按行生成。' },
+        { name: 'onPick', type: '(key: string, record: T) => void', description: '选中菜单项回调(菜单键 + 行记录)。' },
+      ],
+    },
     {
       title: 'TableRowSelection',
       rows: [
@@ -281,6 +399,77 @@ export function TableRowKeyExample() {
     },
   ],
 };
+
+function TableToolbarActions() {
+  const toast = useToast();
+  const [rows, setRows] = useState<Row[]>(ROWS.slice(0, 4));
+  const [q, setQ] = useState('');
+  const shown = rows.filter((r) => r.name.includes(q));
+  const columns: ColumnType<Row>[] = [
+    { title: '名称', dataIndex: 'name', width: '2fr' },
+    { title: '大小 (KB)', dataIndex: 'size', align: 'right' },
+    {
+      title: '操作', key: 'actions', width: '150px',
+      render: (_v, r) => (
+        <span style={{ display: 'flex', gap: 4 }}>
+          <Button size="small" onClick={() => toast({ level: 'info', title: '编辑', message: r.name })}>编辑</Button>
+          <Button size="small" danger onClick={() => setRows((cur) => cur.filter((x) => x.key !== r.key))}>删除</Button>
+        </span>
+      ),
+    },
+  ];
+  return (
+    <div style={{ width: '100%' }}>
+      <Table columns={columns} dataSource={shown} pagination={false}
+             toolbar={<>
+               <Button variant="accent" onClick={() => setRows(ROWS.slice(0, 4))}>重置</Button>
+               <Button onClick={() => toast({ level: 'success', title: '导出', message: `${shown.length} 行` })}>导出</Button>
+               <SearchBox placeholder="筛选名称" value={q} onChange={setQ} />
+             </>} />
+    </div>
+  );
+}
+
+function TableCtxMenu() {
+  const toast = useToast();
+  const columns: ColumnType<Row>[] = [
+    { title: '名称', dataIndex: 'name', width: '2fr' },
+    { title: '大小 (KB)', dataIndex: 'size', align: 'right' },
+  ];
+  return (
+    <div style={{ width: '100%' }}>
+      <Table columns={columns} dataSource={ROWS.slice(0, 4)} pagination={false}
+             rowContextMenu={{
+               items: (r): MenuItemDef[] => [
+                 { key: 'open', label: `打开 ${r.name}` },
+                 { key: 'copy', label: '复制路径' },
+                 { key: 'd1', divider: true },
+                 { key: 'del', label: '删除', danger: true },
+               ],
+               onPick: (key, r) => toast({ level: 'info', title: `菜单:${key}`, message: r.name }),
+             }} />
+    </div>
+  );
+}
+
+const SIZE_ROWS: Array<{ key: string; name: string; size: number }> = Array.from({ length: 23 }, (_, i) => ({
+  key: String(i + 1),
+  name: `file-${i + 1}.ts`,
+  size: ((i * 7) % 40) + 1,
+}));
+
+function TableSizeChanger() {
+  const columns: ColumnType<(typeof SIZE_ROWS)[number]>[] = [
+    { title: '名称', dataIndex: 'name', width: '2fr' },
+    { title: '大小 (KB)', dataIndex: 'size', align: 'right' },
+  ];
+  return (
+    <div style={{ width: '100%' }}>
+      <Table columns={columns} dataSource={SIZE_ROWS}
+             pagination={{ pageSize: 5, showSizeChanger: true, pageSizeOptions: [5, 10, 20] }} />
+    </div>
+  );
+}
 
 function TableSelection() {
   const [keys, setKeys] = useState<string[]>(['2']);
