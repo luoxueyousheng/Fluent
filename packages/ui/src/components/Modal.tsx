@@ -8,7 +8,9 @@ import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import { useFocusTrap } from '../focusTrap';
 import { Button } from './Button';
-import { Icon } from './Icon';
+import {
+  DismissRegular,
+} from '@fluent-react/icon';
 
 export interface ModalProps {
   open: boolean;
@@ -84,7 +86,7 @@ export function Modal({
             {title != null && <h3 className="t-subtitle">{title}</h3>}
             {closable && (
               <button className="modal-close" aria-label="关闭" onClick={() => onCancel?.()}>
-                <Icon name="close" size={12} strokeWidth={1.3} />
+                <DismissRegular size={12} />
               </button>
             )}
           </header>

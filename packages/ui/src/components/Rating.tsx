@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { cn } from '../cn';
 import { useMergedState } from '../useMergedState';
+import { colorClass, type SemanticColor } from '../modifiers';
 
 const STAR = 'M8 1.8 L9.9 5.8 L14.3 6.4 L11.1 9.4 L11.9 13.8 L8 11.7 L4.1 13.8 L4.9 9.4 L1.7 6.4 L6.1 5.8 Z';
 
@@ -12,19 +13,21 @@ export interface RatingProps {
   max?: number;
   readOnly?: boolean;
   size?: number;
+  /** 语义着色:点亮星随之变色 */
+  color?: SemanticColor;
   className?: string;
   'aria-label'?: string;
 }
 
 export function Rating({
-  value: valueProp, defaultValue = 0, onChange, max = 5, readOnly, size = 18, className, ...aria
+  value: valueProp, defaultValue = 0, onChange, max = 5, readOnly, size = 18, color, className, ...aria
 }: RatingProps) {
   const [value, setValue] = useMergedState(defaultValue, valueProp, onChange);
   const [hover, setHover] = useState(0);
   const shown = hover || value;
 
   return (
-    <div className={cn('rating', readOnly && 'readonly', className)}
+    <div className={cn('rating', readOnly && 'readonly', colorClass(color), className)}
          role="slider" aria-valuemin={0} aria-valuemax={max} aria-valuenow={value}
          aria-label={aria['aria-label'] ?? '评分'}
          tabIndex={readOnly ? -1 : 0}

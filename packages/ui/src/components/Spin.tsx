@@ -4,6 +4,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { cn } from '../cn';
 import { ProgressRing } from './Basics';
+import { colorClass, type SemanticColor } from '../modifiers';
 
 export interface SpinProps {
   spinning?: boolean;
@@ -13,11 +14,13 @@ export interface SpinProps {
   size?: number;
   /** 延迟显示毫秒:短加载不闪遮罩 */
   delay?: number;
+  /** 语义着色:圆环随之变色 */
+  color?: SemanticColor;
   children?: ReactNode;
   className?: string;
 }
 
-export function Spin({ spinning = true, tip, size = 28, delay = 0, children, className }: SpinProps) {
+export function Spin({ spinning = true, tip, size = 28, delay = 0, color, children, className }: SpinProps) {
   const [shown, setShown] = useState(delay <= 0 ? spinning : false);
   useEffect(() => {
     if (!spinning) { setShown(false); return; }
@@ -28,15 +31,15 @@ export function Spin({ spinning = true, tip, size = 28, delay = 0, children, cla
 
   const indicator = (
     <span className="spin-body" role="status" aria-live="polite">
-      <ProgressRing size={size} />
+      <ProgressRing size={size} color={color} />
       {tip && <span className="spin-tip">{tip}</span>}
     </span>
   );
 
-  if (children == null) return shown ? <span className={cn('spin-solo', className)}>{indicator}</span> : null;
+  if (children == null) return shown ? <span className={cn('spin-solo', colorClass(color), className)}>{indicator}</span> : null;
 
   return (
-    <div className={cn('spin-wrap', className)} aria-busy={shown}>
+    <div className={cn('spin-wrap', colorClass(color), className)} aria-busy={shown}>
       <div className={cn('spin-content', shown && 'blur')} {...(shown ? { inert: true } : {})}>
         {children}
       </div>

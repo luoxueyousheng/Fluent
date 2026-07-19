@@ -1,9 +1,26 @@
 /* 文档数据:反馈 — Toast / Modal / Drawer / Tooltip / TeachingTip / InfoBar / Progress */
 import { useState } from 'react';
 import {
-  Button, Card, Drawer, Field, InfoBar, Modal, Popover, ProgressBar, ProgressRing, Skeleton, Spin,
-  TeachingTip, TextBox, Switch, Tooltip,
-  message, modal, notification, useConfirm, useToast,
+  Button,
+  Card,
+  Drawer,
+  Field,
+  InfoBar,
+  Modal,
+  Popover,
+  ProgressBar,
+  ProgressRing,
+  Skeleton,
+  Spin,
+  TeachingTip,
+  TextBox,
+  Switch,
+  Tooltip,
+  message,
+  modal,
+  notification,
+  useConfirm,
+  useToast,
 } from '@fluent-react/ui';
 import type { DocDef } from '../types';
 
@@ -254,7 +271,13 @@ const modalDoc: DocDef = {
       demo: <ModalBasic />,
       code: `
 import { useState } from 'react';
-import { Button, Field, Modal, TextBox, useToast } from '@fluent-react/ui';
+import {
+  Button,
+  Field,
+  Modal,
+  TextBox,
+  useToast,
+} from '@fluent-react/ui';
 
 export function ModalBasicExample() {
   const [open, setOpen] = useState(false);
@@ -390,7 +413,13 @@ export function ModalDangerExample() {
       demo: <ModalLoadingDemo />,
       code: `
 import { useState } from 'react';
-import { Button, Field, Modal, TextBox, useToast } from '@fluent-react/ui';
+import {
+  Button,
+  Field,
+  Modal,
+  TextBox,
+  useToast,
+} from '@fluent-react/ui';
 
 export function ModalLoadingExample() {
   const [open, setOpen] = useState(false);
@@ -657,18 +686,21 @@ import { Button, Drawer } from '@fluent-react/ui';
 type Placement = 'left' | 'right' | 'top' | 'bottom';
 
 export function DrawerPlacementExample() {
-  const [placement, setPlacement] = useState<Placement | null>(null);
+  // open 与 placement 分开存:关闭时方位保持不变,收起动画才会留在原侧
+  const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState<Placement>('right');
+  const show = (p: Placement) => { setPlacement(p); setOpen(true); };
   return (
     <>
       <div className="flex gap-2 flex-wrap">
-        <Button onClick={() => setPlacement('left')}>左侧</Button>
-        <Button onClick={() => setPlacement('right')}>右侧</Button>
-        <Button onClick={() => setPlacement('top')}>顶部</Button>
-        <Button onClick={() => setPlacement('bottom')}>底部</Button>
+        <Button onClick={() => show('left')}>左侧</Button>
+        <Button onClick={() => show('right')}>右侧</Button>
+        <Button onClick={() => show('top')}>顶部</Button>
+        <Button onClick={() => show('bottom')}>底部</Button>
       </div>
-      <Drawer open={placement != null} onClose={() => setPlacement(null)}
-              placement={placement ?? 'right'} size={placement === 'top' || placement === 'bottom' ? 260 : 'default'}
-              title={'从' + (placement ?? '') + '滑出'}>
+      <Drawer open={open} onClose={() => setOpen(false)}
+              placement={placement} size={placement === 'top' || placement === 'bottom' ? 260 : 'default'}
+              title={'从' + placement + '滑出'}>
         <p className="leading-[1.7]">placement 决定滑出方位;size 也可传 'large'(736px)。</p>
       </Drawer>
     </>
@@ -690,17 +722,20 @@ export function DrawerPlacementExample() {
 };
 
 function DrawerPlacementDemo() {
-  const [placement, setPlacement] = useState<'left' | 'right' | 'top' | 'bottom' | null>(null);
+  // open 与 placement 分开存:关闭时方位保持,收起动画仍在原侧播放
+  const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState<'left' | 'right' | 'top' | 'bottom'>('right');
+  const show = (p: typeof placement) => { setPlacement(p); setOpen(true); };
   return (
     <>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <Button onClick={() => setPlacement('left')}>左侧</Button>
-        <Button onClick={() => setPlacement('right')}>右侧</Button>
-        <Button onClick={() => setPlacement('top')}>顶部</Button>
-        <Button onClick={() => setPlacement('bottom')}>底部</Button>
+        <Button onClick={() => show('left')}>左侧</Button>
+        <Button onClick={() => show('right')}>右侧</Button>
+        <Button onClick={() => show('top')}>顶部</Button>
+        <Button onClick={() => show('bottom')}>底部</Button>
       </div>
-      <Drawer open={placement != null} onClose={() => setPlacement(null)}
-              placement={placement ?? 'right'} size={placement === 'top' || placement === 'bottom' ? 260 : 'default'}
+      <Drawer open={open} onClose={() => setOpen(false)}
+              placement={placement} size={placement === 'top' || placement === 'bottom' ? 260 : 'default'}
               title={`从${placement === 'left' ? '左侧' : placement === 'top' ? '顶部' : placement === 'bottom' ? '底部' : '右侧'}滑出`}>
         <p style={{ color: 'var(--text-2)', lineHeight: 1.7 }}>placement 决定滑出方位;size 也可传 'large'(736px)。</p>
       </Drawer>
@@ -1117,8 +1152,32 @@ export function SpinIndicatorExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: 'color 作用于加载圆环。',
+      demo: (
+        <div className="flex flex-wrap gap-6 items-center">
+          <Spin color="success" tip="成功" />
+          <Spin color="warning" tip="警告" />
+          <Spin color="danger" tip="危险" />
+        </div>
+      ),
+      code: `
+import { Spin } from '@fluent-react/ui';
+
+export function SpinColorExample() {
+  return (
+    <div className="flex flex-wrap gap-6 items-center">
+      <Spin color="success" tip="成功" />
+      <Spin color="warning" tip="警告" />
+      <Spin color="danger" tip="危险" />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:圆环随之变色。' },
     { name: 'spinning', type: 'boolean', default: 'true', description: '是否处于加载态。' },
     { name: 'tip', type: 'string', description: '圆环下方文案。' },
     { name: 'size', type: 'number', default: '28', description: '圆环直径。' },
@@ -1224,8 +1283,42 @@ export function ProgressRingExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: 'color 作用于 ProgressBar 填充与 ProgressRing 圆环。',
+      demo: (
+        <div className="flex flex-col gap-3 w-[280px]">
+          <ProgressBar value={60} color="success" showInfo />
+          <ProgressBar value={40} color="warning" showInfo />
+          <ProgressBar value={25} color="danger" showInfo />
+          <div className="flex gap-4 items-center">
+            <ProgressRing value={70} color="success" showInfo size={56} />
+            <ProgressRing value={45} color="warning" showInfo size={56} />
+            <ProgressRing color="danger" size={28} />
+          </div>
+        </div>
+      ),
+      code: `
+import { ProgressBar, ProgressRing } from '@fluent-react/ui';
+
+export function ProgressColorExample() {
+  return (
+    <div className="flex flex-col gap-3 w-[280px]">
+      <ProgressBar value={60} color="success" showInfo />
+      <ProgressBar value={40} color="warning" showInfo />
+      <ProgressBar value={25} color="danger" showInfo />
+      <div className="flex gap-4 items-center">
+        <ProgressRing value={70} color="success" showInfo size={56} />
+        <ProgressRing value={45} color="warning" showInfo size={56} />
+        <ProgressRing color="danger" size={28} />
+      </div>
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:Bar 填充 / Ring 圆环随之变色。' },
     { name: 'value', type: 'number', description: '进度 0~100(ProgressBar)。' },
     { name: 'indeterminate', type: 'boolean', default: 'false', description: '不定态往返滑动(忽略 value)。' },
     { name: 'showInfo', type: 'boolean', default: 'false', description: '右侧显示进度文字。' },

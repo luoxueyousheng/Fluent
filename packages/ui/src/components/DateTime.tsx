@@ -4,7 +4,12 @@
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  CalendarLtrRegular,
+  ChevronDownRegular,
+  ChevronUpRegular,
+  DismissRegular,
+} from '@fluent-react/icon';
 import { useMergedState } from '../useMergedState';
 import { useFixedPlacement, useFlyout } from './Flyout';
 
@@ -69,8 +74,8 @@ export function Calendar({
           {view === 'day' ? `${vy}年 ${vm + 1}月` : view === 'month' ? `${vy}年` : `${decade} - ${decade + 9}`}
         </button>
         <span className="cal-nav">
-          <button aria-label="上一页" onClick={() => nav(-1)}><Icon name="chevronUp" size={12} strokeWidth={1.3} /></button>
-          <button aria-label="下一页" onClick={() => nav(1)}><Icon name="chevronDown" size={12} strokeWidth={1.3} /></button>
+          <button aria-label="上一页" onClick={() => nav(-1)}><ChevronUpRegular size={12} /></button>
+          <button aria-label="下一页" onClick={() => nav(1)}><ChevronDownRegular size={12} /></button>
         </span>
       </div>
 
@@ -169,10 +174,10 @@ export function DatePicker({
         {allowClear && value ? (
           <span className="dp-clear" role="button" aria-label="清除"
                 onClick={(e) => { e.stopPropagation(); setValue(null); }}>
-            <Icon name="close" size={11} strokeWidth={1.3} />
+            <DismissRegular size={11} />
           </span>
         ) : (
-          <Icon name="calendar" size={13} strokeWidth={1.3} className="combo-chev" style={{ transform: 'none' }} />
+          <CalendarLtrRegular size={13} className="combo-chev" style={{ transform: 'none' }} />
         )}
       </button>
       {fly.isOpen && createPortal(
@@ -227,7 +232,7 @@ export function TimePicker({
         <span className={cn('combo-value', !value && 'placeholder')}>
           {value ? formatDate(value, 'HH:mm') : placeholder}
         </span>
-        <Icon name="chevronDown" size={12} className="combo-chev" />
+        <ChevronDownRegular size={12} className="combo-chev" />
       </button>
       {fly.isOpen && createPortal(
         <div ref={popRef} className={cn('tp-pop', placement.cls, fly.closing && 'closing')}
@@ -307,10 +312,10 @@ export function RangePicker({
         {allowClear && value ? (
           <span className="dp-clear" role="button" aria-label="清除"
                 onClick={(e) => { e.stopPropagation(); setValue(null); reset(); }}>
-            <Icon name="close" size={11} strokeWidth={1.3} />
+            <DismissRegular size={11} />
           </span>
         ) : (
-          <Icon name="calendar" size={13} strokeWidth={1.3} className="combo-chev" style={{ transform: 'none' }} />
+          <CalendarLtrRegular size={13} className="combo-chev" style={{ transform: 'none' }} />
         )}
       </button>
       {fly.isOpen && createPortal(

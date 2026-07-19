@@ -1,6 +1,7 @@
 /* 文档数据:指南 — 快速上手 / 宿主接入 / 主题定制 / 样式定制 / 基础设施(不进首页画廊) */
 import { useEffect, useState } from 'react';
 import { Button, InfoBar, TextArea } from '@fluent-react/ui';
+import { HomeRegular, SettingsRegular } from '@fluent-react/icon';
 import type { DocDef } from '../types';
 
 /* ---- 运行时提取默认令牌(从编译后样式表读,永远与当前版本一致) ---- */
@@ -110,11 +111,11 @@ export default defineConfig({ plugins: [react(), tailwindcss()], base: './' });`
       demo: note('mode="multi" 即本文档站形态;单窗口小工具用 mode="single"。'),
       code: `
 import { useState } from 'react';
-import { AppShell, Button, Icon, useToast, type NavEntry } from '@fluent-react/ui';
+import { AppShell, Button, useToast, type NavEntry } from '@fluent-react/ui';
 
 const NAV: NavEntry[] = [
-  { key: 'home', label: '首页', icon: <Icon name="home" /> },
-  { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+  { key: 'home', label: '首页', icon: <HomeRegular /> },
+  { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
 ];
 
 export function App() {
@@ -195,6 +196,74 @@ useJadeEvent<{ task: string; percent: number }>('progress', (p) => setPct(p.perc
 const { dark, mode, backdrop } = useTheme();`,
     },
     {
+      title: '协议详解:前端会发什么(内置通道)',
+      description:
+        '初始化时序:env(仅当 PreloadJS 未注入 __JV_ENV)→ set-theme → apply-titlebar →(支持材质时)set-backdrop。之后每次切主题重发 set-theme + apply-titlebar,切材质重发 set-backdrop。通道名可经 configure.channels 改,发送结构不变。',
+      demo: note('宿主只需处理这四个通道就能吃下全部默认行为;业务通道(inv 自定义名)结构完全由你自定。'),
+      code: `
+// ① env —— 前端发:{}(空对象)
+//    期望应答:JadeEnv(对象或 JSON 字符串都行,前端自动解析)
+{ "os": "windows", "arch": "amd64", "win11": true }
+
+// ② set-theme —— 前端发(注意首字母大写):
+{ "mode": "Light" }        // 'Light' | 'Dark' | 'System'
+//    应答内容前端不读,建议回执:{ "theme": "Light", "effective": "Light" }
+//    宿主职责:切窗口主题;System 时跟随系统并在变化时推 theme-changed 事件
+
+// ③ apply-titlebar —— 每次主题生效后前端发:
+{ "dark": true }
+//    宿主职责:改标题栏覆盖层配色;应答前端不读
+
+// ④ set-backdrop —— 前端发:
+{ "type": "mica" }                          // 'mica' | 'micaAlt' | 'acrylic'
+{ "type": "none", "color": "#202020FF" }    // 不支持材质时:纯色底,#RRGGBBAA 随深浅色
+//    宿主职责:设置窗口材质或纯色背景;应答前端不读`,
+    },
+    {
+      title: '协议详解:宿主要实现什么(window.jade)',
+      description:
+        '宿主注入两件必须品:invoke(命令调用)与 on(事件订阅,返回退订函数);推荐再同步注入 window.__JV_ENV 省一次 env 调用。invoke 成功 resolve 业务数据(建议直接回对象);失败 reject 一个带 code + message 的错误——前端 inv 不抛错,返回 null 并把错误交给 configure.onError。',
+      demo: note('mock.ts 就是一份可运行的宿主参考实现:每个 handler 的入参/返回/抛错结构与真机契约一致。'),
+      code: `
+// 宿主注入面(必须两个,其余可选)
+window.jade = {
+  // 命令调用:成功 resolve 业务数据;失败 reject { code, message }
+  invoke(channel, payload, opts /* { timeout } */) { ... },
+  // 事件订阅:返回退订函数(useJadeEvent 卸载时会调用)
+  on(event, callback) { ...; return unsubscribe; },
+};
+window.__JV_ENV = { os: 'windows', arch: 'amd64', win11: true };  // 推荐:同步注入省一次 env
+
+// 业务调用示例:前端发什么、期望收什么完全由你的通道自定
+// 前端:const r = await inv('load_users', { query: '管理员' });
+// 宿主应答(resolve):
+{ "users": [{ "id": 1, "name": "林婉清", "role": "管理员", "online": true }], "total": 1 }
+
+// 错误应答(reject):带 code 便于前端分支;inv 不抛错 → onError(channel, err)
+{ "code": "VALIDATION", "message": "姓名不能为空" }
+{ "code": "TIMEOUT",    "message": "命令超时" }     // 前端默认 8000ms,configure.timeout 可改`,
+    },
+    {
+      title: '协议详解:宿主能推什么(事件)',
+      description:
+        '事件 payload 可以是对象或 JSON 字符串(前端自动兜底解析)。toast 是已接好渲染的约定事件——宿主推一条就能弹轻提示;theme-changed / progress 是约定示例,业务事件名与结构自定,前端用 useJadeEvent 订阅。',
+      demo: note('长任务的正确姿势:invoke 立即返回受理,进度走事件推送,完成再推一条 toast。'),
+      code: `
+// toast —— 宿主主动弹轻提示(UI 层已接好渲染,推了就弹)
+{ "level": "success", "title": "导出完成", "message": "report.csv(200 行)已保存。",
+  "id": "export",                                   // 可选:同 id 覆盖旧条(去重)
+  "action": { "label": "打开", "command": "open_file" } }  // 可选:动作钮,点击回发该命令
+
+// theme-changed —— 宿主侧主题实际生效值变化
+{ "theme": "Dark" }        // 'Light' | 'Dark'
+
+// progress —— 长任务进度(示例约定,结构可自定)
+{ "task": "export", "percent": 65 }
+
+// 前端订阅:
+useJadeEvent<{ task: string; percent: number }>('progress', (p) => setPct(p.percent));`,
+    },
+    {
       title: '独立预览(mock)',
       description: '浏览器里 import mock 即获得模拟宿主:响应 env/主题/材质通道、可模拟事件推送;真机存在 window.jade 时 mock 自动让位。无宿主也不引 mock 时,bridge 置 data-mock 强制纯色底(浏览器没有真实 Mica,透明底会让暗色文字隐形)。',
       demo: note('mock 只在开发入口引一次:import "@fluent-react/bridge/mock"。'),
@@ -206,17 +275,54 @@ import '@fluent-react/bridge/mock';`,
   props: [],
   extraApis: [
     {
-      title: 'bridge API',
+      title: '① 接入必须(只有这一行)',
       rows: [
-        { name: "import '@fluent-react/bridge/auto'", type: 'side-effect', description: '默认行为一行接完:mock + ready()(自动 Mica)。' },
-        { name: 'ready(options?)', type: 'Promise<InitResult>', description: '等待初始化并取结果 { hasJade, ENV, hasBackdrop };幂等,首调可带 backdrop 等参数。' },
-        { name: 'configure({ channels, onError, onLog })', type: 'void', description: '覆盖通道名与全局错误/日志回调。' },
-        { name: 'inv(channel, payload?)', type: 'Promise<T | null>', description: '调用宿主;失败返回 null 并走 onError。' },
-        { name: 'useJadeEvent(event, cb)', type: 'hook', description: '订阅宿主事件,卸载自动退订。' },
-        { name: 'useTheme()', type: '{ dark, mode, backdrop }', description: '主题状态(随切换重渲染)。' },
-        { name: 'setThemeMode(mode)', type: "Promise<void>('light'|'dark'|'system')", description: '切换深浅色并下发宿主。' },
-        { name: 'applyBackdrop(type)', type: 'Promise<void>', description: "窗口材质:'mica' | 'micaAlt' | 'acrylic'(驼峰)。" },
-        { name: 'hasJade / ENV', type: 'boolean / JadeEnv', description: '宿主存在性与环境信息(os / win11 / 版本)。' },
+        { name: "import '@fluent-react/bridge/auto'", type: 'side-effect', description: '默认行为一行接完:浏览器 mock(真机自动让位)+ 幂等初始化 + 支持材质时自动 Mica。' },
+      ],
+    },
+    {
+      title: '② 业务通信(要和宿主收发数据才用)',
+      rows: [
+        { name: 'inv(channel, payload?)', type: 'Promise<T | null>', description: '调用宿主任意业务通道;失败不抛错——返回 null 并走 onError。' },
+        { name: 'useJadeEvent(event, cb)', type: 'hook', description: '订阅宿主推送事件,卸载自动退订;payload 字符串自动 JSON 解析。' },
+      ],
+    },
+    {
+      title: '③ 进阶可选(各有明确的「只有…才需要」)',
+      rows: [
+        { name: 'ready(options?)', type: 'Promise<InitResult>', description: '只有需要初始化结果(是否宿主内 / 是否支持材质)才调;幂等,首调可带 backdrop。' },
+        { name: 'configure({ ... })', type: 'void', description: '只有通道名和 JadeView 约定不一样、或要接全局错误/日志回调才配。' },
+        { name: 'useTheme()', type: '{ dark, mode, backdrop }', description: '只有做主题相关 UI(如设置页)才用;随切换自动重渲染。' },
+        { name: 'setThemeMode(mode)', type: "('light'|'dark'|'system') => Promise", description: '只有提供深浅色切换入口才用;改完自动下发宿主。' },
+        { name: 'applyBackdrop(type)', type: '(type: string) => Promise', description: "只有提供材质切换入口才用:'mica' | 'micaAlt' | 'acrylic' | 'none'。" },
+        { name: 'hasJade / ENV', type: 'boolean / JadeEnv', description: '只有做环境分支(宿主内 / 浏览器、Win11 与否)才读。' },
+      ],
+    },
+    {
+      title: '内置通道协议:前端 → 宿主(名称可经 configure.channels 改)',
+      rows: [
+        { name: 'env', type: '发 {}', description: '期望应答 JadeEnv:{ os, arch, win11 }(对象或 JSON 字符串均可)。仅当 PreloadJS 未注入 window.__JV_ENV 时才会调用。' },
+        { name: 'set-theme', type: "发 { mode: 'Light' | 'Dark' | 'System' }", description: '宿主据此切窗口主题;应答内容前端不读(建议回 { theme, effective })。' },
+        { name: 'apply-titlebar', type: '发 { dark: boolean }', description: '每次主题生效后调用,宿主据此改标题栏覆盖层配色;应答前端不读。' },
+        { name: 'set-backdrop', type: "发 { type, color? }", description: "type: 'mica' | 'micaAlt' | 'acrylic' | 'none';type='none' 时附 color(#RRGGBBAA 纯色,随深浅色变化);应答前端不读。" },
+      ],
+    },
+    {
+      title: '事件协议:宿主 → 前端(window.jade 触发,useJadeEvent 订阅)',
+      kind: 'events',
+      rows: [
+        { name: 'toast', type: 'ToastPayload', description: '宿主主动弹轻提示:{ level?, title?, message, duration?, id?, action?: { label, command } };UI 层已接好渲染。' },
+        { name: 'theme-changed', type: "{ theme: 'Light' | 'Dark' }", description: '宿主侧主题实际生效值变化时推送(约定事件,业务可选订阅)。' },
+        { name: 'progress', type: '{ task: string, percent: number }', description: '长任务进度推送(示例约定;业务事件名与结构可自定)。' },
+      ],
+    },
+    {
+      title: '数据结构',
+      rows: [
+        { name: 'InitResult', type: '{ hasJade, ENV, hasBackdrop }', description: 'ready() 的返回:是否宿主内 / 环境信息 / 是否支持真实材质(Win11)。' },
+        { name: 'JadeEnv', type: '{ os: string, arch: string, win11: boolean }', description: '运行环境;优先取 PreloadJS 注入的 window.__JV_ENV,否则经 env 通道兜底。' },
+        { name: 'BridgeConfig', type: '{ timeout, channels, onError, onLog, solidColor }', description: 'configure 可覆盖项:超时(默认 8000ms)/ 四个内置通道名 / 全局错误与日志回调 / 纯色底取色函数。' },
+        { name: '错误对象', type: '{ code: string, message: string }', description: '宿主 reject 时应携带 code + message;inv 不抛错,原样交给 onError(channel, err)。' },
       ],
     },
   ],
@@ -364,7 +470,7 @@ import { Button, Card, Table } from '@fluent-react/ui';
         { name: 'NavView', type: '.nav([data-collapsed]) / .nav-item(.active) / .nav-header / .nav-indicator / .nav-top / .nav-slot', description: '导航容器(折叠属性)、条目(激活态)、分组标题、accent 指示条、滚动列表区、搜索插槽。' },
         { name: 'Button', type: '.btn + .accent / .subtle / .link / .danger / .sm / .lg / .icon-only / .loading', description: '变体与尺寸全是修饰类,可组合。' },
         { name: 'ToggleButton', type: '.btn.toggle-btn(按下挂 .accent)', description: '复用按钮四态。' },
-        { name: 'Icon', type: '.icon', description: '尺寸经内联 style 钉定,颜色 currentColor。' },
+        { name: 'Fluent icons', type: '[data-fui-icon] / .icon', description: '官方 headless 图标;尺寸 size,颜色 color(默认 currentColor)。' },
       ],
     },
     {
@@ -437,13 +543,26 @@ const infra: DocDef = {
   cn: '',
   description:
     '组件之下的公共层:FluentProvider(Toast / 确认框渲染宿主与命令式绑定)、浮层基建(useFlyout / useFixedPlacement / MenuList,自组下拉与菜单)、通用工具(cn / useMergedState)。',
-  importCode: `import { FluentProvider, useFlyout, useFixedPlacement, MenuList, cn, useMergedState } from '@fluent-react/ui';`,
+  importCode: `import {
+  FluentProvider,
+  useFlyout,
+  useFixedPlacement,
+  MenuList,
+  cn,
+  useMergedState,
+} from '@fluent-react/ui';`,
   sections: [
     {
       title: 'FluentProvider 与命令式反馈',
       demo: note('Provider 未挂载时:useToast/useConfirm 抛错;message/notification 仅 console.warn、modal.confirm 按取消处理——不会炸树。'),
       code: `
-import { FluentProvider, useToast, useConfirm, message, modal } from '@fluent-react/ui';
+import {
+  FluentProvider,
+  useToast,
+  useConfirm,
+  message,
+  modal,
+} from '@fluent-react/ui';
 
 // 组件内
 const toast = useToast();

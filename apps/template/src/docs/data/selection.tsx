@@ -1,9 +1,18 @@
 /* 文档数据:选择 — ComboBox / ListBox / Dropdown / Tree */
 import { useState } from 'react';
 import {
-  Button, ComboBox, ContextMenuArea, DropDownButton, Icon, ListBox, MultiSelect, Tree,
-  useToast, type MenuItemDef, type TreeDataNode,
+  Button,
+  ComboBox,
+  ContextMenuArea,
+  DropDownButton,
+  ListBox,
+  MultiSelect,
+  Tree,
+  useToast,
+  type MenuItemDef,
+  type TreeDataNode,
 } from '@fluent-react/ui';
+import { CopyRegular, DismissRegular, DocumentRegular } from '@fluent-react/icon';
 import type { DocDef } from '../types';
 
 const CITY = [
@@ -12,11 +21,11 @@ const CITY = [
 ];
 
 const MENU: MenuItemDef[] = [
-  { key: 'open', label: '打开', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
-  { key: 'copy', label: '复制', icon: <Icon name="copy" size={14} strokeWidth={1.3} /> },
+  { key: 'open', label: '打开', icon: <DocumentRegular size={14} /> },
+  { key: 'copy', label: '复制', icon: <CopyRegular size={14} /> },
   { key: 'rename', label: '重命名', disabled: true },
   { key: 'd1', divider: true },
-  { key: 'del', label: '删除', danger: true, icon: <Icon name="close" size={14} strokeWidth={1.3} /> },
+  { key: 'del', label: '删除', danger: true, icon: <DismissRegular size={14} /> },
 ];
 
 const TREE: TreeDataNode[] = [
@@ -32,9 +41,9 @@ const TREE: TreeDataNode[] = [
 ];
 
 const FILES = [
-  { value: 'button', label: 'Button.tsx', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
-  { value: 'combo', label: 'ComboBox.tsx', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
-  { value: 'readme', label: 'README.md', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
+  { value: 'button', label: 'Button.tsx', icon: <DocumentRegular size={14} /> },
+  { value: 'combo', label: 'ComboBox.tsx', icon: <DocumentRegular size={14} /> },
+  { value: 'readme', label: 'README.md', icon: <DocumentRegular size={14} /> },
 ];
 
 const combobox: DocDef = {
@@ -130,8 +139,31 @@ export function ComboBoxSizeExample() {
   );
 }`,
     },
+    {
+      title: '着色与圆角',
+      description: 'color 作用于展开下划线;radius 四档。',
+      demo: (
+        <div className="flex flex-col gap-3 items-start">
+          <ComboBox color="success" defaultValue="a" options={[{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }]} />
+          <ComboBox color="danger" radius="lg" options={[{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }]} />
+        </div>
+      ),
+      code: `
+import { ComboBox } from '@fluent-react/ui';
+
+export function ComboBoxColorRadiusExample() {
+  return (
+    <div className="flex flex-col gap-3 items-start">
+      <ComboBox color="success" defaultValue="a" options={[{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }]} />
+      <ComboBox color="danger" radius="lg" options={[{ value: 'a', label: '选项 A' }, { value: 'b', label: '选项 B' }]} />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:展开下划线随之变色。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'options', type: '{ value: string; label: ReactNode }[]', description: '候选项(必填)。' },
     { name: 'value / defaultValue', type: 'string | null', default: 'null', description: '受控 / 非受控选中值。' },
     { name: 'size', type: "'small' | 'middle' | 'large'", default: "'middle'", description: '三档高度。' },
@@ -242,8 +274,31 @@ export function MultiSelectStateExample() {
   );
 }`,
     },
+    {
+      title: '着色与圆角',
+      description: 'color 作用于展开下划线;radius 四档。',
+      demo: (
+        <div className="flex flex-col gap-3 items-start">
+          <MultiSelect color="success" defaultValue={['a']} options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }, { value: 'c', label: 'C' }]} />
+          <MultiSelect color="warning" radius="lg" options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} />
+        </div>
+      ),
+      code: `
+import { MultiSelect } from '@fluent-react/ui';
+
+export function MultiSelectColorRadiusExample() {
+  return (
+    <div className="flex flex-col gap-3 items-start">
+      <MultiSelect color="success" defaultValue={['a']} options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }, { value: 'c', label: 'C' }]} />
+      <MultiSelect color="warning" radius="lg" options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:展开下划线随之变色。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'options', type: '{ value: string; label: ReactNode }[]', description: '候选项(必填)。' },
     { name: 'value / defaultValue', type: 'string[]', default: '[]', description: '受控 / 非受控选中集。' },
     { name: 'maxTagCount', type: 'number', description: '触发器内平铺 Tag 上限,超出收纳为 +N。' },
@@ -324,13 +379,13 @@ export function ListBoxMultiExample() {
       demo: <ListIcon />,
       code: `
 import { useState } from 'react';
-import { Icon, ListBox } from '@fluent-react/ui';
+import { ListBox } from '@fluent-react/ui';
 
 // items 的 icon 字段渲染为前置图标
 const files = [
-  { value: 'button', label: 'Button.tsx', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
-  { value: 'combo', label: 'ComboBox.tsx', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
-  { value: 'readme', label: 'README.md', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
+  { value: 'button', label: 'Button.tsx', icon: <DocumentRegular size={14} /> },
+  { value: 'combo', label: 'ComboBox.tsx', icon: <DocumentRegular size={14} /> },
+  { value: 'readme', label: 'README.md', icon: <DocumentRegular size={14} /> },
 ];
 
 export function ListBoxIconExample() {
@@ -379,14 +434,14 @@ const dropdown: DocDef = {
       description: 'split 形态:左半段直接执行主操作,右侧箭头展开菜单。',
       demo: <DropdownDemo />,
       code: `
-import { DropDownButton, Icon, useToast, type MenuItemDef } from '@fluent-react/ui';
+import { DropDownButton, useToast, type MenuItemDef } from '@fluent-react/ui';
 
 const items: MenuItemDef[] = [
-  { key: 'open', label: '打开', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
-  { key: 'copy', label: '复制', icon: <Icon name="copy" size={14} strokeWidth={1.3} /> },
+  { key: 'open', label: '打开', icon: <DocumentRegular size={14} /> },
+  { key: 'copy', label: '复制', icon: <CopyRegular size={14} /> },
   { key: 'rename', label: '重命名', disabled: true }, // disabled 禁用项(不可点)
   { key: 'd1', divider: true }, // divider 渲染为分隔线
-  { key: 'del', label: '删除', danger: true, icon: <Icon name="close" size={14} strokeWidth={1.3} /> },
+  { key: 'del', label: '删除', danger: true, icon: <DismissRegular size={14} /> },
 ];
 
 export function DropDownButtonExample() {
@@ -413,14 +468,14 @@ export function DropDownButtonExample() {
       description: 'ContextMenuArea 在包裹区域内接管 contextmenu,菜单在指针位置弹出。',
       demo: <CtxDemo />,
       code: `
-import { ContextMenuArea, Icon, useToast, type MenuItemDef } from '@fluent-react/ui';
+import { ContextMenuArea, useToast, type MenuItemDef } from '@fluent-react/ui';
 
 const items: MenuItemDef[] = [
-  { key: 'open', label: '打开', icon: <Icon name="file" size={14} strokeWidth={1.3} /> },
-  { key: 'copy', label: '复制', icon: <Icon name="copy" size={14} strokeWidth={1.3} /> },
+  { key: 'open', label: '打开', icon: <DocumentRegular size={14} /> },
+  { key: 'copy', label: '复制', icon: <CopyRegular size={14} /> },
   { key: 'rename', label: '重命名', disabled: true }, // disabled 禁用项(不可点)
   { key: 'd1', divider: true },
-  { key: 'del', label: '删除', danger: true, icon: <Icon name="close" size={14} strokeWidth={1.3} /> },
+  { key: 'del', label: '删除', danger: true, icon: <DismissRegular size={14} /> },
 ];
 
 export function ContextMenuAreaExample() {

@@ -2,9 +2,18 @@
  * Card / Expander / Badge / Skeleton / Empty。薄封装,类契约与 fluent-kit 一致。 */
 import type { HTMLAttributes, InputHTMLAttributes, ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  CheckmarkCircleRegular,
+  CheckmarkRegular,
+  ChevronRightRegular,
+  ErrorCircleRegular,
+  InfoRegular,
+  SubtractRegular,
+  WarningRegular,
+} from '@fluent-react/icon';
+import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
-type InputBase = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'children'>;
+type InputBase = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'children' | 'color'>;
 
 export interface CheckboxProps extends InputBase {
   children?: ReactNode;
@@ -14,15 +23,21 @@ export interface CheckboxProps extends InputBase {
   card?: boolean;
   /** 卡片形态的描述行(标题下方,弱化字色) */
   description?: ReactNode;
+  /** 语义着色:选中态随之变色 */
+  color?: SemanticColor;
 }
 
-export function Checkbox({ children, className, indeterminate, card, description, ...rest }: CheckboxProps) {
+export function Checkbox({ children, className, indeterminate, card, description, color, ...rest }: CheckboxProps) {
   return (
-    <label className={cn('check', card && 'check-card', className)}>
+    <label className={cn('check', card && 'check-card', colorClass(color), className)}>
       <input type="checkbox"
              ref={(el) => { if (el) el.indeterminate = !!indeterminate; }}
              {...rest} />
-      <span className="box"><Icon name={indeterminate ? 'minus' : 'check'} size={14} strokeWidth={2} /></span>
+      <span className="box">
+        {indeterminate
+          ? <SubtractRegular size={14} />
+          : <CheckmarkRegular size={14} />}
+      </span>
       {card ? (
         <span className="cc-body">
           <span className="cc-title">{children}</span>
@@ -39,11 +54,13 @@ export interface RadioProps extends InputBase {
   card?: boolean;
   /** 卡片形态的描述行 */
   description?: ReactNode;
+  /** 语义着色:选中态随之变色 */
+  color?: SemanticColor;
 }
 
-export function Radio({ children, className, card, description, ...rest }: RadioProps) {
+export function Radio({ children, className, card, description, color, ...rest }: RadioProps) {
   return (
-    <label className={cn('check radio', card && 'check-card', className)}>
+    <label className={cn('check radio', card && 'check-card', colorClass(color), className)}>
       <input type="radio" {...rest} />
       <span className="box" />
       {card ? (
@@ -62,11 +79,13 @@ export interface SwitchProps extends InputBase {
   card?: boolean;
   /** 卡片形态的描述行 */
   description?: ReactNode;
+  /** 语义着色:开启态轨道随之变色 */
+  color?: SemanticColor;
 }
 
-export function Switch({ children, className, card, description, ...rest }: SwitchProps) {
+export function Switch({ children, className, card, description, color, ...rest }: SwitchProps) {
   return (
-    <label className={cn('switch', card && 'check-card switch-card', className)}>
+    <label className={cn('switch', card && 'check-card switch-card', colorClass(color), className)}>
       <input type="checkbox" {...rest} />
       {/* track 必须紧跟 input(input:checked + .track 相邻选择器);卡片布局用 flex order 调 */}
       <span className="track" />
@@ -89,13 +108,15 @@ export interface ProgressBarProps {
   /** 右侧显示进度文字(antd showInfo 惯例) */
   showInfo?: boolean;
   format?: (value: number) => string;
+  /** 语义着色:填充条随之变色 */
+  color?: SemanticColor;
   className?: string;
 }
 
-export function ProgressBar({ value, indeterminate, showInfo, format, className }: ProgressBarProps) {
+export function ProgressBar({ value, indeterminate, showInfo, format, color, className }: ProgressBarProps) {
   const v = Math.min(100, Math.max(0, value ?? 0));
   const bar = (
-    <div className={cn('progress', indeterminate && 'indeterminate', !showInfo && className)}
+    <div className={cn('progress', indeterminate && 'indeterminate', colorClass(color), !showInfo && className)}
          role="progressbar" aria-valuenow={indeterminate ? undefined : v} aria-valuemin={0} aria-valuemax={100}>
       <i style={indeterminate ? undefined : { width: `${v}%` }} />
     </div>
@@ -117,17 +138,19 @@ export interface ProgressRingProps {
   /** 环心显示进度文字(仅确定态) */
   showInfo?: boolean;
   format?: (value: number) => string;
+  /** 语义着色:圆环随之变色 */
+  color?: SemanticColor;
   className?: string;
 }
 
 const RING_R = 45;                                   // viewBox 100 的半径
 const RING_C = 2 * Math.PI * RING_R;
 
-export function ProgressRing({ value, size, showInfo, format, className }: ProgressRingProps) {
+export function ProgressRing({ value, size, showInfo, format, color, className }: ProgressRingProps) {
   // 类名 progress-ring/progress-circle:避开 Tailwind 的 ring 工具类(撞名会叠 box-shadow)
   if (value == null) {
     return (
-      <svg className={cn('progress-ring', className)} viewBox="0 0 24 24" role="progressbar" aria-label="加载中"
+      <svg className={cn('progress-ring', colorClass(color), className)} viewBox="0 0 24 24" role="progressbar" aria-label="加载中"
            style={size != null ? { width: size, height: size } : undefined}>
         <circle cx="12" cy="12" r="9" />
       </svg>
@@ -136,7 +159,7 @@ export function ProgressRing({ value, size, showInfo, format, className }: Progr
   const v = Math.min(100, Math.max(0, value));
   const px = size ?? 64;
   return (
-    <span className={cn('progress-circle', className)} style={{ width: px, height: px }}
+    <span className={cn('progress-circle', colorClass(color), className)} style={{ width: px, height: px }}
           role="progressbar" aria-valuenow={v} aria-valuemin={0} aria-valuemax={100}>
       <svg viewBox="0 0 100 100">
         <circle className="pc-track" cx="50" cy="50" r={RING_R} />
@@ -152,14 +175,20 @@ export function ProgressRing({ value, size, showInfo, format, className }: Progr
   );
 }
 
-const INFOBAR_ICON = { info: 'info', success: 'success', warning: 'warning', error: 'error' } as const;
+const INFOBAR_ICON = {
+  info: InfoRegular,
+  success: CheckmarkCircleRegular,
+  warning: WarningRegular,
+  error: ErrorCircleRegular,
+} as const;
 
 export function InfoBar({ level = 'info', title, children, className }: {
   level?: keyof typeof INFOBAR_ICON; title?: string; children?: ReactNode; className?: string;
 }) {
+  const LevelIcon = INFOBAR_ICON[level];
   return (
     <div className={cn('infobar', level, className)} role={level === 'error' ? 'alert' : 'status'}>
-      <Icon name={INFOBAR_ICON[level]} />
+      <LevelIcon className="icon" size={16} />
       <div className="body">
         {title && <b>{title}</b>}
         <span className="msg">{children}</span>
@@ -168,8 +197,24 @@ export function InfoBar({ level = 'info', title, children, className }: {
   );
 }
 
-export function Card({ layer, className, ...rest }: HTMLAttributes<HTMLDivElement> & { layer?: boolean }) {
-  return <div className={cn('card', layer && 'layer', className)} {...rest} />;
+export function Card({ layer, radius, className, onPointerMove, ...rest }: HTMLAttributes<HTMLDivElement> & {
+  layer?: boolean;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
+}) {
+  /* 内置 Reveal 光斑:pointer 写 --mx/--my,CSS 画径向高光(见 theme §19) */
+  return (
+    <div
+      className={cn('card', 'reveal', layer && 'layer', radiusClass(radius), className)}
+      onPointerMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
+        e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
+        onPointerMove?.(e);
+      }}
+      {...rest}
+    />
+  );
 }
 
 export function Expander({ summary, children, defaultOpen, className }: {
@@ -179,15 +224,20 @@ export function Expander({ summary, children, defaultOpen, className }: {
     <details className={cn('expander', className)} open={defaultOpen}>
       <summary>
         {summary}
-        <Icon name="chevronRight" className="chev" />
+        <ChevronRightRegular className="chev" />
       </summary>
       <div className="body">{children}</div>
     </details>
   );
 }
 
-export function Badge({ dot, className, style, children }: { dot?: boolean; className?: string; style?: React.CSSProperties; children?: ReactNode }) {
-  return <span className={cn('badge', dot && 'dot', className)} style={style}>{children}</span>;
+export function Badge({ dot, color, className, style, children }: {
+  dot?: boolean;
+  /** 语义着色(缺省 critical 红) */
+  color?: SemanticColor;
+  className?: string; style?: React.CSSProperties; children?: ReactNode;
+}) {
+  return <span className={cn('badge', dot && 'dot', colorClass(color), className)} style={style}>{children}</span>;
 }
 
 export function Skeleton({ className, style }: { className?: string; style?: React.CSSProperties }) {

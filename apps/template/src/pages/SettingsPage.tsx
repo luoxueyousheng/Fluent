@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { ComboBox, Icon, SettingsCard, SettingsExpander, Switch, message } from '@fluent-react/ui';
+import {
+  ComboBox,
+  SettingsCard,
+  SettingsExpander,
+  Switch,
+  message,
+} from '@fluent-react/ui';
+import { InfoRegular, PaintBrushRegular } from '@fluent-react/icon';
 import { applyBackdrop, hasJade, setThemeMode, useTheme, type ThemeMode } from '@fluent-react/bridge';
 
 export function SettingsPage({ hasBackdrop }: { hasBackdrop: boolean }) {
@@ -12,7 +19,7 @@ export function SettingsPage({ hasBackdrop }: { hasBackdrop: boolean }) {
 
       <h2 className="t-subtitle" style={{ margin: '16px 0 8px' }}>外观</h2>
       <div className="settings-group">
-        <SettingsCard icon={<Icon name="brush" strokeWidth={1.3} />} title="颜色模式"
+        <SettingsCard icon={<PaintBrushRegular />} title="颜色模式"
                       description={`选择应用的明暗外观(当前:${dark ? '深色' : '浅色'})`}>
           <ComboBox aria-label="颜色模式" value={mode}
                     onChange={(m) => void setThemeMode(m as ThemeMode)}
@@ -33,7 +40,7 @@ export function SettingsPage({ hasBackdrop }: { hasBackdrop: boolean }) {
         <SettingsCard title="自动保存" description="编辑内容时自动保存更改">
           <Switch checked={autosave} onChange={(e) => setAutosave(e.target.checked)} aria-label="自动保存" />
         </SettingsCard>
-        <SettingsExpander icon={<Icon name="info" strokeWidth={1.3} />} title="通知"
+        <SettingsExpander icon={<InfoRegular />} title="通知"
                           description="Toast 通知的显示方式" defaultOpen>
           <SettingsCard title="显示操作按钮" description="通知中允许出现快捷操作">
             <Switch defaultChecked aria-label="显示操作按钮" />

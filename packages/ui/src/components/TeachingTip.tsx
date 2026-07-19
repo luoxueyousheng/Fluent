@@ -8,7 +8,9 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  DismissRegular,
+} from '@fluent-react/icon';
 
 export interface TeachingTipProps {
   open: boolean;
@@ -60,7 +62,7 @@ export function TeachingTip({ open, onClose, title, content, actions, placement 
           <div className="tt-head">
             <b>{title}</b>
             <button type="button" className="tt-close" aria-label="关闭" onClick={onClose}>
-              <Icon name="close" size={11} strokeWidth={1.3} />
+              <DismissRegular size={11} />
             </button>
           </div>
           {content && <div className="tt-content">{content}</div>}

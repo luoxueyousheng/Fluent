@@ -1,8 +1,11 @@
 export { cn } from './cn';
+export { radiusClass, colorClass, type Radius, type SemanticColor } from './modifiers';
 export { useMergedState } from './useMergedState';
 export { message, notification, modal, type NotificationConfig, type ModalConfirmConfig } from './imperative';
-export { Icon, type IconName, type IconProps } from './components/Icon';
-export { Button, ToggleButton, type ButtonProps, type ToggleButtonProps, type ControlSize } from './components/Button';
+export {
+  Button, ToggleButton, ToggleButtonGroup,
+  type ButtonProps, type ToggleButtonProps, type ToggleButtonGroupProps, type ToggleButtonGroupOption, type ControlSize,
+} from './components/Button';
 export { Form, type FormProps, type FormItemProps, type Rule } from './components/Form';
 export {
   Checkbox, Radio, Switch, Toggle, ProgressBar, ProgressRing, InfoBar,
@@ -64,3 +67,12 @@ export { AppShell, type AppShellProps } from './components/AppShell';
 export { SettingsCard, SettingsExpander, type SettingsCardProps, type SettingsExpanderProps } from './components/SettingsCard';
 export { useFocusTrap } from './focusTrap';
 export { installScrollIndicators } from './scrollIndicator';
+export { Popconfirm, type PopconfirmProps } from './components/Popconfirm';
+export { Descriptions, type DescriptionsProps, type DescriptionsItem } from './components/Descriptions';
+export { Result, type ResultProps } from './components/Result';
+export { Tour, type TourProps, type TourStep } from './components/Tour';
+export { Anchor, type AnchorProps, type AnchorLink } from './components/Anchor';
+export { HotkeyInput, type HotkeyInputProps } from './components/HotkeyInput';
+export { Cascader, type CascaderProps, type CascaderOption } from './components/Cascader';
+export { Transfer, type TransferProps, type TransferItem } from './components/Transfer';
+export { VirtualList, type VirtualListProps } from './components/VirtualList';

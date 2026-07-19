@@ -1,8 +1,21 @@
 /* 文档数据:输入 — Checkbox / Radio / Switch / Slider / NumberBox / Rating / ColorPicker / Upload */
 import { useState } from 'react';
 import {
-  Button, Checkbox, CheckboxGroup, ColorPicker, NumberBox, Radio, RadioGroup, RangeSlider,
-  Rating, Slider, Switch, SwitchGroup, Upload, type UploadFile, type UploadRequestOptions,
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  ColorPicker,
+  NumberBox,
+  Radio,
+  RadioGroup,
+  RangeSlider,
+  Rating,
+  Slider,
+  Switch,
+  SwitchGroup,
+  Upload,
+  type UploadFile,
+  type UploadRequestOptions,
 } from '@fluent-react/ui';
 import type { DocDef } from '../types';
 
@@ -249,8 +262,40 @@ export function VerticalDisabledExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: 'color 语义五色作用于选中态(勾选框/卡片描边)。组组件 CheckboxGroup 同样支持整组 color。',
+      demo: (
+        <div className="flex flex-col gap-3 items-start">
+          <div className="flex flex-wrap gap-3">
+            <Checkbox defaultChecked color="success">成功</Checkbox>
+            <Checkbox defaultChecked color="warning">警告</Checkbox>
+            <Checkbox defaultChecked color="danger">危险</Checkbox>
+          </div>
+          <CheckboxGroup color="success" defaultValue={['a']}
+            options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }, { value: 'c', label: 'C' }]} />
+        </div>
+      ),
+      code: `
+import { Checkbox, CheckboxGroup } from '@fluent-react/ui';
+
+export function CheckboxColorExample() {
+  return (
+    <div className="flex flex-col gap-3 items-start">
+      <div className="flex flex-wrap gap-3">
+        <Checkbox defaultChecked color="success">成功</Checkbox>
+        <Checkbox defaultChecked color="warning">警告</Checkbox>
+        <Checkbox defaultChecked color="danger">危险</Checkbox>
+      </div>
+      <CheckboxGroup color="success" defaultValue={['a']}
+        options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }, { value: 'c', label: 'C' }]} />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:选中态随之变色。' },
     { name: 'checked', type: 'boolean', description: '受控选中态。' },
     { name: 'defaultChecked', type: 'boolean', default: 'false', description: '非受控初始选中态。' },
     { name: 'indeterminate', type: 'boolean', default: 'false', description: '半选态(横杠视觉,不影响 checked)。' },
@@ -453,8 +498,40 @@ export function VerticalUncontrolledExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: 'color 作用于选中圆点与卡片描边;RadioGroup 可整组着色。',
+      demo: (
+        <div className="flex flex-col gap-3 items-start">
+          <div className="flex flex-wrap gap-3">
+            <Radio name="rc" defaultChecked color="success">成功</Radio>
+            <Radio name="rc" color="warning">警告</Radio>
+            <Radio name="rc" color="danger">危险</Radio>
+          </div>
+          <RadioGroup color="danger" defaultValue="a"
+            options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} />
+        </div>
+      ),
+      code: `
+import { Radio, RadioGroup } from '@fluent-react/ui';
+
+export function RadioColorExample() {
+  return (
+    <div className="flex flex-col gap-3 items-start">
+      <div className="flex flex-wrap gap-3">
+        <Radio name="rc" defaultChecked color="success">成功</Radio>
+        <Radio name="rc" color="warning">警告</Radio>
+        <Radio name="rc" color="danger">危险</Radio>
+      </div>
+      <RadioGroup color="danger" defaultValue="a"
+        options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:选中态随之变色。' },
     { name: 'checked / defaultChecked', type: 'boolean', description: '受控 / 非受控选中态(原生)。' },
     { name: 'name', type: 'string', description: '同组 Radio 须同 name 才互斥。' },
     { name: 'card', type: 'boolean', default: 'false', description: '卡片形态:整卡可点,选中 accent 描边 + 浅充。' },
@@ -651,8 +728,40 @@ export function UncontrolledDisabledExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: 'color 作用于开启态轨道;SwitchGroup 可整组着色。',
+      demo: (
+        <div className="flex flex-col gap-3 items-start">
+          <div className="flex flex-wrap gap-3">
+            <Switch defaultChecked color="success">成功</Switch>
+            <Switch defaultChecked color="warning">警告</Switch>
+            <Switch defaultChecked color="danger">危险</Switch>
+          </div>
+          <SwitchGroup color="success" defaultValue={['wifi']}
+            options={[{ value: 'wifi', label: 'Wi-Fi' }, { value: 'bt', label: '蓝牙' }]} />
+        </div>
+      ),
+      code: `
+import { Switch, SwitchGroup } from '@fluent-react/ui';
+
+export function SwitchColorExample() {
+  return (
+    <div className="flex flex-col gap-3 items-start">
+      <div className="flex flex-wrap gap-3">
+        <Switch defaultChecked color="success">成功</Switch>
+        <Switch defaultChecked color="warning">警告</Switch>
+        <Switch defaultChecked color="danger">危险</Switch>
+      </div>
+      <SwitchGroup color="success" defaultValue={['wifi']}
+        options={[{ value: 'wifi', label: 'Wi-Fi' }, { value: 'bt', label: '蓝牙' }]} />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:开启态轨道随之变色。' },
     { name: 'checked / defaultChecked', type: 'boolean', description: '受控 / 非受控开关态(原生 input 语义)。' },
     { name: 'card', type: 'boolean', default: 'false', description: '卡片形态:标题/描述在左、轨道钉右,开启 accent 描边 + 浅充。' },
     { name: 'description', type: 'ReactNode', description: '卡片形态的描述行。' },
@@ -856,8 +965,30 @@ export function VerticalDisabledExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: 'color 作用于轨道填充与拇指(含 RangeSlider)。',
+      demo: <SliderColorDemo />,
+      code: `
+import { useState } from 'react';
+import { RangeSlider, Slider } from '@fluent-react/ui';
+
+export function SliderColorExample() {
+  const [v, setV] = useState(40);
+  const [r, setR] = useState<[number, number]>([20, 70]);
+  return (
+    <div className="flex flex-col gap-4 w-[280px]">
+      <Slider value={v} onChange={setV} color="success" header="成功" showValue />
+      <Slider value={v} onChange={setV} color="warning" header="警告" showValue />
+      <Slider value={v} onChange={setV} color="danger" header="危险" showValue />
+      <RangeSlider value={r} onChange={setR} color="success" aria-label="区间" />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:轨道填充随之变色(RangeSlider 同)。' },
     { name: 'value', type: 'number', description: '当前值(必填,受控)。' },
     { name: 'min / max', type: 'number', default: '0 / 100', description: '取值区间。' },
     { name: 'step', type: 'number', default: '1', description: '步进。' },
@@ -959,8 +1090,41 @@ export function ControlledPrecisionExample() {
   );
 }`,
     },
+    {
+      title: '着色与圆角',
+      description: 'color 作用于聚焦下划线;radius 四档作用于输入框圆角。',
+      demo: (
+        <div className="flex flex-col gap-3 items-start">
+          <NumberBox defaultValue={3} color="success" />
+          <NumberBox defaultValue={3} color="danger" />
+          <div className="flex flex-wrap gap-2">
+            <NumberBox defaultValue={1} radius="none" />
+            <NumberBox defaultValue={1} radius="sm" />
+            <NumberBox defaultValue={1} radius="lg" />
+          </div>
+        </div>
+      ),
+      code: `
+import { NumberBox } from '@fluent-react/ui';
+
+export function NumberBoxColorRadiusExample() {
+  return (
+    <div className="flex flex-col gap-3 items-start">
+      <NumberBox defaultValue={3} color="success" />
+      <NumberBox defaultValue={3} color="danger" />
+      <div className="flex flex-wrap gap-2">
+        <NumberBox defaultValue={1} radius="none" />
+        <NumberBox defaultValue={1} radius="sm" />
+        <NumberBox defaultValue={1} radius="lg" />
+      </div>
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:聚焦下划线随之变色。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'value', type: 'number', description: '受控值。' },
     { name: 'defaultValue', type: 'number', default: '0', description: '非受控初始值。' },
     { name: 'min / max', type: 'number', default: '±Infinity', description: '钳制区间。' },
@@ -1015,8 +1179,32 @@ export function ReadOnlyExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: 'color 作用于点亮星的颜色。',
+      demo: (
+        <div className="flex flex-col gap-2 items-start">
+          <Rating defaultValue={4} color="success" />
+          <Rating defaultValue={3} color="warning" />
+          <Rating defaultValue={2} color="danger" />
+        </div>
+      ),
+      code: `
+import { Rating } from '@fluent-react/ui';
+
+export function RatingColorExample() {
+  return (
+    <div className="flex flex-col gap-2 items-start">
+      <Rating defaultValue={4} color="success" />
+      <Rating defaultValue={3} color="warning" />
+      <Rating defaultValue={2} color="danger" />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:点亮星随之变色。' },
     { name: 'value / defaultValue', type: 'number', default: '0', description: '受控 / 非受控星数。' },
     { name: 'max', type: 'number', default: '5', description: '总星数。' },
     { name: 'readOnly', type: 'boolean', default: 'false', description: '只读展示。' },
@@ -1388,3 +1576,16 @@ function UploadMiscDemo() {
 }
 
 export const inputDocs: DocDef[] = [checkbox, radio, toggle, slider, numberbox, rating, colorpicker, upload];
+
+function SliderColorDemo() {
+  const [v, setV] = useState(40);
+  const [r, setR] = useState<[number, number]>([20, 70]);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: 280 }}>
+      <Slider value={v} onChange={setV} color="success" header="成功" showValue />
+      <Slider value={v} onChange={setV} color="warning" header="警告" showValue />
+      <Slider value={v} onChange={setV} color="danger" header="危险" showValue />
+      <RangeSlider value={r} onChange={setR} color="success" aria-label="区间" />
+    </div>
+  );
+}

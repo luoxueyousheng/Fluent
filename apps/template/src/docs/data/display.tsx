@@ -1,9 +1,31 @@
 /* 文档数据:展示 — Card / Expander / SettingsCard / Image / Carousel / Tag / Badge / Avatar / Divider / Empty / Skeleton */
 import { useState } from 'react';
 import {
-  Avatar, Badge, Button, Card, Carousel, Divider, Empty, Expander, Icon, Image,
-  SettingsCard, SettingsExpander, Skeleton, Splitter, Tag, Timeline, Switch, Tree,
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Carousel,
+  Divider,
+  Empty,
+  Expander,
+  Image,
+  SettingsCard,
+  SettingsExpander,
+  Skeleton,
+  Splitter,
+  Tag,
+  Timeline,
+  Switch,
+  Tree,
 } from '@fluent-react/ui';
+import {
+  ChatRegular,
+  CheckmarkCircleRegular,
+  InfoRegular,
+  PaintBrushRegular,
+  SettingsRegular,
+} from '@fluent-react/icon';
 import type { DocDef } from '../types';
 
 /* 演示图:内联 SVG 渐变(无外部资源) */
@@ -21,7 +43,7 @@ const card: DocDef = {
   name: 'Card',
   cn: '卡片',
   description:
-    '基础内容容器:WinUI 卡片描边 + 悬停微亮。layer 变体使用层级底色(嵌在卡片或彩色区域内时保持对比)。',
+    '基础内容容器:WinUI 卡片描边 + 内置 Reveal 指针跟随光斑(悬停高亮)。layer 变体使用层级底色(嵌在卡片或彩色区域内时保持对比)。',
   importCode: `import { Card } from '@fluent-react/ui';`,
   sections: [
     {
@@ -30,7 +52,7 @@ const card: DocDef = {
         <>
           <Card style={{ padding: 16, width: 220 }}>
             <b>标准卡片</b>
-            <p style={{ color: 'var(--text-2)', marginTop: 6 }}>卡片描边 + 悬停微亮。</p>
+            <p style={{ color: 'var(--text-2)', marginTop: 6 }}>卡片描边 + 指针跟随光斑。</p>
           </Card>
           <Card layer style={{ padding: 16, width: 220 }}>
             <b>layer 卡片</b>
@@ -46,7 +68,7 @@ export function CardExample() {
     <>
       <Card className="w-[220px] p-4">
         <b>标准卡片</b>
-        <p className="mt-1.5 text-(--text-2)">卡片描边 + 悬停微亮。</p>
+        <p className="mt-1.5 text-(--text-2)">卡片描边 + 指针跟随光斑。</p>
       </Card>
       {/* layer 变体:嵌在卡片或彩色区域内时保持对比 */}
       <Card layer className="w-[220px] p-4">
@@ -57,8 +79,34 @@ export function CardExample() {
   );
 }`,
     },
+    {
+      title: '圆角',
+      description: 'radius 四档:none / sm / md / lg,重映 --r-card。',
+      demo: (
+        <div className="flex flex-wrap gap-3">
+          <Card radius="none" className="p-3 w-[120px]">none</Card>
+          <Card radius="sm" className="p-3 w-[120px]">sm</Card>
+          <Card radius="md" className="p-3 w-[120px]">md</Card>
+          <Card radius="lg" className="p-3 w-[120px]">lg</Card>
+        </div>
+      ),
+      code: `
+import { Card } from '@fluent-react/ui';
+
+export function CardRadiusExample() {
+  return (
+    <div className="flex flex-wrap gap-3">
+      <Card radius="none" className="p-3 w-[120px]">none</Card>
+      <Card radius="sm" className="p-3 w-[120px]">sm</Card>
+      <Card radius="md" className="p-3 w-[120px]">md</Card>
+      <Card radius="lg" className="p-3 w-[120px]">lg</Card>
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'layer', type: 'boolean', default: 'false', description: '层级底色变体。' },
     { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '透传 div 属性。' },
   ],
@@ -227,26 +275,26 @@ const settingscard: DocDef = {
       title: '基础用法',
       demo: (
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <SettingsCard icon={<Icon name="brush" strokeWidth={1.3} />} title="主题" description="深浅色随宿主切换">
+          <SettingsCard icon={<PaintBrushRegular />} title="主题" description="深浅色随宿主切换">
             <Switch defaultChecked aria-label="跟随系统" />
           </SettingsCard>
-          <SettingsCard icon={<Icon name="info" strokeWidth={1.3} />} title="关于" description="版本与许可信息"
+          <SettingsCard icon={<InfoRegular />} title="关于" description="版本与许可信息"
                         onClick={() => {}} />
         </div>
       ),
       code: `
-import { Icon, SettingsCard, Switch } from '@fluent-react/ui';
+import { SettingsCard, Switch } from '@fluent-react/ui';
 
 export function SettingsCardExample() {
   return (
     <div className="flex flex-col w-full gap-2">
       {/* children 作为右侧控件区 */}
-      <SettingsCard icon={<Icon name="brush" strokeWidth={1.3} />} title="主题" description="深浅色随宿主切换">
+      <SettingsCard icon={<PaintBrushRegular />} title="主题" description="深浅色随宿主切换">
         <Switch defaultChecked aria-label="跟随系统" />
       </SettingsCard>
       {/* 传 onClick 即为可点导航行,自动补 chevron */}
       <SettingsCard
-        icon={<Icon name="info" strokeWidth={1.3} />}
+        icon={<InfoRegular />}
         title="关于"
         description="版本与许可信息"
         onClick={() => console.log('导航到关于页')}
@@ -259,7 +307,7 @@ export function SettingsCardExample() {
       title: 'SettingsExpander 设置组',
       demo: (
         <div style={{ width: '100%' }}>
-          <SettingsExpander icon={<Icon name="message" strokeWidth={1.3} />} title="通知" description="应用通知总开关与细项"
+          <SettingsExpander icon={<ChatRegular />} title="通知" description="应用通知总开关与细项"
                             control={<Switch defaultChecked aria-label="通知总开关" />} defaultOpen>
             <SettingsCard title="横幅提醒" description="右下角弹出通知横幅"><Switch defaultChecked aria-label="横幅" /></SettingsCard>
             <SettingsCard title="声音" description="收到通知时播放提示音"><Switch aria-label="声音" /></SettingsCard>
@@ -267,14 +315,14 @@ export function SettingsCardExample() {
         </div>
       ),
       code: `
-import { Icon, SettingsCard, SettingsExpander, Switch } from '@fluent-react/ui';
+import { SettingsCard, SettingsExpander, Switch } from '@fluent-react/ui';
 
 export function SettingsExpanderExample() {
   return (
     <div className="w-full">
       {/* control 为头行右侧常驻控件;children 为折叠的子设置行 */}
       <SettingsExpander
-        icon={<Icon name="message" strokeWidth={1.3} />}
+        icon={<ChatRegular />}
         title="通知"
         description="应用通知总开关与细项"
         control={<Switch defaultChecked aria-label="通知总开关" />}
@@ -607,30 +655,30 @@ const badge: DocDef = {
       demo: (
         <>
           <span style={{ position: 'relative', display: 'inline-flex' }}>
-            <Icon name="message" size={22} strokeWidth={1.3} />
+            <ChatRegular size={22} />
             <Badge style={{ position: 'absolute', top: -6, right: -10 }}>8</Badge>
           </span>
           <span style={{ position: 'relative', display: 'inline-flex' }}>
-            <Icon name="settings" size={22} strokeWidth={1.3} />
+            <SettingsRegular size={22} />
             <Badge dot style={{ position: 'absolute', top: -2, right: -2 }} />
           </span>
           <Badge>99+</Badge>
         </>
       ),
       code: `
-import { Badge, Icon } from '@fluent-react/ui';
+import { Badge } from '@fluent-react/ui';
 
 export function BadgeExample() {
   return (
     <>
       {/* 挂在宿主角上:宿主 relative,徽标绝对定位 */}
       <span className="relative inline-flex">
-        <Icon name="message" size={22} strokeWidth={1.3} />
+        <ChatRegular size={22} />
         <Badge className="absolute -top-1.5 -right-2.5">8</Badge>
       </span>
       {/* dot 缩为纯圆点(忽略 children) */}
       <span className="relative inline-flex">
-        <Icon name="settings" size={22} strokeWidth={1.3} />
+        <SettingsRegular size={22} />
         <Badge dot className="absolute -top-0.5 -right-0.5" />
       </span>
       <Badge>99+</Badge>
@@ -638,8 +686,38 @@ export function BadgeExample() {
   );
 }`,
     },
+    {
+      title: '着色',
+      description: '缺省为 critical 红;传 color 后以对应语义色为底。',
+      demo: (
+        <div className="flex flex-wrap gap-3 items-center">
+          <Badge>9</Badge>
+          <Badge color="primary">1</Badge>
+          <Badge color="success">2</Badge>
+          <Badge color="warning">3</Badge>
+          <Badge color="danger">4</Badge>
+          <Badge color="secondary" dot />
+        </div>
+      ),
+      code: `
+import { Badge } from '@fluent-react/ui';
+
+export function BadgeColorExample() {
+  return (
+    <div className="flex flex-wrap gap-3 items-center">
+      <Badge>9</Badge>
+      <Badge color="primary">1</Badge>
+      <Badge color="success">2</Badge>
+      <Badge color="warning">3</Badge>
+      <Badge color="danger">4</Badge>
+      <Badge color="secondary" dot />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色(缺省 critical 红)。' },
     { name: 'dot', type: 'boolean', default: 'false', description: '纯圆点(忽略 children)。' },
     { name: 'children', type: 'ReactNode', description: '数字 / 文本。' },
     { name: 'style / className', type: '—', description: '定位到宿主角上时配 position。' },
@@ -767,7 +845,7 @@ export function EmptyExample() {
     },
     {
       title: '自定义插画',
-      description: 'image 传任意节点替换内置线稿插画(品牌插画、Icon 等)。',
+      description: 'image 传任意节点替换内置线稿插画(品牌插画、Fluent 图标组件等)。',
       demo: (
         <Empty
           image={<img src={pic(268, '插画')} alt="" width={140} style={{ borderRadius: 8 }} />}
@@ -880,12 +958,12 @@ export function TimelineBasicExample() {
     },
     {
       title: '自定义节点与进行中',
-      description: 'dot 传任意节点(如 Icon)替换默认圆点;pending 在尾部追加进行中项,传 true 则不带文案、仅显示旋转点。',
+      description: 'dot 传任意节点(如 <HomeRegular />)替换默认圆点;pending 在尾部追加进行中项,传 true 则不带文案、仅显示旋转点。',
       demo: (
         <div style={{ width: 360, display: 'flex', flexDirection: 'column', gap: 16 }}>
           <Timeline pending="正在重新部署…"
             items={[
-              { label: '昨天 18:30', content: '版本 2.3.0 发布', dot: <Icon name="success" size={14} strokeWidth={1.4} style={{ color: '#0F7B0F' }} /> },
+              { label: '昨天 18:30', content: '版本 2.3.0 发布', dot: <CheckmarkCircleRegular size={14} style={{ color: '#0F7B0F' }} /> },
               { label: '今天 09:12', content: '收到 3 份崩溃报告' },
             ]} />
           <Timeline pending={true}
@@ -895,7 +973,7 @@ export function TimelineBasicExample() {
         </div>
       ),
       code: `
-import { Icon, Timeline } from '@fluent-react/ui';
+import { Timeline } from '@fluent-react/ui';
 
 export function TimelinePendingExample() {
   return (
@@ -907,7 +985,7 @@ export function TimelinePendingExample() {
             label: '昨天 18:30',
             content: '版本 2.3.0 发布',
             // dot:自定义节点替换默认圆点
-            dot: <Icon name="success" size={14} strokeWidth={1.4} className="text-[#0F7B0F]" />,
+            dot: <CheckmarkCircleRegular size={14} className="text-[#0F7B0F]" />,
           },
           { label: '今天 09:12', content: '收到 3 份崩溃报告' },
         ]}

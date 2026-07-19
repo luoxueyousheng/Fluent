@@ -6,7 +6,9 @@
 import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ArrowSortRegular,
+} from '@fluent-react/icon';
 import { Checkbox, Empty } from './Basics';
 import { Pagination } from './Pagination';
 import { Spin } from './Spin';
@@ -20,9 +22,13 @@ export interface ColumnType<T> {
   key?: string;
   render?: (value: any, record: T, index: number) => ReactNode;
   sorter?: (a: T, b: T) => number;
-  align?: 'left' | 'right';
+  /** 列对齐:left 默认 / center 居中 / right 右齐(数字列,挂 .num 等宽数字) */
+  align?: 'left' | 'center' | 'right';
   width?: string;               // grid 轨道,如 '2fr' / '120px';缺省 1fr
 }
+
+const cellAlign = (align?: 'left' | 'center' | 'right') =>
+  align === 'right' ? 'num' : align === 'center' ? 'align-center' : undefined;
 
 export interface TableRowSelection<T> {
   /** checkbox 多选(默认)/ radio 单选 */
@@ -173,13 +179,13 @@ export function Table<T extends object>({
             const k = colKey(c, i);
             return (
               <div key={k}
-                   className={cn('dg-cell', c.sorter && 'sortable', c.align === 'right' && 'num')}
+                   className={cn('dg-cell', c.sorter && 'sortable', cellAlign(c.align))}
                    data-sort={sort?.key === k ? sort.dir : undefined}
                    role="columnheader"
                    aria-sort={sort?.key === k ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
                    onClick={() => c.sorter && cycleSort(k)}>
                 {c.title}
-                {c.sorter && <Icon name="sort" size={12} className="sort-ind" strokeWidth={1.3} />}
+                {c.sorter && <ArrowSortRegular size={12} className="sort-ind" />}
               </div>
             );
           })}
@@ -224,7 +230,7 @@ export function Table<T extends object>({
                 {columns.map((c, ci) => {
                   const raw = c.dataIndex ? (r as any)[c.dataIndex] : undefined;
                   return (
-                    <div key={colKey(c, ci)} className={cn('dg-cell', c.align === 'right' && 'num')}>
+                    <div key={colKey(c, ci)} className={cn('dg-cell', cellAlign(c.align))}>
                       {c.render ? c.render(raw, r, ri) : String(raw ?? '')}
                     </div>
                   );

@@ -1,7 +1,10 @@
 /* Pagination — antd API 规范(current/total/pageSize/onChange/showSizeChanger),
  * WinUI 形态:透明页码钮 + 灰底加粗活动项(非 antd 主色描边空心项) */
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ChevronLeftRegular,
+  ChevronRightRegular,
+} from '@fluent-react/icon';
 import { ComboBox } from './ComboBox';
 import { useMergedState } from '../useMergedState';
 
@@ -46,7 +49,7 @@ export function Pagination({
   return (
     <div className={cn('pager', className)} role="navigation" aria-label="分页">
       <button className="pager-item" disabled={current <= 1} aria-label="上一页" onClick={() => go(current - 1)}>
-        <Icon name="chevronRight" size={12} style={{ transform: 'rotate(180deg)' }} />
+        <ChevronLeftRegular size={12} />
       </button>
       {pageItems(current, pages).map((it, i) =>
         typeof it === 'number' ? (
@@ -60,7 +63,7 @@ export function Pagination({
         ),
       )}
       <button className="pager-item" disabled={current >= pages} aria-label="下一页" onClick={() => go(current + 1)}>
-        <Icon name="chevronRight" size={12} />
+        <ChevronRightRegular size={12} />
       </button>
       {showSizeChanger && (
         <ComboBox aria-label="每页条数" className="pager-size"

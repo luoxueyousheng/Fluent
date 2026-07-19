@@ -6,11 +6,14 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ChevronDownRegular,
+} from '@fluent-react/icon';
 import { useFlyout } from './Flyout';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';
 import { statusClass, type ControlStatus } from './Field';
+import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
 export interface ComboOption { value: string; label: ReactNode }
 
@@ -22,6 +25,10 @@ export interface ComboBoxProps {
   onChange?: (value: string) => void;
   size?: ControlSize;
   status?: ControlStatus;
+  /** 语义着色:展开下划线随之变色 */
+  color?: SemanticColor;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
   placeholder?: string;
   className?: string;
   'aria-label'?: string;
@@ -29,7 +36,7 @@ export interface ComboBoxProps {
 
 export function ComboBox({
   options, value, defaultValue = null, onChange, size, status,
-  placeholder = '请选择', className, ...aria
+  color, radius, placeholder = '请选择', className, ...aria
 }: ComboBoxProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
@@ -105,14 +112,14 @@ export function ComboBox({
   };
 
   return (
-    <div ref={rootRef} className={cn('combobox', className)}>
+    <div ref={rootRef} className={cn('combobox', colorClass(color), radiusClass(radius), className)}>
       <button className={cn('combo-trigger', sizeClass(size), statusClass(status))}
               aria-haspopup="listbox" aria-expanded={fly.isOpen}
               onClick={fly.toggle} onKeyDown={onKeyDown} aria-label={aria['aria-label']}>
         <span className={cn('combo-value', !current && 'placeholder')}>
           {current ? current.label : placeholder}
         </span>
-        <Icon name="chevronDown" size={12} className="combo-chev" />
+        <ChevronDownRegular size={12} className="combo-chev" />
       </button>
       {fly.isOpen && createPortal(
         <div ref={popRef} className={cn('combo-pop', fly.closing && 'closing')} role="listbox"

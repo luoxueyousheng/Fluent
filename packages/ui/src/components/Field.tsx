@@ -2,8 +2,9 @@
  * TextBox/TextArea 支持 antd 风 size 三档与 status(error/warning)。 */
 import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import { CheckmarkCircleRegular, ErrorCircleRegular } from '@fluent-react/icon';
 import { sizeClass, type ControlSize } from './Button';
+import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
 export type ControlStatus = 'error' | 'warning';
 export const statusClass = (s?: ControlStatus) => (s ? `status-${s}` : undefined);
@@ -24,7 +25,9 @@ export function Field({ label, validation, hint, children, className }: FieldPro
       {children}
       {validation?.message ? (
         <span className={cn('field-msg', validation.state)} role={validation.state === 'error' ? 'alert' : undefined}>
-          <Icon name={validation.state === 'error' ? 'error' : 'success'} size={12} strokeWidth={1.6} />
+          {validation.state === 'error'
+            ? <ErrorCircleRegular size={12} />
+            : <CheckmarkCircleRegular size={12} />}
           {validation.message}
         </span>
       ) : hint ? (
@@ -34,19 +37,27 @@ export function Field({ label, validation, hint, children, className }: FieldPro
   );
 }
 
-export interface TextBoxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export interface TextBoxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'color'> {
   size?: ControlSize;
   status?: ControlStatus;
+  /** 语义着色:聚焦下划线随之变色 */
+  color?: SemanticColor;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
 }
 
-export function TextBox({ size, status, className, ...rest }: TextBoxProps) {
-  return <input className={cn('input', sizeClass(size), statusClass(status), className)} {...rest} />;
+export function TextBox({ size, status, color, radius, className, ...rest }: TextBoxProps) {
+  return <input className={cn('input', sizeClass(size), statusClass(status), colorClass(color), radiusClass(radius), className)} {...rest} />;
 }
 
-export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface TextAreaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'color'> {
   status?: ControlStatus;
+  /** 语义着色:聚焦下划线随之变色 */
+  color?: SemanticColor;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
 }
 
-export function TextArea({ status, className, ...rest }: TextAreaProps) {
-  return <textarea className={cn('textarea', statusClass(status), className)} {...rest} />;
+export function TextArea({ status, color, radius, className, ...rest }: TextAreaProps) {
+  return <textarea className={cn('textarea', statusClass(status), colorClass(color), radiusClass(radius), className)} {...rest} />;
 }

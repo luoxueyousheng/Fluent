@@ -1,7 +1,9 @@
 /* ListBox — WinUI ListView 选中样式(左侧 Accent 药丸);单选/多选 + 键盘 */
 import { useRef, useState, type ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  CheckmarkRegular,
+} from '@fluent-react/icon';
 import { Empty } from './Basics';
 
 export interface ListBoxItem { value: string; label: ReactNode; icon?: ReactNode }
@@ -60,7 +62,7 @@ export function ListBox(props: ListBoxProps) {
              onClick={() => { setCursor(i); pick(it.value); }}>
           {it.icon}
           {it.label}
-          {props.multi && <Icon name="check" className="lb-check" strokeWidth={2} />}
+          {props.multi && <CheckmarkRegular className="lb-check" />}
         </div>
       ))}
     </div>

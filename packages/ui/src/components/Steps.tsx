@@ -2,7 +2,9 @@
  * 完成=accent 实心勾,进行中=accent 圆环数字,等待=灰数字;连接线随状态着色 */
 import type { ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  CheckmarkRegular,
+} from '@fluent-react/icon';
 
 export interface StepItem { title: ReactNode; description?: ReactNode }
 
@@ -21,7 +23,7 @@ export function Steps({ current = 0, items, className, style }: StepsProps) {
         return (
           <li key={i} className={cn('step', state)} aria-current={state === 'active' ? 'step' : undefined}>
             <span className="step-dot">
-              {state === 'done' ? <Icon name="check" size={12} strokeWidth={2} /> : i + 1}
+              {state === 'done' ? <CheckmarkRegular size={12} /> : i + 1}
             </span>
             <span className="step-body">
               <span className="step-title">{it.title}</span>

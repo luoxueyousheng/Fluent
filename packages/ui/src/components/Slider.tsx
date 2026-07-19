@@ -3,6 +3,7 @@
  * --p 为 0~1 归一化值,驱动 CSS 填充止点。 */
 import { useMemo, useRef, useState, type CSSProperties } from 'react';
 import { cn } from '../cn';
+import { colorClass, type SemanticColor } from '../modifiers';
 
 export interface SliderProps {
   value: number;
@@ -25,6 +26,8 @@ export interface SliderProps {
   header?: string;
   showValue?: boolean;
   disabled?: boolean;
+  /** 语义着色:轨道填充随之变色 */
+  color?: SemanticColor;
   className?: string;
 }
 
@@ -34,7 +37,7 @@ const END_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'En
 
 export function Slider({
   value, onChange, onChangeEnd, min = 0, max = 100, step = 1,
-  format = String, ticks, majorTicks, marks, fillFrom, vertical, header, showValue, disabled, className,
+  format = String, ticks, majorTicks, marks, fillFrom, vertical, header, showValue, disabled, color, className,
 }: SliderProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -59,7 +62,7 @@ export function Slider({
     : { left: `calc(${INSET}px + (100% - ${INSET * 2}px) * ${p})` };
 
   return (
-    <div className={cn('slider-field', vertical && 'vertical', className)}>
+    <div className={cn('slider-field', vertical && 'vertical', colorClass(color), className)}>
       {(header || showValue) && (
         <div className="sld-head">
           {header && <span>{header}</span>}
@@ -67,7 +70,7 @@ export function Slider({
         </div>
       )}
       <div ref={wrapRef} className={cn('slider-wrap', vertical && 'vertical', dragging && 'show-bubble')}>
-        <input type="range" className={cn('slider', vertical && 'vertical', po != null && 'from-origin')}
+        <input type="range" className={cn('slider', vertical && 'vertical', po != null && 'from-origin', colorClass(color))}
                min={min} max={max} step={step} value={value} disabled={disabled}
                style={{ '--p': p, ...(po != null ? { '--po': po } : {}) } as CSSProperties}
                aria-label={header}
@@ -99,11 +102,13 @@ export interface RangeSliderProps {
   min?: number;
   max?: number;
   step?: number;
+  /** 语义着色:区间填充随之变色 */
+  color?: SemanticColor;
   className?: string;
   'aria-label'?: string;
 }
 
-export function RangeSlider({ value, onChange, onChangeEnd, min = 0, max = 100, step = 1, className, ...aria }: RangeSliderProps) {
+export function RangeSlider({ value, onChange, onChangeEnd, min = 0, max = 100, step = 1, color, className, ...aria }: RangeSliderProps) {
   const [lo, hi] = value;
   const pct = (v: number) => ((v - min) / (max - min)) * 100;
   const set = (a: number, b: number) => onChange(a <= b ? [a, b] : [b, a]);
@@ -114,7 +119,7 @@ export function RangeSlider({ value, onChange, onChangeEnd, min = 0, max = 100, 
   };
 
   return (
-    <div className={cn('range-dual', className)}
+    <div className={cn('range-dual', colorClass(color), className)}
          style={{ '--lo': `${pct(lo)}%`, '--hi': `${pct(hi)}%` } as CSSProperties}>
       <div className="rail"><div className="fill" /></div>
       <input type="range" min={min} max={max} step={step} value={lo}

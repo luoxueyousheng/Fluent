@@ -8,7 +8,14 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon, type IconName } from './Icon';
+import {
+  ArrowClockwiseRegular,
+  DismissRegular,
+  EyeRegular,
+  ImageRegular,
+  ZoomInRegular,
+  ZoomOutRegular,
+} from '@fluent-react/icon';
 
 export interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'placeholder'> {
   src: string;
@@ -44,11 +51,11 @@ function PreviewOverlay({ src, alt, onClose }: { src: string; alt?: string; onCl
     return () => removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  const tools: Array<[IconName, string, () => void]> = [
-    ['zoomOut', '缩小', () => zoom(1 / 1.25)],
-    ['zoomIn', '放大', () => zoom(1.25)],
-    ['rotate', '旋转 90°', () => setDeg((d) => d + 90)],
-  ];
+  const tools = [
+    { key: 'zoomOut', label: '缩小', Icon: ZoomOutRegular, fn: () => zoom(1 / 1.25) },
+    { key: 'zoomIn', label: '放大', Icon: ZoomInRegular, fn: () => zoom(1.25) },
+    { key: 'rotate', label: '旋转 90°', Icon: ArrowClockwiseRegular, fn: () => setDeg((d) => d + 90) },
+  ] as const;
 
   return createPortal(
     <div className="smoke open img-preview"
@@ -69,9 +76,9 @@ function PreviewOverlay({ src, alt, onClose }: { src: string; alt?: string; onCl
            onPointerUp={() => { drag.current = null; setDragging(false); }}
            onDoubleClick={reset} />
       <div className="imgp-toolbar" onMouseDown={(e) => e.stopPropagation()}>
-        {tools.map(([name, label, fn]) => (
-          <button key={name} className="imgp-btn" aria-label={label} title={label} onClick={fn}>
-            <Icon name={name} size={14} strokeWidth={1.3} />
+        {tools.map(({ key, label, Icon: ToolIcon, fn }) => (
+          <button key={key} className="imgp-btn" aria-label={label} title={label} onClick={fn}>
+            <ToolIcon size={14} />
           </button>
         ))}
         <button className="imgp-btn imgp-pct" title="还原(双击图片同效)" onClick={reset}>
@@ -79,7 +86,7 @@ function PreviewOverlay({ src, alt, onClose }: { src: string; alt?: string; onCl
         </button>
         <span className="imgp-sep" />
         <button className="imgp-btn" aria-label="关闭" title="关闭(Esc)" onClick={onClose}>
-          <Icon name="close" size={12} strokeWidth={1.3} />
+          <DismissRegular size={12} />
         </button>
       </div>
     </div>,
@@ -119,7 +126,7 @@ export function Image({
           style={{ width, height, ...style }}>
       {status === 'error' ? (
         <span className="img-broken" role="img" aria-label={alt ?? '图片加载失败'}>
-          <Icon name="image" size={24} strokeWidth={1.2} />
+          <ImageRegular size={24} />
           <span>加载失败</span>
         </span>
       ) : (
@@ -132,7 +139,7 @@ export function Image({
             <span className="img-mask" role="button" tabIndex={0} aria-label="预览图片"
                   onClick={() => setOpen(true)}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(true); } }}>
-              <Icon name="eye" size={16} strokeWidth={1.3} />
+              <EyeRegular size={16} />
               预览
             </span>
           )}

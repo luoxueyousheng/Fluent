@@ -1,6 +1,12 @@
 /* 文档数据:日期时间 — Calendar / DatePicker / TimePicker */
 import { useState } from 'react';
-import { Calendar, DatePicker, RangePicker, TimePicker, formatDate } from '@fluent-react/ui';
+import {
+  Calendar,
+  DatePicker,
+  RangePicker,
+  TimePicker,
+  formatDate,
+} from '@fluent-react/ui';
 import type { DocDef } from '../types';
 
 const calendar: DocDef = {

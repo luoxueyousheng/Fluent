@@ -3,7 +3,10 @@
  *(活动点拉长为 accent 药丸);箭头悬停浮现。hover 暂停自动播放。 */
 import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ChevronLeftRegular,
+  ChevronRightRegular,
+} from '@fluent-react/icon';
 
 export interface CarouselProps {
   autoplay?: boolean;
@@ -70,10 +73,10 @@ export function Carousel({
       {arrows && count > 1 && (
         <>
           <button className="car-arrow prev" aria-label="上一张" onClick={() => goTo(index - 1)}>
-            <Icon name="chevronRight" size={12} style={{ transform: 'rotate(180deg)' }} />
+            <ChevronLeftRegular size={12} />
           </button>
           <button className="car-arrow next" aria-label="下一张" onClick={() => goTo(index + 1)}>
-            <Icon name="chevronRight" size={12} />
+            <ChevronRightRegular size={12} />
           </button>
         </>
       )}

@@ -1,7 +1,16 @@
 /* 文档数据:文本与表单 — TextBox / Field / SearchBox / AutoSuggest / Form */
 import { useState } from 'react';
 import {
-  AutoSuggest, Button, Field, Form, PasswordBox, SearchBox, Switch, TextArea, TextBox, useToast,
+  AutoSuggest,
+  Button,
+  Field,
+  Form,
+  PasswordBox,
+  SearchBox,
+  Switch,
+  TextArea,
+  TextBox,
+  useToast,
 } from '@fluent-react/ui';
 import type { DocDef } from '../types';
 
@@ -111,8 +120,37 @@ export function TextAreaExample() {
   );
 }`,
     },
+    {
+      title: '着色与圆角',
+      description: 'color 作用于聚焦下划线;radius 四档。TextBox / TextArea 同契约。',
+      demo: (
+        <div className="flex flex-col gap-3 w-[280px]">
+          <TextBox placeholder="success 聚焦" color="success" />
+          <TextBox placeholder="danger 聚焦" color="danger" />
+          <TextBox placeholder="radius none" radius="none" />
+          <TextBox placeholder="radius lg" radius="lg" />
+          <TextArea placeholder="大圆角多行" radius="lg" color="success" rows={3} />
+        </div>
+      ),
+      code: `
+import { TextArea, TextBox } from '@fluent-react/ui';
+
+export function TextBoxColorRadiusExample() {
+  return (
+    <div className="flex flex-col gap-3 w-[280px]">
+      <TextBox placeholder="success 聚焦" color="success" />
+      <TextBox placeholder="danger 聚焦" color="danger" />
+      <TextBox placeholder="radius none" radius="none" />
+      <TextBox placeholder="radius lg" radius="lg" />
+      <TextArea placeholder="大圆角多行" radius="lg" color="success" rows={3} />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:聚焦下划线随之变色。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'size', type: "'small' | 'middle' | 'large'", default: "'middle'", description: '三档高度。' },
     { name: 'status', type: "'error' | 'warning'", description: '校验状态描边。' },
     { name: '...rest', type: 'InputHTMLAttributes', description: '透传原生 input 属性(value / placeholder / disabled / onChange…)。' },
@@ -196,8 +234,31 @@ export function PasswordBoxToggleExample() {
   );
 }`,
     },
+    {
+      title: '着色与圆角',
+      description: 'color 作用于聚焦下划线;radius 四档。',
+      demo: (
+        <div className="flex flex-col gap-3 w-[240px]">
+          <PasswordBox defaultValue="secret" color="success" />
+          <PasswordBox defaultValue="secret" color="danger" radius="lg" />
+        </div>
+      ),
+      code: `
+import { PasswordBox } from '@fluent-react/ui';
+
+export function PasswordBoxColorRadiusExample() {
+  return (
+    <div className="flex flex-col gap-3 w-[240px]">
+      <PasswordBox defaultValue="secret" color="success" />
+      <PasswordBox defaultValue="secret" color="danger" radius="lg" />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:聚焦下划线随之变色。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'reveal', type: "'press' | 'toggle' | false", default: "'press'", description: '显隐钮行为:按住窥视 / 点击切换 / 不渲染。' },
     { name: 'size', type: "'small' | 'middle' | 'large'", default: "'middle'", description: '三档高度。' },
     { name: 'status', type: "'error' | 'warning'", description: '校验状态描边。' },
@@ -319,8 +380,31 @@ export function SearchBoxControlledExample() {
   );
 }`,
     },
+    {
+      title: '着色与圆角',
+      description: 'color 作用于聚焦下划线;radius 四档。',
+      demo: (
+        <div className="flex flex-col gap-3 w-[260px]">
+          <SearchBox placeholder="success" color="success" />
+          <SearchBox placeholder="radius lg" radius="lg" color="danger" />
+        </div>
+      ),
+      code: `
+import { SearchBox } from '@fluent-react/ui';
+
+export function SearchBoxColorRadiusExample() {
+  return (
+    <div className="flex flex-col gap-3 w-[260px]">
+      <SearchBox placeholder="success" color="success" />
+      <SearchBox placeholder="radius lg" radius="lg" color="danger" />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:聚焦下划线随之变色。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'value / defaultValue', type: 'string', default: "''", description: '受控 / 非受控输入值。' },
     { name: 'suggestions', type: 'string[]', description: '候选池;提供后内部改用 AutoSuggest。' },
     { name: 'size', type: "'small' | 'middle' | 'large'", default: "'middle'", description: '三档高度。' },
@@ -404,8 +488,31 @@ export function AutoSuggestControlledExample() {
   );
 }`,
     },
+    {
+      title: '着色与圆角',
+      description: 'color 作用于聚焦下划线;radius 四档。',
+      demo: (
+        <div className="flex flex-col gap-3 w-[260px]">
+          <AutoSuggest options={['苹果', '香蕉', '橙子']} placeholder="success" color="success" />
+          <AutoSuggest options={['苹果', '香蕉', '橙子']} placeholder="radius lg" radius="lg" color="warning" />
+        </div>
+      ),
+      code: `
+import { AutoSuggest } from '@fluent-react/ui';
+
+export function AutoSuggestColorRadiusExample() {
+  return (
+    <div className="flex flex-col gap-3 w-[260px]">
+      <AutoSuggest options={['苹果', '香蕉', '橙子']} placeholder="success" color="success" />
+      <AutoSuggest options={['苹果', '香蕉', '橙子']} placeholder="radius lg" radius="lg" color="warning" />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
+    { name: 'color', type: "'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'", default: "'default'", description: '语义着色:聚焦下划线随之变色。' },
+    { name: 'radius', type: "'none' | 'sm' | 'md' | 'lg'", default: "'md'", description: '圆角档位。' },
     { name: 'options', type: 'string[]', description: '候选池(必填),按包含匹配过滤。' },
     { name: 'value / defaultValue', type: 'string', default: "''", description: '受控 / 非受控输入值。' },
     { name: 'size', type: "'small' | 'middle' | 'large'", default: "'middle'", description: '三档高度。' },
@@ -467,7 +574,13 @@ export function FormBasicExample() {
         'valuePropName 适配 checked 类控件(如 Switch);getValueFromEvent 自定义取值;Item 的 hint 显示说明;Rule 的 max / validator 声明上限与自定义校验。',
       demo: <FormAdaptDemo />,
       code: `
-import { Button, Form, Switch, TextBox, useToast } from '@fluent-react/ui';
+import {
+  Button,
+  Form,
+  Switch,
+  TextBox,
+  useToast,
+} from '@fluent-react/ui';
 
 export function FormValueAdaptExample() {
   const toast = useToast();

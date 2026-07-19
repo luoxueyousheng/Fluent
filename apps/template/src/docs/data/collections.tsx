@@ -1,6 +1,17 @@
 /* 文档数据:集合 — Table / DataGrid */
 import { useState } from 'react';
-import { Button, DataGrid, Empty, SearchBox, Table, Tag, useToast, type ColumnType, type DataGridColumn, type MenuItemDef } from '@fluent-react/ui';
+import {
+  Button,
+  DataGrid,
+  Empty,
+  SearchBox,
+  Table,
+  Tag,
+  useToast,
+  type ColumnType,
+  type DataGridColumn,
+  type MenuItemDef,
+} from '@fluent-react/ui';
 import type { DocDef } from '../types';
 
 interface Row { key: string; name: string; size: number; type: string; state: 'ok' | 'warn' }
@@ -16,10 +27,10 @@ const ROWS: Row[] = [
 
 const COLS: ColumnType<Row>[] = [
   { title: '名称', dataIndex: 'name', sorter: (a, b) => a.name.localeCompare(b.name), width: '2fr' },
-  { title: '类型', dataIndex: 'type' },
+  { title: '类型', dataIndex: 'type', align: 'center' },
   { title: '大小 (KB)', dataIndex: 'size', align: 'right', sorter: (a, b) => a.size - b.size },
   {
-    title: '状态', key: 'state',
+    title: '状态', key: 'state', align: 'center',
     render: (_v, r) => <Tag color={r.state === 'ok' ? 'success' : 'caution'}>{r.state === 'ok' ? '正常' : '注意'}</Tag>,
   },
 ];
@@ -34,7 +45,7 @@ const table: DocDef = {
   sections: [
     {
       title: '基础用法',
-      description: '「名称」「大小」列可排序;pagination 缺省每页 10 条,数据不足一页时不渲染分页条。',
+      description: '「名称」「大小」列可排序;类型/状态 align=center 居中,数字列 align=right;pagination 缺省每页 10 条,数据不足一页时不渲染分页条。',
       demo: <div style={{ width: '100%' }}><Table columns={COLS} dataSource={ROWS} pagination={false} /></div>,
       code: `
 import { Table, Tag, type ColumnType } from '@fluent-react/ui';
@@ -52,10 +63,10 @@ const columns: ColumnType<Row>[] = [
   // 提供 sorter 即表头可点排序(点击循环 升 → 降 → 无)
   { title: '名称', dataIndex: 'name', width: '2fr',
     sorter: (a, b) => a.name.localeCompare(b.name) },
-  { title: '类型', dataIndex: 'type' },
+  { title: '类型', dataIndex: 'type', align: 'center' },
   { title: '大小 (KB)', dataIndex: 'size', align: 'right',
     sorter: (a, b) => a.size - b.size },
-  { title: '状态', key: 'state',
+  { title: '状态', key: 'state', align: 'center',
     render: (_v, r) => (
       <Tag color={r.state === 'ok' ? 'success' : 'caution'}>{r.state === 'ok' ? '正常' : '注意'}</Tag>
     ) },
@@ -220,7 +231,13 @@ export function TablePagedExample() {
       demo: <TableToolbarActions />,
       code: `
 import { useState } from 'react';
-import { Button, SearchBox, Table, useToast, type ColumnType } from '@fluent-react/ui';
+import {
+  Button,
+  SearchBox,
+  Table,
+  useToast,
+  type ColumnType,
+} from '@fluent-react/ui';
 
 interface Row { key: string; name: string; size: number }
 
@@ -393,7 +410,7 @@ export function TableRowKeyExample() {
         { name: 'key', type: 'string', description: '列唯一键,缺省取 dataIndex。' },
         { name: 'render', type: '(value, record, index) => ReactNode', description: '自定义单元格。' },
         { name: 'sorter', type: '(a, b) => number', description: '比较器;提供即表头可点排序。' },
-        { name: 'align', type: "'left' | 'right'", default: "'left'", description: '对齐(数字列用 right)。' },
+        { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: '列对齐:left 默认 / center 居中 / right 右齐(数字列)。' },
         { name: 'width', type: 'string', default: "'1fr'", description: 'grid 轨道宽,如 2fr / 120px。' },
       ],
     },

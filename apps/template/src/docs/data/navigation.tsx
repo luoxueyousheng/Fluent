@@ -1,9 +1,26 @@
 /* 文档数据:导航 — SelectorBar / Tabs / TabView / Breadcrumb / Steps / Pagination */
 import { useState, type ReactNode } from 'react';
 import {
-  Breadcrumb, Button, CommandBar, Icon, MenuBar, Pagination, SelectorBar, Steps, TabPanel, Tabs, TabView,
+  Breadcrumb,
+  Button,
+  CommandBar,
+  MenuBar,
+  Pagination,
+  SelectorBar,
+  Steps,
+  TabPanel,
+  Tabs,
+  TabView,
   useToast,
 } from '@fluent-react/ui';
+import {
+  AddRegular,
+  ArrowUploadRegular,
+  CalendarLtrRegular,
+  DismissRegular,
+  HomeRegular,
+  StackRegular,
+} from '@fluent-react/icon';
 import type { DocDef } from '../types';
 
 const selectorbar: DocDef = {
@@ -19,16 +36,16 @@ const selectorbar: DocDef = {
       demo: <SelectorBarDemo />,
       code: `
 import { useState } from 'react';
-import { SelectorBar, Icon } from '@fluent-react/ui';
+import { SelectorBar } from '@fluent-react/ui';
 
 export function SelectorBarExample() {
   const [v, setV] = useState('recent');
   return (
     <SelectorBar value={v} onChange={setV} aria-label="视图"
       items={[
-        { key: 'recent', label: '最近', icon: <Icon name="calendar" size={14} strokeWidth={1.3} /> },
-        { key: 'shared', label: '共享', icon: <Icon name="layers" size={14} strokeWidth={1.3} /> },
-        { key: 'fav', label: '收藏', icon: <Icon name="home" size={14} strokeWidth={1.3} /> },
+        { key: 'recent', label: '最近', icon: <CalendarLtrRegular size={14} /> },
+        { key: 'shared', label: '共享', icon: <StackRegular size={14} /> },
+        { key: 'fav', label: '收藏', icon: <HomeRegular size={14} /> },
         { key: 'archive', label: '归档', disabled: true },
       ]} />
   );
@@ -50,9 +67,9 @@ function SelectorBarDemo() {
   return (
     <SelectorBar value={v} onChange={setV} aria-label="视图"
       items={[
-        { key: 'recent', label: '最近', icon: <Icon name="calendar" size={14} strokeWidth={1.3} /> },
-        { key: 'shared', label: '共享', icon: <Icon name="layers" size={14} strokeWidth={1.3} /> },
-        { key: 'fav', label: '收藏', icon: <Icon name="home" size={14} strokeWidth={1.3} /> },
+        { key: 'recent', label: '最近', icon: <CalendarLtrRegular size={14} /> },
+        { key: 'shared', label: '共享', icon: <StackRegular size={14} /> },
+        { key: 'fav', label: '收藏', icon: <HomeRegular size={14} /> },
         { key: 'archive', label: '归档', disabled: true },
       ]} />
   );
@@ -125,11 +142,60 @@ export function TabsUnderlineExample() {
   );
 }`,
     },
+    {
+      title: '纵向',
+      description: 'vertical 纵向排列:下划线形态的指示条变为选中项左侧竖条,分段形态变为纵列药丸;方向键上下循环。',
+      demo: <TabsVertical />,
+      code: `
+import { useState } from 'react';
+import { Tabs } from '@fluent-react/ui';
+
+export function TabsVerticalExample() {
+  const [v, setV] = useState('general');
+  const [v2, setV2] = useState('general');
+  const items = [
+    { key: 'general', label: '常规' },
+    { key: 'appearance', label: '外观' },
+    { key: 'advanced', label: '高级' },
+  ];
+  return (
+    <div className="flex gap-10 items-start">
+      <Tabs vertical value={v} onChange={setV} items={items} aria-label="纵向下划线" />
+      <Tabs vertical variant="segmented" value={v2} onChange={setV2} items={items} aria-label="纵向分段" />
+    </div>
+  );
+}`,
+    },
+    {
+      title: '圆角与形状',
+      description: "shape 预设:'square' 方角、'pill' 胶囊全圆;radius 传数字(px)精确控制,压过预设。对下划线形态作用于项的悬浮底,对分段形态作用于容器与药丸。",
+      demo: <TabsShapes />,
+      code: `
+import { useState } from 'react';
+import { Tabs } from '@fluent-react/ui';
+
+export function TabsShapeExample() {
+  const [v, setV] = useState('day');
+  const [v2, setV2] = useState('day');
+  const [v3, setV3] = useState('day');
+  const items = [{ key: 'day', label: '日' }, { key: 'week', label: '周' }, { key: 'month', label: '月' }];
+  return (
+    <div className="flex flex-col gap-3 items-start">
+      <Tabs variant="segmented" shape="pill" value={v} onChange={setV} items={items} aria-label="胶囊" />
+      <Tabs variant="segmented-accent" shape="square" value={v2} onChange={setV2} items={items} aria-label="方角" />
+      <Tabs variant="segmented" radius={8} value={v3} onChange={setV3} items={items} aria-label="自定义圆角" />
+    </div>
+  );
+}`,
+    },
   ],
   props: [
     { name: 'items', type: '{ key: string; label: ReactNode; disabled?: boolean }[]', description: '标签项(必填)。' },
     { name: 'value', type: 'string', description: '受控选中键(必填)。' },
     { name: 'variant', type: "'underline' | 'underline-compact' | 'segmented' | 'segmented-accent'", default: "'underline'", description: '形态变体。' },
+    { name: 'vertical', type: 'boolean', default: 'false', description: '纵向排列(指示条变竖条 / 纵列药丸)。' },
+    { name: 'shape', type: "'default' | 'square' | 'pill'", default: "'default'", description: '圆角预设:方角 / 胶囊。' },
+    { name: 'radius', type: 'number', description: '精确圆角(px),压过 shape 预设。' },
   ],
   events: [
     { name: 'onChange', type: '(key: string) => void', description: '切换回调。' },
@@ -167,6 +233,34 @@ function TabsUnderline() {
     </div>
   );
 }
+function TabsVertical() {
+  const [v, setV] = useState('general');
+  const [v2, setV2] = useState('general');
+  const items = [
+    { key: 'general', label: '常规' },
+    { key: 'appearance', label: '外观' },
+    { key: 'advanced', label: '高级' },
+  ];
+  return (
+    <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
+      <Tabs vertical value={v} onChange={setV} items={items} aria-label="纵向下划线" />
+      <Tabs vertical variant="segmented" value={v2} onChange={setV2} items={items} aria-label="纵向分段" />
+    </div>
+  );
+}
+function TabsShapes() {
+  const [v, setV] = useState('day');
+  const [v2, setV2] = useState('day');
+  const [v3, setV3] = useState('day');
+  const items = [{ key: 'day', label: '日' }, { key: 'week', label: '周' }, { key: 'month', label: '月' }];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start' }}>
+      <Tabs variant="segmented" shape="pill" value={v} onChange={setV} items={items} aria-label="胶囊" />
+      <Tabs variant="segmented-accent" shape="square" value={v2} onChange={setV2} items={items} aria-label="方角" />
+      <Tabs variant="segmented" radius={8} value={v3} onChange={setV3} items={items} aria-label="自定义圆角" />
+    </div>
+  );
+}
 function TabsSegmented() {
   const [v, setV] = useState('day');
   const [v2, setV2] = useState('day');
@@ -192,12 +286,12 @@ const tabview: DocDef = {
       demo: <TabViewDemo />,
       code: `
 import { useState } from 'react';
-import { Icon, TabView } from '@fluent-react/ui';
+import { TabView } from '@fluent-react/ui';
 
 export function TabViewExample() {
   // 标签项可带 icon(渲染在标题文字左侧)
   const [tabs, setTabs] = useState([
-    { key: 't1', label: '文档 1', icon: <Icon name="home" size={13} strokeWidth={1.3} /> },
+    { key: 't1', label: '文档 1', icon: <HomeRegular size={13} /> },
     { key: 't2', label: '文档 2' },
   ]);
   const [cur, setCur] = useState('t1');
@@ -242,7 +336,7 @@ export function TabViewExample() {
 
 function TabViewDemo() {
   const [tabs, setTabs] = useState<{ key: string; label: string; icon?: ReactNode }[]>([
-    { key: 't1', label: '文档 1', icon: <Icon name="home" size={13} strokeWidth={1.3} /> },
+    { key: 't1', label: '文档 1', icon: <HomeRegular size={13} /> },
     { key: 't2', label: '文档 2' },
   ]);
   const [cur, setCur] = useState('t1');
@@ -277,7 +371,7 @@ const commandbar: DocDef = {
       title: '基础用法',
       demo: <CommandBarDemo />,
       code: `
-import { CommandBar, Icon, useToast } from '@fluent-react/ui';
+import { CommandBar, useToast } from '@fluent-react/ui';
 
 export function CommandBarExample() {
   const toast = useToast();
@@ -286,11 +380,11 @@ export function CommandBarExample() {
   return (
     <CommandBar onAction={run} aria-label="示例命令栏"
       items={[
-        { key: 'add', label: '新建', icon: <Icon name="add" size={14} strokeWidth={1.6} /> },
-        { key: 'upload', label: '导入', icon: <Icon name="upload" size={14} strokeWidth={1.4} /> },
-        { key: 'share', label: '共享', disabled: true, icon: <Icon name="layers" size={14} strokeWidth={1.4} /> },
+        { key: 'add', label: '新建', icon: <AddRegular size={14} /> },
+        { key: 'upload', label: '导入', icon: <ArrowUploadRegular size={14} /> },
+        { key: 'share', label: '共享', disabled: true, icon: <StackRegular size={14} /> },
         { key: 'd1', divider: true },
-        { key: 'del', label: '删除', danger: true, icon: <Icon name="close" size={14} strokeWidth={1.4} /> },
+        { key: 'del', label: '删除', danger: true, icon: <DismissRegular size={14} /> },
       ]}
       secondaryItems={[
         { key: 'rename', label: '重命名' },
@@ -317,11 +411,11 @@ function CommandBarDemo() {
   return (
     <CommandBar onAction={run} aria-label="示例命令栏"
       items={[
-        { key: 'add', label: '新建', icon: <Icon name="add" size={14} strokeWidth={1.6} /> },
-        { key: 'upload', label: '导入', icon: <Icon name="upload" size={14} strokeWidth={1.4} /> },
-        { key: 'share', label: '共享', disabled: true, icon: <Icon name="layers" size={14} strokeWidth={1.4} /> },
+        { key: 'add', label: '新建', icon: <AddRegular size={14} /> },
+        { key: 'upload', label: '导入', icon: <ArrowUploadRegular size={14} /> },
+        { key: 'share', label: '共享', disabled: true, icon: <StackRegular size={14} /> },
         { key: 'd1', divider: true },
-        { key: 'del', label: '删除', danger: true, icon: <Icon name="close" size={14} strokeWidth={1.4} /> },
+        { key: 'del', label: '删除', danger: true, icon: <DismissRegular size={14} /> },
       ]}
       secondaryItems={[
         { key: 'rename', label: '重命名' },

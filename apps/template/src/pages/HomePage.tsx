@@ -2,7 +2,14 @@
  * 点击卡片进入对应文档页;顶部搜索框过滤卡片。宿主通信演示收进底部 Expander。 */
 import { useMemo, useState } from 'react';
 import {
-  Button, Divider, Expander, LogPane, ProgressBar, SearchBox, useToast, type LogEntry,
+  Button,
+  Divider,
+  Expander,
+  LogPane,
+  ProgressBar,
+  SearchBox,
+  useToast,
+  type LogEntry,
 } from '@fluent-react/ui';
 import { inv, useJadeEvent } from '@fluent-react/bridge';
 import { docGroups } from '../docs/registry';

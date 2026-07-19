@@ -1,7 +1,7 @@
 /* 组件文档页 — HeroUI v2 文档页结构:
  * 标题/描述 → 引入 → 用法各小节(活演示 + 可展开示例代码)→ API(Props / Events 表) */
 import { useState } from 'react';
-import { Icon } from '@fluent-react/ui';
+import { CodeRegular } from '@fluent-react/icon';
 import type { ApiRow, DocDef, DocSection } from './types';
 import { CodeBlock } from './CodeBlock';
 
@@ -15,7 +15,7 @@ function Example({ section }: { section: DocSection }) {
         <div className="doc-demo">{section.demo}</div>
         <div className="doc-codebar">
           <button className="doc-codetoggle" aria-expanded={showCode} onClick={() => setShowCode(!showCode)}>
-            <Icon name="code" size={13} strokeWidth={1.4} />
+            <CodeRegular size={13} />
             {showCode ? '隐藏代码' : '显示代码'}
           </button>
         </div>

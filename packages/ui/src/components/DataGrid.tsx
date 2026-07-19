@@ -2,7 +2,9 @@
  * 按下态整行背景加深(CSS),不动子元素透明度。 */
 import type { ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ArrowSortRegular,
+} from '@fluent-react/icon';
 import { Empty } from './Basics';
 
 export interface DataGridColumn<Row> {
@@ -10,7 +12,8 @@ export interface DataGridColumn<Row> {
   title: ReactNode;
   width: string;                       // grid 轨道,如 '2fr' / '100px'
   sortable?: boolean;
-  align?: 'left' | 'right';
+  /** 列对齐:left 默认 / center 居中 / right 右齐(数字列) */
+  align?: 'left' | 'center' | 'right';
   render?: (row: Row) => ReactNode;
 }
 
@@ -24,6 +27,9 @@ export interface DataGridProps<Row extends { id: string }> {
   className?: string;
 }
 
+const cellAlign = (align?: 'left' | 'center' | 'right') =>
+  align === 'right' ? 'num' : align === 'center' ? 'align-center' : undefined;
+
 export function DataGrid<Row extends { id: string }>({
   columns, rows, selected, onSelect, sort, onSort, className,
 }: DataGridProps<Row>) {
@@ -34,7 +40,7 @@ export function DataGrid<Row extends { id: string }>({
       <div className="dg-row dg-head" style={gridCols} role="row">
         {columns.map((c) => (
           <div key={c.key}
-               className={cn('dg-cell', c.sortable && 'sortable', c.align === 'right' && 'num')}
+               className={cn('dg-cell', c.sortable && 'sortable', cellAlign(c.align))}
                data-sort={sort?.key === c.key ? sort.dir : undefined}
                role="columnheader"
                aria-sort={sort?.key === c.key ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
@@ -43,7 +49,7 @@ export function DataGrid<Row extends { id: string }>({
                  onSort(c.key, sort?.key === c.key && sort.dir === 'asc' ? 'desc' : 'asc');
                }}>
             {c.title}
-            {c.sortable && <Icon name="sort" size={12} className="sort-ind" strokeWidth={1.3} />}
+            {c.sortable && <ArrowSortRegular size={12} className="sort-ind" />}
           </div>
         ))}
       </div>
@@ -55,7 +61,7 @@ export function DataGrid<Row extends { id: string }>({
                onClick={() => onSelect?.(row.id, row)}
                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(row.id, row); } }}>
             {columns.map((c) => (
-              <div key={c.key} className={cn('dg-cell', c.align === 'right' && 'num')}>
+              <div key={c.key} className={cn('dg-cell', cellAlign(c.align))}>
                 {c.render ? c.render(row) : String((row as Record<string, unknown>)[c.key] ?? '')}
               </div>
             ))}

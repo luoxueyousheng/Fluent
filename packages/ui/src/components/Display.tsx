@@ -1,7 +1,9 @@
 /* 展示类小件:Tag(可关闭标签)/ Avatar(头像)/ Divider(分割线) */
 import type { ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  DismissRegular,
+} from '@fluent-react/icon';
 import type { ControlSize } from './Button';
 
 export interface TagProps {
@@ -18,7 +20,7 @@ export function Tag({ color = 'default', closable, onClose, children, className 
       {children}
       {closable && (
         <button type="button" className="tag-close" aria-label="移除" onClick={onClose}>
-          <Icon name="close" size={10} strokeWidth={1.3} />
+          <DismissRegular size={10} />
         </button>
       )}
     </span>

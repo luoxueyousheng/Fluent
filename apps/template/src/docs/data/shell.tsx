@@ -1,6 +1,23 @@
 /* 文档数据:外壳 — AppShell / TitleBar / NavView */
 import { useState } from 'react';
-import { AppShell, Button, Icon, NavView, SearchBox, TitleBar, useToast, type NavEntry } from '@fluent-react/ui';
+import {
+  AppShell,
+  Button,
+  NavView,
+  SearchBox,
+  TitleBar,
+  useToast,
+  type NavEntry,
+} from '@fluent-react/ui';
+import {
+  DocumentRegular,
+  HomeRegular,
+  ImageRegular,
+  MoreHorizontalRegular,
+  SearchRegular,
+  SettingsRegular,
+  StackRegular,
+} from '@fluent-react/icon';
 import type { DocDef } from '../types';
 
 const appshell: DocDef = {
@@ -17,13 +34,13 @@ const appshell: DocDef = {
       demo: <AppShellMultiDemo />,
       code: `
 import { useState } from 'react';
-import { AppShell, Icon, type NavEntry } from '@fluent-react/ui';
+import { AppShell, type NavEntry } from '@fluent-react/ui';
 
 const ITEMS: NavEntry[] = [
-  { key: 'home', label: '首页', icon: <Icon name="home" /> },
+  { key: 'home', label: '首页', icon: <HomeRegular /> },
   { header: '媒体' },
-  { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-  { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+  { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+  { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
 ];
 
 export function MultiPageApp() {
@@ -83,16 +100,16 @@ export function SinglePageApp() {
       description: 'logo 替换内置图标;titleBarActions 放标题栏内交互元素(自动 no-drag,靠右、控制钮之前);onBack 传入即显示返回键(与 mode 解耦),backDisabled 时不占位。',
       demo: <AppShellTitleBarExtrasDemo />,
       code: `
-import { AppShell, Button, Icon } from '@fluent-react/ui';
+import { AppShell, Button } from '@fluent-react/ui';
 
 export function TitleBarExtrasExample() {
   return (
     <AppShell mode="single" appName="扩展标题栏" sub="logo / 操作区 / 返回键"
-              logo={<Icon name="layers" className="logo" strokeWidth={1.3} />}
+              logo={<StackRegular className="logo" />}
               onBack={() => history.back()} backDisabled={false}
               titleBarActions={
                 <Button variant="subtle" size="small" iconOnly aria-label="搜索">
-                  <Icon name="search" size={14} />
+                  <SearchRegular size={14} />
                 </Button>
               }
               controls="host">
@@ -141,13 +158,13 @@ export function SelfDrawnMaximizedExample() {
       demo: <AppShellNavDemo />,
       code: `
 import { useState } from 'react';
-import { AppShell, Icon, SearchBox, type NavEntry } from '@fluent-react/ui';
+import { AppShell, SearchBox, type NavEntry } from '@fluent-react/ui';
 
 const ALL: NavEntry[] = [
-  { key: 'home', label: '首页', icon: <Icon name="home" /> },
-  { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-  { key: 'video', label: '视频', icon: <Icon name="image" strokeWidth={1.3} /> },
-  { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+  { key: 'home', label: '首页', icon: <HomeRegular /> },
+  { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+  { key: 'video', label: '视频', icon: <ImageRegular /> },
+  { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
 ];
 
 /* 受控折叠 + 导航插槽过滤 */
@@ -199,10 +216,10 @@ export function DefaultCollapsedExample() {
 function AppShellMultiDemo() {
   const [page, setPage] = useState('home');
   const items: NavEntry[] = [
-    { key: 'home', label: '首页', icon: <Icon name="home" /> },
+    { key: 'home', label: '首页', icon: <HomeRegular /> },
     { header: '媒体' },
-    { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-    { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+    { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+    { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
   ];
   return (
     <div style={{ height: 320, width: '100%', overflow: 'hidden', borderRadius: 8, border: '1px solid var(--card-border)', background: 'var(--layer)' }}>
@@ -252,12 +269,12 @@ function AppShellTitleBarExtrasDemo() {
   return (
     <div style={{ height: 200, width: '100%', overflow: 'hidden', borderRadius: 8, border: '1px solid var(--card-border)', background: 'var(--layer)' }}>
       <AppShell mode="single" appName="扩展标题栏" sub="logo / 操作区 / 返回键"
-                logo={<Icon name="layers" className="logo" strokeWidth={1.3} />}
+                logo={<StackRegular className="logo" />}
                 onBack={() => toast({ level: 'info', message: '返回上一页' })} backDisabled={false}
                 titleBarActions={
                   <Button variant="subtle" size="small" iconOnly aria-label="搜索"
                           onClick={() => toast({ level: 'info', message: '标题栏操作区按钮(自动 no-drag)' })}>
-                    <Icon name="search" size={14} />
+                    <SearchRegular size={14} />
                   </Button>
                 }
                 controls="none">
@@ -299,10 +316,10 @@ function AppShellNavDemo() {
   const [collapsed, setCollapsed] = useState(false);
   const [query, setQuery] = useState('');
   const all: NavEntry[] = [
-    { key: 'home', label: '首页', icon: <Icon name="home" /> },
-    { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-    { key: 'video', label: '视频', icon: <Icon name="image" strokeWidth={1.3} /> },
-    { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+    { key: 'home', label: '首页', icon: <HomeRegular /> },
+    { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+    { key: 'video', label: '视频', icon: <ImageRegular /> },
+    { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
   ];
   const items = all.filter((e) => 'header' in e || e.label.includes(query));
   return (
@@ -435,20 +452,20 @@ export function WailsHost() {
       description: 'logo 替换内置图标;children 放标题栏内交互元素(自动 no-drag,靠右、控制钮之前);host 模式的预留宽度经 hostControlsWidth 按宿主按钮区实际宽度调整(默认 146)。',
       demo: <TitleBarSlotDemo />,
       code: `
-import { Button, Icon, TitleBar } from '@fluent-react/ui';
+import { Button, TitleBar } from '@fluent-react/ui';
 
 export function TitleBarSlotExample() {
   return (
     <>
       {/* 自定义 logo + 标题栏交互元素(children 自动 no-drag) */}
       <TitleBar appName="自定义 logo" sub="children 自动 no-drag"
-                logo={<Icon name="layers" className="logo" strokeWidth={1.3} />}
+                logo={<StackRegular className="logo" />}
                 controls="none">
         <Button variant="subtle" size="small" iconOnly aria-label="搜索">
-          <Icon name="search" size={14} />
+          <SearchRegular size={14} />
         </Button>
         <Button variant="subtle" size="small" iconOnly aria-label="更多">
-          <Icon name="more" size={14} />
+          <MoreHorizontalRegular size={14} />
         </Button>
       </TitleBar>
       {/* host 模式:宿主只画一颗关闭钮时收窄预留区 */}
@@ -524,15 +541,15 @@ function TitleBarSlotDemo() {
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div style={{ border: '1px solid var(--card-border)', borderRadius: 8, overflow: 'hidden', background: 'var(--layer)' }}>
         <TitleBar appName="自定义 logo" sub="children 自动 no-drag"
-                  logo={<Icon name="layers" className="logo" strokeWidth={1.3} />}
+                  logo={<StackRegular className="logo" />}
                   controls="none">
           <Button variant="subtle" size="small" iconOnly aria-label="搜索"
                   onClick={() => toast({ level: 'info', message: '标题栏交互元素:搜索' })}>
-            <Icon name="search" size={14} />
+            <SearchRegular size={14} />
           </Button>
           <Button variant="subtle" size="small" iconOnly aria-label="更多"
                   onClick={() => toast({ level: 'info', message: '标题栏交互元素:更多' })}>
-            <Icon name="more" size={14} />
+            <MoreHorizontalRegular size={14} />
           </Button>
         </TitleBar>
       </div>
@@ -557,14 +574,14 @@ const navview: DocDef = {
       demo: <NavViewDemo />,
       code: `
 import { useState } from 'react';
-import { Icon, NavView, type NavEntry } from '@fluent-react/ui';
+import { NavView, type NavEntry } from '@fluent-react/ui';
 
 const ITEMS: NavEntry[] = [
-  { key: 'home', label: '首页', icon: <Icon name="home" /> },
+  { key: 'home', label: '首页', icon: <HomeRegular /> },
   { header: '媒体' },
-  { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-  { key: 'video', label: '视频', icon: <Icon name="image" strokeWidth={1.3} /> },
-  { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+  { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+  { key: 'video', label: '视频', icon: <ImageRegular /> },
+  { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
 ];
 
 export function NavViewExample() {
@@ -585,7 +602,7 @@ export function NavViewExample() {
       demo: <NavViewTitleBarDemo />,
       code: `
 import { useState } from 'react';
-import { Icon, NavView, TitleBar, type NavEntry } from '@fluent-react/ui';
+import { NavView, TitleBar, type NavEntry } from '@fluent-react/ui';
 
 export function ShellExample() {
   const [page, setPage] = useState('home');
@@ -608,14 +625,14 @@ export function ShellExample() {
       demo: <NavViewHeaderDemo />,
       code: `
 import { useState } from 'react';
-import { Icon, NavView, SearchBox, type NavEntry } from '@fluent-react/ui';
+import { NavView, SearchBox, type NavEntry } from '@fluent-react/ui';
 
 const ALL: NavEntry[] = [
-  { key: 'home', label: '首页', icon: <Icon name="home" /> },
+  { key: 'home', label: '首页', icon: <HomeRegular /> },
   { header: '媒体' },
-  { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-  { key: 'video', label: '视频', icon: <Icon name="image" strokeWidth={1.3} /> },
-  { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+  { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+  { key: 'video', label: '视频', icon: <ImageRegular /> },
+  { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
 ];
 
 export function NavHeaderExample() {
@@ -658,11 +675,11 @@ function NavViewDemo() {
   const [page, setPage] = useState('home');
   const [collapsed, setCollapsed] = useState(false);
   const items: NavEntry[] = [
-    { key: 'home', label: '首页', icon: <Icon name="home" /> },
+    { key: 'home', label: '首页', icon: <HomeRegular /> },
     { header: '媒体' },
-    { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-    { key: 'video', label: '视频', icon: <Icon name="image" strokeWidth={1.3} /> },
-    { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+    { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+    { key: 'video', label: '视频', icon: <ImageRegular /> },
+    { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
   ];
   return (
     <div style={{ display: 'flex', height: 320, width: '100%', overflow: 'hidden', borderRadius: 8, border: '1px solid var(--card-border)' }}>
@@ -677,9 +694,9 @@ function NavViewTitleBarDemo() {
   const [page, setPage] = useState('home');
   const [collapsed, setCollapsed] = useState(false);
   const items: NavEntry[] = [
-    { key: 'home', label: '首页', icon: <Icon name="home" /> },
-    { key: 'library', label: '库', icon: <Icon name="layers" strokeWidth={1.3} /> },
-    { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+    { key: 'home', label: '首页', icon: <HomeRegular /> },
+    { key: 'library', label: '库', icon: <StackRegular /> },
+    { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
   ];
   return (
     <div style={{ display: 'grid', gridTemplateRows: '40px 1fr', height: 300, width: '100%', overflow: 'hidden', borderRadius: 8, border: '1px solid var(--card-border)' }}>
@@ -696,11 +713,11 @@ function NavViewHeaderDemo() {
   const [page, setPage] = useState('home');
   const [query, setQuery] = useState('');
   const all: NavEntry[] = [
-    { key: 'home', label: '首页', icon: <Icon name="home" /> },
+    { key: 'home', label: '首页', icon: <HomeRegular /> },
     { header: '媒体' },
-    { key: 'music', label: '音乐', icon: <Icon name="file" strokeWidth={1.3} /> },
-    { key: 'video', label: '视频', icon: <Icon name="image" strokeWidth={1.3} /> },
-    { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
+    { key: 'music', label: '音乐', icon: <DocumentRegular /> },
+    { key: 'video', label: '视频', icon: <ImageRegular /> },
+    { key: 'settings', label: '设置', icon: <SettingsRegular />, bottom: true },
   ];
   const items = all.filter((e) => 'header' in e || e.label.includes(query));
   return (

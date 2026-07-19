@@ -1,12 +1,18 @@
 /* Upload / Upload.Dragger — antd API 规范(fileList/onChange/beforeUpload/
  * customRequest/maxCount/accept/multiple),WinUI 形态:虚线拖放区 + 文件行列表。
  *
- * ⚠️ JadeView 真机注意:宿主一旦注册 drag-drop 事件即接管拖拽,页面收不到
+ * 注意:JadeView 真机注意:宿主一旦注册 drag-drop 事件即接管拖拽,页面收不到
  * 原生 DOM drop——此时应由宿主经 IPC 转发路径,前端走业务逻辑;本组件的
  * DOM 拖放适用于浏览器预览与未注册 drag-drop 的宿主。点击选择始终可用。 */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ArrowUploadRegular,
+  CheckmarkCircleRegular,
+  DismissRegular,
+  DocumentRegular,
+  ErrorCircleRegular,
+} from '@fluent-react/icon';
 import { ProgressBar } from './Basics';
 import { useMergedState } from '../useMergedState';
 
@@ -123,13 +129,13 @@ function FileList({ list, onRemove }: { list: UploadFile[]; onRemove: (f: Upload
     <ul className="upload-list">
       {list.map((f) => (
         <li key={f.uid} className={cn('upload-item', f.status)}>
-          <Icon name="file" size={14} strokeWidth={1.3} className="ul-icon" />
+          <DocumentRegular size={14} className="ul-icon" />
           <span className="ul-name" title={f.name}>{f.name}</span>
           <span className="ul-size">{fmtSize(f.size)}</span>
-          {f.status === 'done' && <Icon name="success" size={14} strokeWidth={1.6} className="ul-status ok" />}
-          {f.status === 'error' && <Icon name="error" size={14} strokeWidth={1.6} className="ul-status err" />}
+          {f.status === 'done' && <CheckmarkCircleRegular size={14} className="ul-status ok" />}
+          {f.status === 'error' && <ErrorCircleRegular size={14} className="ul-status err" />}
           <button type="button" className="ul-remove" aria-label={`移除 ${f.name}`} onClick={() => onRemove(f)}>
-            <Icon name="close" size={10} strokeWidth={1.3} />
+            <DismissRegular size={10} />
           </button>
           {f.status === 'uploading' && <ProgressBar value={f.percent ?? 0} className="ul-progress" />}
         </li>
@@ -193,7 +199,7 @@ function Dragger(props: DraggerProps) {
            }}>
         {children ?? (
           <>
-            <Icon name="upload" size={28} strokeWidth={1.2} className="ud-icon" />
+            <ArrowUploadRegular size={28} className="ud-icon" />
             <div className="ud-text">{hint ?? '点击或拖拽文件到此处'}</div>
             {accept && <div className="ud-hint">支持:{accept}</div>}
           </>

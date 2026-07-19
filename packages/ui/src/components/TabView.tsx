@@ -1,7 +1,10 @@
 /* TabView — 浏览器式标签:选择 / 关闭 / 新建(受控) */
 import type { ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  AddRegular,
+  DismissRegular,
+} from '@fluent-react/icon';
 
 export interface TabViewItem { key: string; label: string; icon?: ReactNode }
 
@@ -27,14 +30,14 @@ export function TabView({ items, value, onChange, onClose, onAdd, className, chi
             {onClose && (
               <span className="tab-close" role="button" aria-label={`关闭 ${t.label}`}
                     onClick={(e) => { e.stopPropagation(); onClose(t.key); }}>
-                <Icon name="close" size={10} strokeWidth={1.3} />
+                <DismissRegular size={10} />
               </span>
             )}
           </button>
         ))}
         {onAdd && (
           <button className="tab-add" aria-label="新建标签" onClick={onAdd}>
-            <Icon name="add" size={12} strokeWidth={1.3} />
+            <AddRegular size={12} />
           </button>
         )}
       </div>

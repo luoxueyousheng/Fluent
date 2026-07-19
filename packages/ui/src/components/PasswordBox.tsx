@@ -3,19 +3,24 @@
  * 抬手/移出即遮);'toggle' 为 antd 行为(点击切换,图标 eye/eyeOff);false 关闭。 */
 import { useState, type InputHTMLAttributes } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import { EyeOffRegular, EyeRegular } from '@fluent-react/icon';
 import { sizeClass, type ControlSize } from './Button';
 import { statusClass, type ControlStatus } from './Field';
+import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
-export interface PasswordBoxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
+export interface PasswordBoxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type' | 'color'> {
   size?: ControlSize;
   status?: ControlStatus;
   /** 显隐钮行为:press 按住窥视(WinUI 默认)/ toggle 点击切换 / false 不渲染 */
   reveal?: 'press' | 'toggle' | false;
+  /** 语义着色:聚焦下划线随之变色 */
+  color?: SemanticColor;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
 }
 
 export function PasswordBox({
-  size, status, reveal = 'press', className, onChange, value, defaultValue, ...rest
+  size, status, reveal = 'press', color, radius, className, onChange, value, defaultValue, ...rest
 }: PasswordBoxProps) {
   const [visible, setVisible] = useState(false);
   const [innerHas, setInnerHas] = useState(!!defaultValue);
@@ -31,7 +36,7 @@ export function PasswordBox({
     : { onClick: () => setVisible((v) => !v) };
 
   return (
-    <span className={cn('passwordbox', className)}>
+    <span className={cn('passwordbox', colorClass(color), radiusClass(radius), className)}>
       <input type={visible ? 'text' : 'password'}
              className={cn('input', sizeClass(size), statusClass(status))}
              value={value} defaultValue={defaultValue}
@@ -41,7 +46,9 @@ export function PasswordBox({
         <button type="button" className="pb-reveal" tabIndex={-1}
                 aria-label={reveal === 'toggle' ? (visible ? '隐藏密码' : '显示密码') : '按住显示密码'}
                 {...btnProps}>
-          <Icon name={reveal === 'toggle' && visible ? 'eyeOff' : 'eye'} size={14} strokeWidth={1.3} />
+          {reveal === 'toggle' && visible
+            ? <EyeOffRegular size={14} />
+            : <EyeRegular size={14} />}
         </button>
       )}
     </span>

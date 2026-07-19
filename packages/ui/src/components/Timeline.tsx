@@ -11,7 +11,7 @@ export interface TimelineItemDef {
   label?: ReactNode;
   content: ReactNode;
   color?: 'default' | 'accent' | 'success' | 'caution' | 'critical';
-  /** 自定义圆点(如 Icon) */
+  /** 自定义圆点(如 <HomeRegular />) */
   dot?: ReactNode;
 }
 

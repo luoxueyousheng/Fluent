@@ -6,6 +6,7 @@ import { useFixedPlacement, useFlyout } from './Flyout';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';
 import { statusClass, type ControlStatus } from './Field';
+import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
 export interface AutoSuggestProps {
   options: string[];
@@ -14,13 +15,18 @@ export interface AutoSuggestProps {
   onChange?: (value: string) => void;
   size?: ControlSize;
   status?: ControlStatus;
+  /** 语义着色:聚焦下划线随之变色 */
+  color?: SemanticColor;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
   placeholder?: string;
   className?: string;
   'aria-label'?: string;
 }
 
 export function AutoSuggest({
-  options, value: valueProp, defaultValue = '', onChange, size, status, placeholder, className, ...aria
+  options, value: valueProp, defaultValue = '', onChange, size, status,
+  color, radius, placeholder, className, ...aria
 }: AutoSuggestProps) {
   const [value, onChangeMerged] = useMergedState(defaultValue, valueProp, onChange);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -53,7 +59,7 @@ export function AutoSuggest({
   };
 
   return (
-    <div ref={rootRef} className={cn('combobox suggest', className)}>
+    <div ref={rootRef} className={cn('combobox suggest', colorClass(color), radiusClass(radius), className)}>
       <input className={cn('input', sizeClass(size), statusClass(status))} value={value} placeholder={placeholder}
              aria-label={aria['aria-label']} aria-expanded={fly.isOpen} role="combobox"
              onFocus={show}

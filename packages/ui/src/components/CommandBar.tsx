@@ -6,7 +6,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  MoreHorizontalRegular,
+} from '@fluent-react/icon';
 import { MenuList, useFixedPlacement, useFlyout, type MenuItemDef } from './Flyout';
 
 /* ==================== CommandBar ==================== */
@@ -54,7 +56,7 @@ export function CommandBar({ items, secondaryItems, onAction, className, ...aria
         <>
           <button ref={moreRef} className="cmd-btn cmd-more" aria-haspopup="menu" aria-expanded={fly.isOpen}
                   aria-label="更多命令" onClick={fly.toggle}>
-            <Icon name="more" size={16} strokeWidth={1.8} />
+            <MoreHorizontalRegular size={16} />
           </button>
           {fly.isOpen && createPortal(
             <MenuList ref={popRef} items={secondaryItems} closing={fly.closing}

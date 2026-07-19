@@ -7,7 +7,9 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ChevronDownRegular,
+} from '@fluent-react/icon';
 
 let openFlyoutCloser: (() => void) | null = null;
 
@@ -176,13 +178,13 @@ export function DropDownButton({ label, items, onPick, onClick, variant, split, 
           <button className={cn('btn', vcls, 'split-main')} onClick={onClick}>{label}</button>
           <button className={cn('btn', vcls, 'split-arrow')} aria-haspopup="menu" aria-expanded={fly.isOpen}
                   aria-label="更多选项" onClick={fly.toggle}>
-            <Icon name="chevronDown" size={12} />
+            <ChevronDownRegular size={12} />
           </button>
         </span>
       ) : (
         <button className={cn('btn', vcls)} aria-haspopup="menu" aria-expanded={fly.isOpen} onClick={fly.toggle}>
           {label}
-          <Icon name="chevronDown" size={12} className="combo-chev" />
+          <ChevronDownRegular size={12} className="combo-chev" />
         </button>
       )}
       {fly.isOpen && createPortal(

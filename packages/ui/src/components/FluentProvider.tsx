@@ -10,7 +10,13 @@ import {
 import { createPortal } from 'react-dom';
 import { useFocusTrap } from '../focusTrap';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  CheckmarkCircleRegular,
+  DismissRegular,
+  ErrorCircleRegular,
+  InfoRegular,
+  WarningRegular,
+} from '@fluent-react/icon';
 import { Button } from './Button';
 import { _bindImperative } from '../imperative';
 import { installScrollIndicators } from '../scrollIndicator';
@@ -21,6 +27,7 @@ export interface ToastOptions {
   level?: 'info' | 'success' | 'warning' | 'error';
   title?: string;
   message: string;
+  /** 自动关闭毫秒;0=常驻。注意:useToast 用毫秒,message.* 命令式用秒 */
   duration?: number;
   id?: string;
   action?: { label: string; command?: string };
@@ -179,7 +186,15 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
                        className={cn('toast', t.level, t.closing && 'toast-out')}
                        aria-live={t.level === 'error' ? 'assertive' : undefined}
                        onMouseEnter={() => pause(t.key)} onMouseLeave={() => resume(t.key)}>
-                    <Icon name={t.level} strokeWidth={1.6} />
+                    {(() => {
+                      const LevelIcon = ({
+                        info: InfoRegular,
+                        success: CheckmarkCircleRegular,
+                        warning: WarningRegular,
+                        error: ErrorCircleRegular,
+                      } as const)[t.level ?? 'info'];
+                      return <LevelIcon className="icon" size={16} />;
+                    })()}
                     <div className="body">
                       {t.title && <div className="title">{t.title}</div>}
                       <div className="msg">{t.message}</div>
@@ -193,7 +208,7 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
                       )}
                     </div>
                     <button className="close" aria-label="关闭" onClick={() => dismiss(t.key)}>
-                      <Icon name="close" size={12} strokeWidth={1.3} />
+                      <DismissRegular size={12} />
                     </button>
                     {/* 自动关闭进度:CSS 动画耗尽;悬停 animation-play-state 暂停,与 JS 计时同步 */}
                     {t.autoMs > 0 && !t.closing && (

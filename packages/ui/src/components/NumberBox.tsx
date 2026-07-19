@@ -3,10 +3,11 @@
  * 聚焦时滚轮微调;范围钳制,失焦/回车提交文本。 */
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import { ChevronDownRegular, ChevronUpRegular } from '@fluent-react/icon';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';
 import { statusClass, type ControlStatus } from './Field';
+import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
 export interface NumberBoxProps {
   value?: number;
@@ -20,6 +21,10 @@ export interface NumberBoxProps {
   precision?: number;
   size?: ControlSize;
   status?: ControlStatus;
+  /** 语义着色:聚焦下划线随之变色 */
+  color?: SemanticColor;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
   className?: string;
   'aria-label'?: string;
 }
@@ -34,7 +39,8 @@ const decimalsOf = (n: number): number => {
 
 export function NumberBox({
   value: valueProp, defaultValue = 0, onChange,
-  min = -Infinity, max = Infinity, step = 1, precision, size, status, className, ...aria
+  min = -Infinity, max = Infinity, step = 1, precision, size, status,
+  color, radius, className, ...aria
 }: NumberBoxProps) {
   const [value, setValue] = useMergedState(defaultValue, valueProp, onChange);
   const [text, setText] = useState<string | null>(null);   // 编辑中的临时文本
@@ -99,12 +105,12 @@ export function NumberBox({
             aria-label={d > 0 ? '增加' : '减少'}
             onPointerDown={(e) => { e.preventDefault(); startHold(d); }}
             onPointerUp={stopHold} onPointerLeave={stopHold} onPointerCancel={stopHold}>
-      <Icon name={d > 0 ? 'chevronUp' : 'chevronDown'} size={12} strokeWidth={1.3} />
+      {d > 0 ? <ChevronUpRegular size={12} /> : <ChevronDownRegular size={12} />}
     </button>
   );
 
   return (
-    <div className={cn('numberbox', className)}>
+    <div className={cn('numberbox', colorClass(color), radiusClass(radius), className)}>
       <input ref={inputRef} className={cn('input', sizeClass(size), statusClass(status))}
              inputMode="decimal" value={text ?? String(value)}
              aria-label={aria['aria-label']}

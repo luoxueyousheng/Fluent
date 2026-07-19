@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fluent-react/bridge": "*",
+    "@fluent-react/icon": "*",
     "@fluent-react/ui": "*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

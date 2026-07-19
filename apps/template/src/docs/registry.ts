@@ -11,6 +11,7 @@ import { displayDocs } from './data/display';
 import { feedbackDocs } from './data/feedback';
 import { shellDocs } from './data/shell';
 import { guideDocs } from './data/guides';
+import { extrasDocs } from './data/extras';
 
 export const docGroups: DocGroup[] = [
   { title: '指南', items: guideDocs, guide: true },
@@ -23,6 +24,7 @@ export const docGroups: DocGroup[] = [
   { title: '集合', items: collectionDocs },
   { title: '展示', items: displayDocs },
   { title: '反馈', items: feedbackDocs },
+  { title: '扩展', items: extrasDocs },
   { title: '外壳', items: shellDocs },
 ];
 

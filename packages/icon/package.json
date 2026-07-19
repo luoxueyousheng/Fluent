@@ -1,0 +1,39 @@
+{
+  "name": "@fluent-react/icon",
+  "version": "0.1.0",
+  "description": "Fluent System Icons for fluent-react — 命名导入 + size API(headless,无 CSS-in-JS)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luoxueyousheng/Fluent.git",
+    "directory": "packages/icon"
+  },
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      }
+    }
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "dependencies": {
+    "@fluentui/react-icons": "^2.0.333"
+  }
+}

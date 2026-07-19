@@ -2,7 +2,9 @@
  * WinUI TreeView 形态:行 32px、chevron 旋转、选中行灰底 + 左侧 accent 药丸 */
 import { useState, type ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ChevronRightRegular,
+} from '@fluent-react/icon';
 
 export interface TreeDataNode {
   key: string;
@@ -61,7 +63,7 @@ export function Tree({
                onClick={() => select(n)}>
             <span className={cn('tree-chev', open && 'open', !hasChildren && 'leaf')}
                   onClick={(e) => { if (hasChildren) { e.stopPropagation(); toggle(n.key); } }}>
-              {hasChildren && <Icon name="chevronRight" size={12} strokeWidth={1.3} />}
+              {hasChildren && <ChevronRightRegular size={12} />}
             </span>
             <span className="tree-title">{n.title}</span>
           </div>

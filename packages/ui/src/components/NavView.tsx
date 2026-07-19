@@ -3,7 +3,9 @@
  * 折叠动画 transitionend 后重定位;ResizeObserver 兜底;受控 value。 */
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  NavigationRegular,
+} from '@fluent-react/icon';
 
 export interface NavItemDef {
   key: string;
@@ -103,7 +105,7 @@ export function NavView({ items, value, onChange, collapsed, onCollapsedChange, 
       {onCollapsedChange && (
         <button className="nav-item nav-hamburger" title="展开/收缩导航" aria-label="展开或收缩导航"
                 onClick={() => onCollapsedChange(!collapsed)}>
-          <Icon name="menu" />
+          <NavigationRegular />
           <span className="label">导航</span>
         </button>
       )}

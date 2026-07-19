@@ -3,7 +3,10 @@
  * 对应 WinUI Community Toolkit 的 SettingsCard / SettingsExpander。 */
 import { useState, type ReactNode } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  ChevronDownRegular,
+  ChevronRightRegular,
+} from '@fluent-react/icon';
 
 export interface SettingsCardProps {
   icon?: ReactNode;
@@ -25,7 +28,7 @@ export function SettingsCard({ icon, title, description, children, onClick, clas
         {description && <span className="sc-desc">{description}</span>}
       </span>
       {children && <span className="sc-control">{children}</span>}
-      {onClick && <Icon name="chevronRight" size={12} className="sc-chevron" />}
+      {onClick && <ChevronRightRegular size={12} className="sc-chevron" />}
     </>
   );
   return onClick ? (
@@ -61,7 +64,7 @@ export function SettingsExpander({ icon, title, description, control, children, 
           {description && <span className="sc-desc">{description}</span>}
         </span>
         {control && <span className="sc-control" onClick={(e) => e.stopPropagation()}>{control}</span>}
-        <Icon name="chevronDown" size={12} className="se-chevron" />
+        <ChevronDownRegular size={12} className="se-chevron" />
       </button>
       {/* 常驻挂载 + grid 0fr→1fr 高度动画;收起时 inert 防 Tab 聚焦到隐藏控件 */}
       <div className="se-body" inert={!open || undefined}>

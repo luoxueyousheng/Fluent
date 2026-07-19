@@ -4,12 +4,17 @@
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  CheckmarkRegular,
+  ChevronDownRegular,
+  DismissRegular,
+} from '@fluent-react/icon';
 import { useFixedPlacement, useFlyout } from './Flyout';
 import { useMergedState } from '../useMergedState';
 import { sizeClass, type ControlSize } from './Button';
 import { statusClass, type ControlStatus } from './Field';
 import type { ComboOption } from './ComboBox';
+import { colorClass, radiusClass, type Radius, type SemanticColor } from '../modifiers';
 
 export interface MultiSelectProps {
   options: ComboOption[];
@@ -21,6 +26,10 @@ export interface MultiSelectProps {
   maxTagCount?: number;
   size?: ControlSize;
   status?: ControlStatus;
+  /** 语义着色:展开下划线随之变色 */
+  color?: SemanticColor;
+  /** 圆角:none / sm / md(默认) / lg */
+  radius?: Radius;
   disabled?: boolean;
   className?: string;
   'aria-label'?: string;
@@ -28,7 +37,7 @@ export interface MultiSelectProps {
 
 export function MultiSelect({
   options, value: valueProp, defaultValue = [], onChange,
-  placeholder = '请选择', maxTagCount, size, status, disabled, className, ...aria
+  placeholder = '请选择', maxTagCount, size, status, color, radius, disabled, className, ...aria
 }: MultiSelectProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
@@ -57,7 +66,7 @@ export function MultiSelect({
   };
 
   return (
-    <div ref={rootRef} className={cn('multiselect', className)}>
+    <div ref={rootRef} className={cn('multiselect', colorClass(color), radiusClass(radius), className)}>
       <button className={cn('combo-trigger', 'ms-trigger', sizeClass(size), statusClass(status))}
               disabled={disabled} aria-haspopup="listbox" aria-expanded={fly.isOpen}
               aria-label={aria['aria-label']}
@@ -69,13 +78,13 @@ export function MultiSelect({
               {labelOf(v)}
               <span className="ms-tag-x" role="button" aria-label={`移除 ${v}`}
                     onClick={(e) => { e.stopPropagation(); toggleValue(v); }}>
-                <Icon name="close" size={9} strokeWidth={1.4} />
+                <DismissRegular size={9} />
               </span>
             </span>
           ))}
           {rest > 0 && <span className="ms-tag ms-more">+{rest}</span>}
         </span>
-        <Icon name="chevronDown" size={12} className="combo-chev" />
+        <ChevronDownRegular size={12} className="combo-chev" />
       </button>
       {fly.isOpen && createPortal(
         <div ref={popRef} className={cn('combo-pop', 'ms-pop', placement.cls, fly.closing && 'closing')}
@@ -88,7 +97,7 @@ export function MultiSelect({
                    className={cn('combo-option', 'ms-option', i === activeIdx && 'active')}
                    onClick={() => toggleValue(o.value)}>
                 <span className={cn('ms-check', on && 'on')}>
-                  {on && <Icon name="check" size={11} strokeWidth={2} />}
+                  {on && <CheckmarkRegular size={11} />}
                 </span>
                 {o.label}
               </div>

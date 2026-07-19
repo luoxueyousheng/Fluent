@@ -11,7 +11,15 @@ import {
   type HTMLAttributes, type ReactElement, type ReactNode,
 } from 'react';
 import { cn } from '../cn';
-import { Icon } from './Icon';
+import {
+  AppsRegular,
+  ArrowLeftRegular,
+  DismissRegular,
+  MaximizeRegular,
+  NavigationRegular,
+  SquareMultipleRegular,
+  SubtractRegular,
+} from '@fluent-react/icon';
 
 /** 自绘窗口控制钮的宿主回调(缺省的钮不渲染) */
 export interface WindowController {
@@ -78,15 +86,15 @@ export function TitleBar({
           有返回状态:返回键出现在最左,汉堡右移 */}
       {onBack && !backDisabled && (
         <button className="tb-nav-btn" aria-label="返回" onClick={onBack} {...NO_DRAG}>
-          <Icon name="back" size={14} strokeWidth={1.3} />
+          <ArrowLeftRegular size={14} />
         </button>
       )}
       {onMenu && (
         <button className="tb-nav-btn" aria-label="展开或收缩导航" onClick={onMenu} {...NO_DRAG}>
-          <Icon name="menu" size={14} strokeWidth={1.3} />
+          <NavigationRegular size={14} />
         </button>
       )}
-      {logo ?? <Icon name="logo" className="logo" strokeWidth={1.3} />}
+      {logo ?? <AppsRegular className="logo" />}
       <span className="app-name">{appName}</span>
       {sub && <span className="app-sub">{sub}</span>}
       {children && <div className="tb-actions" {...NO_DRAG}>{children}</div>}
@@ -94,17 +102,19 @@ export function TitleBar({
         <div className="tb-caption" {...NO_DRAG}>
           {controls.minimize && (
             <button className="tb-cap" aria-label="最小化" onClick={controls.minimize}>
-              <Icon name="min" size={13} strokeWidth={1.1} />
+              <SubtractRegular size={13} />
             </button>
           )}
           {controls.toggleMaximize && (
             <button className="tb-cap" aria-label={isMax ? '还原' : '最大化'} onClick={controls.toggleMaximize}>
-              <Icon name={isMax ? 'restore' : 'max'} size={12} strokeWidth={1.1} />
+              {isMax
+                ? <SquareMultipleRegular size={12} />
+                : <MaximizeRegular size={12} />}
             </button>
           )}
           {controls.close && (
             <button className="tb-cap close" aria-label="关闭" onClick={controls.close}>
-              <Icon name="close" size={13} strokeWidth={1.1} />
+              <DismissRegular size={13} />
             </button>
           )}
         </div>
