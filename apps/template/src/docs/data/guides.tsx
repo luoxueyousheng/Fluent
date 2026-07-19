@@ -181,18 +181,37 @@ configure({
 await ready({ backdrop: 'micaAlt' });   // 或 backdrop: false 关闭自动材质`,
     },
     {
-      title: '调用与事件',
-      demo: note('inv 失败不抛错:返回 null 并走 onError——UI 层不必层层 try/catch。'),
+      title: '调用与事件(fetch 风格)',
+      description: '业务调用像 fetch:host 返回 { ok, data, error };host.json 成功直接给 data、失败抛 HostError。旧 inv 仍可用(失败 null)。',
+      demo: note('推荐 host.json 写业务;需要分支看 ok 时用 host。全局 onError 适合兜底 Toast,业务 try/catch 时对 host.json 默认 silent。'),
       code: `
-import { inv, useJadeEvent, useTheme } from '@fluent-jade/bridge';
+import { host, HostError, useJadeEvent, useTheme } from '@fluent-jade/bridge';
 
-// 调用宿主(任意业务通道)
-const result = await inv<{ rows: number }>('export_report', { rows: 200 });
+// ① 最像 fetch:成功拿 data,失败 throw
+try {
+  const data = await host.json<{ users: { id: number; name: string }[] }>(
+    'load_users',
+    { query: '管理员' },
+  );
+  console.log(data.users);
+} catch (e) {
+  if (e instanceof HostError) console.error(e.channel, e.code, e.message);
+}
+
+// ② 不抛错,自己判断
+const r = await host<{ rows: number }>('export_report', { rows: 200 });
+if (r.ok) console.log(r.data, r.ms + 'ms');
+else console.warn(r.error?.message);
+
+// ③ 超时 / 中止(同 fetch)
+const ac = new AbortController();
+const p = host.json('long_task', {}, { timeout: 3000, signal: ac.signal });
+// ac.abort();
 
 // 订阅宿主事件(组件内)
 useJadeEvent<{ task: string; percent: number }>('progress', (p) => setPct(p.percent));
 
-// 主题状态(深浅色 / 材质)
+// 主题状态
 const { dark, mode, backdrop } = useTheme();`,
     },
     {
@@ -235,7 +254,8 @@ window.jade = {
 window.__JV_ENV = { os: 'windows', arch: 'amd64', win11: true };  // 推荐:同步注入省一次 env
 
 // 业务调用示例:前端发什么、期望收什么完全由你的通道自定
-// 前端:const r = await inv('load_users', { query: '管理员' });
+// 前端:const data = await host.json('load_users', { query: '管理员' });
+// 或:const r = await host('load_users', { query: '管理员' }); if (r.ok) ...
 // 宿主应答(resolve):
 { "users": [{ "id": 1, "name": "林婉清", "role": "管理员", "online": true }], "total": 1 }
 
@@ -283,8 +303,11 @@ import '@fluent-jade/bridge/mock';`,
     {
       title: '② 业务通信(要和宿主收发数据才用)',
       rows: [
-        { name: 'inv(channel, payload?)', type: 'Promise<T | null>', description: '调用宿主任意业务通道;失败不抛错——返回 null 并走 onError。' },
+        { name: 'host(channel, body?, opts?)', type: 'Promise<HostResponse<T>>', description: 'fetch 风格:永不抛错,看 ok/data/error/ms;opts 支持 timeout/signal/silent。' },
+        { name: 'host.json(channel, body?, opts?)', type: 'Promise<T>', description: '成功返回 data;失败抛 HostError(默认 silent,由调用方 try/catch)。' },
+        { name: 'inv(channel, payload?)', type: 'Promise<T | null>', description: '旧软失败 API:失败返回 null 并走 onError;新代码优先 host。' },
         { name: 'useJadeEvent(event, cb)', type: 'hook', description: '订阅宿主推送事件,卸载自动退订;payload 字符串自动 JSON 解析。' },
+        { name: 'useHost()', type: 'typeof host', description: '组件内稳定引用的 host(依赖数组友好)。' },
       ],
     },
     {
@@ -319,6 +342,8 @@ import '@fluent-jade/bridge/mock';`,
     {
       title: '数据结构',
       rows: [
+        { name: 'HostResponse<T>', type: '{ ok, data, error, channel, ms }', description: 'host() 返回;ok 为 false 时 error 为 HostError。' },
+        { name: 'HostError', type: 'Error & { channel, code, cause }', description: 'host.json 失败抛出;code 常见 NO_HOST / ABORTED / HOST_ERROR 或宿主自定义。' },
         { name: 'InitResult', type: '{ hasJade, ENV, hasBackdrop }', description: 'ready() 的返回:是否宿主内 / 环境信息 / 是否支持真实材质(Win11)。' },
         { name: 'JadeEnv', type: '{ os: string, arch: string, win11: boolean }', description: '运行环境;优先取 PreloadJS 注入的 window.__JV_ENV,否则经 env 通道兜底。' },
         { name: 'BridgeConfig', type: '{ timeout, channels, onError, onLog, solidColor }', description: 'configure 可覆盖项:超时(默认 8000ms)/ 四个内置通道名 / 全局错误与日志回调 / 纯色底取色函数。' },

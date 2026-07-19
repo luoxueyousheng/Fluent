@@ -47,25 +47,123 @@ export function configure(options: Partial<BridgeConfig>): void {
   if (channels) Object.assign(cfg.channels, channels);
 }
 
-/** invoke 门面:统一超时/日志;失败回调 onError 后返回 null(不抛) */
-export async function inv<T = unknown>(channel: string, payload: unknown = {}): Promise<T | null> {
-  if (!hasJade) {
-    cfg.onError?.(channel, new Error('jade 对象不可用(不在宿主内运行)'));
-    return null;
+/* ---- 业务调用:fetch 风格 ----
+ * host(channel, body?)     → HostResponse(不抛,看 ok / data / error)
+ * host.json(channel, body?)→ 成功直接返回 data,失败抛 HostError
+ * inv(...)                 → 旧软失败 API(失败 null),兼容保留
+ */
+
+export interface HostCallOptions {
+  /** 单次超时毫秒;缺省用 configure.timeout(8000) */
+  timeout?: number;
+  /** AbortSignal:中止本次调用 */
+  signal?: AbortSignal;
+  /** true 时失败不回调 configure.onError(由调用方自己处理) */
+  silent?: boolean;
+}
+
+export class HostError extends Error {
+  readonly channel: string;
+  readonly code: string;
+  readonly cause: unknown;
+  constructor(channel: string, message: string, code = 'HOST_ERROR', cause?: unknown) {
+    super(message);
+    this.name = 'HostError';
+    this.channel = channel;
+    this.code = code;
+    this.cause = cause;
   }
+}
+
+export interface HostResponse<T = unknown> {
+  ok: boolean;
+  data: T | null;
+  error: HostError | null;
+  channel: string;
+  /** 往返耗时毫秒 */
+  ms: number;
+}
+
+function toHostError(channel: string, e: unknown): HostError {
+  if (e instanceof HostError) return e;
+  const anyE = e as { code?: string; message?: string; name?: string } | null;
+  const msg = String(anyE?.message ?? e ?? '宿主调用失败');
+  const code = String(anyE?.code ?? (anyE?.name === 'AbortError' ? 'ABORTED' : 'HOST_ERROR'));
+  return new HostError(channel, msg, code, e);
+}
+
+function raceAbort<T>(p: Promise<T>, signal?: AbortSignal): Promise<T> {
+  if (!signal) return p;
+  if (signal.aborted) return Promise.reject(new DOMException('Aborted', 'AbortError'));
+  return new Promise<T>((resolve, reject) => {
+    const onAbort = () => reject(new DOMException('Aborted', 'AbortError'));
+    signal.addEventListener('abort', onAbort, { once: true });
+    p.then(
+      (v) => { signal.removeEventListener('abort', onAbort); resolve(v); },
+      (e) => { signal.removeEventListener('abort', onAbort); reject(e); },
+    );
+  });
+}
+
+async function hostCall<T = unknown>(
+  channel: string,
+  payload: unknown = {},
+  opts: HostCallOptions = {},
+): Promise<HostResponse<T>> {
   const t0 = performance.now();
+  const timeout = opts.timeout ?? cfg.timeout;
+  if (!hasJade) {
+    const error = new HostError(channel, 'jade 对象不可用(不在宿主内运行)', 'NO_HOST');
+    if (!opts.silent) cfg.onError?.(channel, error);
+    return { ok: false, data: null, error, channel, ms: 0 };
+  }
   try {
-    const res = await window.jade!.invoke(channel, payload, { timeout: cfg.timeout });
+    const raw = await raceAbort(
+      window.jade!.invoke(channel, payload, { timeout }),
+      opts.signal,
+    );
+    const data = parsePayload<T>(raw);
+    const ms = Math.round(performance.now() - t0);
     cfg.onLog?.(
-      `invoke('${channel}') ${Math.round(performance.now() - t0)}ms → ${typeof res === 'string' ? res : JSON.stringify(res)}`,
+      `host('${channel}') ${ms}ms → ${typeof data === 'string' ? data : JSON.stringify(data)}`,
       true,
     );
-    return res as T;
+    return { ok: true, data, error: null, channel, ms };
   } catch (e) {
-    cfg.onLog?.(`invoke('${channel}') 失败: ${String(e)}`, false);
-    cfg.onError?.(channel, e);
-    return null;
+    const error = toHostError(channel, e);
+    const ms = Math.round(performance.now() - t0);
+    cfg.onLog?.(`host('${channel}') 失败 ${ms}ms: ${error.message}`, false);
+    if (!opts.silent) cfg.onError?.(channel, error);
+    return { ok: false, data: null, error, channel, ms };
   }
+}
+
+/** 成功直接返回 data;失败抛 HostError(像 await (await fetch()).json()) */
+export async function hostJson<T = unknown>(
+  channel: string,
+  payload: unknown = {},
+  opts: HostCallOptions = {},
+): Promise<T> {
+  // 默认 silent:由调用方 try/catch,避免与 onError 双重处理
+  const r = await hostCall<T>(channel, payload, { ...opts, silent: opts.silent ?? true });
+  if (!r.ok) throw r.error ?? new HostError(channel, '宿主调用失败', 'HOST_ERROR');
+  return r.data as T;
+}
+
+/** fetch 风格宿主调用:
+ *   const r = await host('load_users', { q });
+ *   if (r.ok) use(r.data);
+ *   const data = await host.json('load_users', { q }); // 失败抛 HostError
+ */
+export const host: {
+  <T = unknown>(channel: string, payload?: unknown, opts?: HostCallOptions): Promise<HostResponse<T>>;
+  json: typeof hostJson;
+} = Object.assign(hostCall, { json: hostJson });
+
+/** invoke 门面(旧):失败回调 onError 后返回 null(不抛)。新代码优先 host / host.json */
+export async function inv<T = unknown>(channel: string, payload: unknown = {}): Promise<T | null> {
+  const r = await hostCall<T>(channel, payload);
+  return r.ok ? (r.data as T) : null;
 }
 
 /** jade 事件 payload 可能是字符串——统一解析 */
