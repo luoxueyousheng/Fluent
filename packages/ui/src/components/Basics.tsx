@@ -35,8 +35,8 @@ export function Checkbox({ children, className, indeterminate, card, description
              {...rest} />
       <span className="box">
         {indeterminate
-          ? <SubtractRegular size={14} />
-          : <CheckmarkRegular size={14} />}
+          ? <SubtractRegular size={14} color="var(--text-on-accent)" />
+          : <CheckmarkRegular size={14} color="var(--text-on-accent)" />}
       </span>
       {card ? (
         <span className="cc-body">

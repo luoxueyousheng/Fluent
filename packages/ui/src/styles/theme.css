@@ -418,10 +418,21 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
   display: inline-flex; align-items: center; justify-content: center;
   transition: background var(--fast), border-color var(--fast);
 }
-.check .box svg { width: 14px; height: 14px; color: var(--text-on-accent);
-  opacity: 0; transform: scale(0.6); transition: opacity var(--fast), transform var(--fast); }
+/* 勾/横杠:浅色主题白、深色主题黑(跟 --text-on-accent = on-accent) */
+.check .box svg {
+  width: 14px; height: 14px;
+  color: var(--text-on-accent);
+  fill: currentColor;
+  opacity: 0; transform: scale(0.6);
+  transition: opacity var(--fast), transform var(--fast);
+}
 .check input:checked + .box { background: var(--accent); border-color: var(--accent); }
-.check input:checked + .box svg { opacity: 1; transform: scale(1); }
+.check input:checked + .box svg,
+.check input[type="checkbox"]:indeterminate + .box svg {
+  opacity: 1; transform: scale(1);
+  color: var(--text-on-accent);
+  fill: currentColor;
+}
 .check input:focus-visible + .box { outline: 2px solid var(--text-1); outline-offset: 2px; }
 
 .radio .box { border-radius: 50%; }
@@ -1855,7 +1866,7 @@ button.settings-card:active > * { opacity: .85; }
   align-items: center; justify-content: center; background: transparent;
   transition: background 83ms var(--fluent-decelerate), border-color 83ms var(--fluent-decelerate);
 }
-.ms-check.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+.ms-check.on { background: var(--accent); border-color: var(--accent); color: var(--text-on-accent); }
 
 /* Splitter:6px 拖柄,悬停浮现,拖动/聚焦 accent */
 .splitter { display: grid; min-height: 0; min-width: 0; }
