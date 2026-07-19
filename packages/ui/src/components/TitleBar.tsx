@@ -74,15 +74,16 @@ export function TitleBar({
               ...dragStyle,
             }}
             {...{ 'jade-region-drag': '' }} {...dragRest}>
+      {/* 汉堡最左:图标中心 x=24(padding 6 + 36/2),与导航图标列(16+8)同列对齐 */}
+      {onMenu && (
+        <button className="tb-nav-btn" aria-label="展开或收缩导航" onClick={onMenu} {...NO_DRAG}>
+          <Icon name="menu" size={14} strokeWidth={1.3} />
+        </button>
+      )}
       {onBack && (
         <button className="tb-nav-btn" aria-label="返回" disabled={backDisabled}
                 onClick={onBack} {...NO_DRAG}>
           <Icon name="back" size={14} strokeWidth={1.3} />
-        </button>
-      )}
-      {onMenu && (
-        <button className="tb-nav-btn" aria-label="展开或收缩导航" onClick={onMenu} {...NO_DRAG}>
-          <Icon name="menu" size={14} strokeWidth={1.3} />
         </button>
       )}
       {logo ?? <Icon name="logo" className="logo" strokeWidth={1.3} />}

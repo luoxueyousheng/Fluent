@@ -8,12 +8,12 @@ const appshell: DocDef = {
   name: 'AppShell',
   cn: '应用外壳',
   description:
-    '标题栏 + 侧导航合并的一体化外壳,mode 控制形态:multi 多页文档(返回键在标题栏,汉堡在导航面板顶部(WinUI 正统位次,与图标列对齐)驱动展开/收缩)/ single 单页应用(仅标题栏 + 内容区,不渲染汉堡与侧导航)。返回键与 mode 解耦(传 onBack 即显示);TitleBar 的宿主能力(controls 三模式 / dragProps)原样透传。本文档站即 multi 形态。',
+    '标题栏 + 侧导航合并的一体化外壳,mode 控制形态:multi 多页文档(标题栏最左汉堡驱动展开/收缩(与导航图标列同 x 对齐),返回键其后)/ single 单页应用(仅标题栏 + 内容区,不渲染汉堡与侧导航)。返回键与 mode 解耦(传 onBack 即显示);TitleBar 的宿主能力(controls 三模式 / dragProps)原样透传。本文档站即 multi 形态。',
   importCode: `import { AppShell, type NavEntry } from '@fluent-react/ui';`,
   sections: [
     {
       title: '多页模式(multi)',
-      description: '返回键在标题栏,汉堡在导航面板顶部驱动收缩(与图标列对齐);items/value/onChange 与 NavView 同约定。',
+      description: '标题栏最左汉堡驱动收缩(与导航图标列对齐);items/value/onChange 与 NavView 同约定。',
       demo: <AppShellMultiDemo />,
       code: `
 import { useState } from 'react';
@@ -107,9 +107,9 @@ function AppShellMultiDemo() {
   ];
   return (
     <div style={{ height: 320, width: '100%', overflow: 'hidden', borderRadius: 8, border: '1px solid var(--card-border)', background: 'var(--layer)' }}>
-      <AppShell mode="multi" appName="多页应用" sub="汉堡在导航顶部" controls="none"
+      <AppShell mode="multi" appName="多页应用" sub="汉堡在标题栏" controls="none"
                 items={items} value={page} onChange={setPage}>
-        <p style={{ color: 'var(--text-2)' }}>当前页:{page}(点导航顶部汉堡收缩)</p>
+        <p style={{ color: 'var(--text-2)' }}>当前页:{page}(点标题栏汉堡收缩)</p>
       </AppShell>
     </div>
   );
@@ -370,7 +370,7 @@ export function ShellExample() {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <div className="grid h-full grid-rows-[40px_1fr]">
-      {/* 汉堡在导航顶部内(WinUI 3 位次),驱动 NavView 受控 collapsed */}
+      {/* 汉堡在标题栏内(WinUI 3 位次),驱动 NavView 受控 collapsed */}
       <TitleBar appName="App" onMenu={() => setCollapsed(!collapsed)} controls="host" />
       <div className="flex min-h-0">
         <NavView items={ITEMS} value={page} onChange={setPage} collapsed={collapsed} />
