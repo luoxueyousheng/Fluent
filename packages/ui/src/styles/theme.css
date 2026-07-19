@@ -206,15 +206,24 @@ body {
 }
 :focus:not(:focus-visible) { outline: none; }
 
-/* ---- 20. 滚动条（Win11 细条） ---- */
-::-webkit-scrollbar { width: 12px; height: 12px; }
+/* ---- 20. 滚动条(Win11 三态):静默隐形 → 悬停容器浮现 4px 细滑块 → 指针入轨变宽 ----
+ * 滑块用主题无关的中性半透明灰:滚动条伪元素引用 var() 时,切换 data-theme 后
+ * Chromium 不重绘滚动条(色值滞留 bug,亮色下残留暗色值)——固定中性灰亮暗底通吃。
+ * 现代 Edge/WebView2 若启用 Win11 Fluent 原生滚动条,此定制被忽略,原生行为即三态。 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
 /* 轨道/角落必须显式透明:作者一旦样式化滚动条,未声明部分会落回浏览器默认浅色,
    暗色主题下就是刺眼的白底轨道 */
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-corner { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--text-3); border-radius: 6px;
-  border: 4px solid transparent; background-clip: padding-box; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-2); background-clip: padding-box; border-width: 3px; }
+::-webkit-scrollbar-thumb {
+  background: transparent; border-radius: 5px;
+  border: 3px solid transparent; background-clip: padding-box;   /* 10px 占位内 4px 细条 */
+}
+/* 悬停滚动容器(指针在区域内)才浮现;导航与全局同一行为 */
+:hover::-webkit-scrollbar-thumb { background-color: rgba(128, 128, 128, 0.55); background-clip: padding-box; }
+/* 指针进入滚动条:滑块变宽(8px)并加深 */
+::-webkit-scrollbar-thumb:hover { background-color: rgba(128, 128, 128, 0.75); background-clip: padding-box; border-width: 1px; }
+::-webkit-scrollbar-thumb:active { background-color: rgba(128, 128, 128, 0.9); background-clip: padding-box; border-width: 1px; }
 
 /* ---- 21. 减弱动效（无障碍必做）---- */
 @media (prefers-reduced-motion: reduce) {
@@ -267,18 +276,13 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
 .nav[data-collapsed] { width: 48px; }   /* 紧凑轨 48 = 4 + 40 + 4,条目几何与展开态完全一致(12+16+12=40 图标天然居中) */
 /* 组件级导航条目多：列表区可滚，汉堡钉顶、设置钉底 */
 .nav-top { flex: 1; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; min-height: 0; overscroll-behavior: contain;
-  scrollbar-gutter: stable; }            /* WinUI overlay 近似:占位恒定 6px(透明),悬停才浮现滑块 */
-.nav-top::-webkit-scrollbar { width: 6px; }
-.nav-top::-webkit-scrollbar-thumb { background: transparent; border-radius: 3px; }
-.nav-top:hover::-webkit-scrollbar-thumb { background: var(--stroke); }
-.nav-top::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
-/* 汉堡/搜索槽/底部区与列表同步让出滚动条位:行宽一致,悬停背景不再错位 */
-.nav > .nav-hamburger, .nav-slot, .nav-bottom { margin-right: 6px; }
-.nav > .nav-hamburger { width: auto; align-self: stretch; }   /* width:100% 会无视 margin 溢出,改走拉伸 */
+  scrollbar-gutter: stable; }            /* 占位恒定(全局 12px 透明),滚动条风格随全局三态 */
+/* 搜索槽/底部区与列表同步让出滚动条位(同全局 12px):行宽一致,悬停背景不错位 */
+.nav-slot, .nav-bottom { margin-right: 10px; }
 /* 折叠态(纯图标窄轨):隐藏滚动条并收回让位 */
 .nav[data-collapsed] .nav-top { scrollbar-width: none; scrollbar-gutter: auto; }
 .nav[data-collapsed] .nav-top::-webkit-scrollbar { display: none; }
-.nav[data-collapsed] > .nav-hamburger, .nav[data-collapsed] .nav-bottom { margin-right: 0; }
+.nav[data-collapsed] .nav-bottom { margin-right: 0; }
 .nav-top .nav-item { flex-shrink: 0; }
 .nav-bottom { display: flex; flex-direction: column; gap: 2px; }
 .nav-spacer { flex: 1; }
@@ -641,7 +645,7 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
 /* —— 风格 C：TabView（浏览器式标签 + 关闭 + 新建） —— */
 .tabview { display: flex; flex-direction: column; }
 .tabstrip { display: flex; align-items: flex-end; gap: 2px; min-height: 36px;
-  border-bottom: 1px solid var(--divider); overflow-x: auto; scrollbar-width: thin; }
+  border-bottom: 1px solid var(--divider); overflow-x: auto; }
 .vtab {
   display: inline-flex; align-items: center; gap: var(--sp-s);
   height: 32px; padding: 0 8px 0 12px; border: none; background: transparent;
