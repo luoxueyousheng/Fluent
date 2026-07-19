@@ -4,10 +4,12 @@ import type { HTMLAttributes, InputHTMLAttributes, ReactNode } from 'react';
 import { cn } from '../cn';
 import {
   CheckmarkCircleRegular,
+  CheckmarkFilled,
   CheckmarkRegular,
   ChevronRightRegular,
   ErrorCircleRegular,
   InfoRegular,
+  SubtractFilled,
   SubtractRegular,
   WarningRegular,
 } from '@fluent-jade/icon';
@@ -35,8 +37,8 @@ export function Checkbox({ children, className, indeterminate, card, description
              {...rest} />
       <span className="box">
         {indeterminate
-          ? <SubtractRegular size={14} color="var(--text-on-accent)" />
-          : <CheckmarkRegular size={14} color="var(--text-on-accent)" />}
+          ? <SubtractFilled size={14} color="var(--text-on-accent)" />
+          : <CheckmarkFilled size={14} color="var(--text-on-accent)" />}
       </span>
       {card ? (
         <span className="cc-body">

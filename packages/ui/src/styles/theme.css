@@ -420,7 +420,7 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
 }
 /* 勾/横杠:浅色主题白、深色主题黑(跟 --text-on-accent = on-accent) */
 .check .box svg {
-  width: 14px; height: 14px;
+  width: 15px; height: 15px;
   color: var(--text-on-accent);
   fill: currentColor;
   opacity: 0; transform: scale(0.6);
