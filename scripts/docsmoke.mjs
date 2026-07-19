@@ -16,15 +16,15 @@ page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.
 await page.goto(URL, { waitUntil: 'networkidle0' });
 await new Promise((r) => setTimeout(r, 600));
 
-const items = await page.$$eval('.nav-item:not(.nav-hamburger)', (els) =>
+const items = await page.$$eval('.shell > .nav .nav-item:not(.nav-hamburger)', (els) =>
   els.map((el) => ({ label: el.textContent.trim() })));
 console.log(`nav items: ${items.length}`);
 
 const results = [];
-const count = await page.$$eval('.nav-item:not(.nav-hamburger)', (els) => els.length);
+const count = await page.$$eval('.shell > .nav .nav-item:not(.nav-hamburger)', (els) => els.length);
 for (let i = 0; i < count; i++) {
   const label = await page.evaluate((idx) => {
-    const els = document.querySelectorAll('.nav-item:not(.nav-hamburger)');
+    const els = document.querySelectorAll('.shell > .nav .nav-item:not(.nav-hamburger)');
     els[idx].scrollIntoView({ block: 'nearest' });
     els[idx].click();
     return els[idx].textContent.trim();

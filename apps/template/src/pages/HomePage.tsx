@@ -7,10 +7,6 @@ import {
 import { inv, useJadeEvent } from '@fluent-react/bridge';
 import { docGroups } from '../docs/registry';
 
-const firstSentence = (s: string) => {
-  const i = s.indexOf('。');
-  return i < 0 ? s : s.slice(0, i + 1);
-};
 
 export function HomePage({ entries, clearLog, onOpen }: {
   entries: LogEntry[];
@@ -63,13 +59,12 @@ export function HomePage({ entries, clearLog, onOpen }: {
                    aria-label={`打开 ${d.cn} ${d.name} 文档`}
                    onClick={() => onOpen(d.key)}
                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(d.key); } }}>
-                {/* 迷你实时预览:取该组件文档的首个演示,缩放裁切、不可交互 */}
+                {/* 迷你预览:居中展示单个标志性组件(取首个演示的第一个元素,其余 CSS 隐藏),不可交互 */}
                 <div className="gc-preview" aria-hidden="true">
                   <div className="gc-fit">{d.sections[0]?.demo}</div>
                 </div>
                 <div className="gc-meta">
                   <span className="gc-name">{d.cn}<i>{d.name}</i></span>
-                  <span className="gc-desc">{firstSentence(d.description)}</span>
                 </div>
               </div>
             ))}
