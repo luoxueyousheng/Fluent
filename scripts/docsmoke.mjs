@@ -1,11 +1,24 @@
-/* 文档站冒烟:遍历全部导航项,断言文档页结构 + 无 JS 错误 + nav 滚动指示条 */
+/* 文档站冒烟:遍历全部导航项,断言文档页结构 + 无 JS 错误 + nav 滚动指示条。
+ * CI 友好:BROWSER_PATH 指定浏览器(缺省本机 Edge)、DOCS_URL 指定站点、
+ * SMOKE_SHOT_DIR 存在才截图;任何 BAD 或 JS 错误 → 退出码 1。 */
 import puppeteer from 'puppeteer-core';
 
-const EDGE = 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
-const URL = 'http://localhost:4173/';
-const SHOT = (n) => `C:/Users/35037/AppData/Local/Temp/claude/D--Compile-VolLibrary-Encapsulation-liunx-2-3-JadeView/b7a9e78a-6299-4428-a177-b9bcc2d97725/scratchpad/${n}.png`;
+const BROWSER = process.env.BROWSER_PATH || 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
+const URL = process.env.DOCS_URL || 'http://localhost:4173/';
+const SHOT_DIR = process.env.SMOKE_SHOT_DIR || '';
+const NAV_SEL = '#root > .app > .shell > .nav .nav-item:not(.nav-hamburger)';
 
-const browser = await puppeteer.launch({ executablePath: EDGE, headless: 'new', args: ['--window-size=1280,900'] });
+let failures = 0;
+const check = (name, ok) => {
+  console.log(`${ok ? 'OK ' : 'BAD'} ${name}`);
+  if (!ok) failures++;
+};
+const shot = async (page, name) => {
+  if (!SHOT_DIR) return;
+  await page.screenshot({ path: `${SHOT_DIR}/${name}.png`, clip: { x: 0, y: 0, width: 1280, height: 900 } });
+};
+
+const browser = await puppeteer.launch({ executablePath: BROWSER, headless: 'new', args: ['--window-size=1280,900', '--no-sandbox'] });
 const page = await browser.newPage();
 await page.setViewport({ width: 1280, height: 900 });
 
@@ -16,79 +29,74 @@ page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.
 await page.goto(URL, { waitUntil: 'networkidle0' });
 await new Promise((r) => setTimeout(r, 600));
 
-const items = await page.$$eval('#root > .app > .shell > .nav .nav-item:not(.nav-hamburger)', (els) =>
-  els.map((el) => ({ label: el.textContent.trim() })));
-console.log(`nav items: ${items.length}`);
+const count = await page.$$eval(NAV_SEL, (els) => els.length);
+console.log(`nav items: ${count}`);
+if (count < 60) { check(`导航项数量 ${count} >= 60`, false); }
 
-const results = [];
-const count = await page.$$eval('#root > .app > .shell > .nav .nav-item:not(.nav-hamburger)', (els) => els.length);
 for (let i = 0; i < count; i++) {
-  const label = await page.evaluate((idx) => {
-    const els = document.querySelectorAll('#root > .app > .shell > .nav .nav-item:not(.nav-hamburger)');
+  const label = await page.evaluate((idx, sel) => {
+    const els = document.querySelectorAll(sel);
     els[idx].scrollIntoView({ block: 'nearest' });
     els[idx].click();
     return els[idx].textContent.trim();
-  }, i);
-  await new Promise((r) => setTimeout(r, 350));
+  }, i, NAV_SEL);
+  await new Promise((r) => setTimeout(r, 300));
   const info = await page.evaluate(() => {
     const doc = document.querySelector('.doc');
     if (!doc) return { doc: false };
     return {
       doc: true,
-      h1: document.querySelector('.doc-title')?.childNodes[0]?.textContent ?? '',
       sections: doc.querySelectorAll('.doc-example').length,
-      apiTables: doc.querySelectorAll('.api-table').length,
       codeBlocks: doc.querySelectorAll('.code-block').length,
+      // 指南页可以没有 API 区;有 API 标题则必须有表
+      hasApiHeading: [...doc.querySelectorAll('h2')].some((h) => h.textContent.trim() === 'API'),
+      apiTables: doc.querySelectorAll('.api-table').length,
     };
   });
-  results.push({ label, ...info });
+  if (!info.doc) { console.log(`--- ${label}(非文档页)`); continue; }
+  const ok = info.sections >= 1 && info.codeBlocks >= 1 && (!info.hasApiHeading || info.apiTables >= 1);
+  check(`${label}: examples=${info.sections} code=${info.codeBlocks} api=${info.apiTables}`, ok);
 }
 
-for (const r of results) {
-  if (r.doc) {
-    const ok = r.sections >= 1 && r.apiTables >= 1 && r.codeBlocks >= 1;
-    console.log(`${ok ? 'OK ' : 'BAD'} ${r.label} — ${r.h1}: examples=${r.sections} apiTables=${r.apiTables} code=${r.codeBlocks}`);
-  } else {
-    console.log(`--- ${r.label}(非文档页)`);
-  }
-}
-
-/* 交互检查:Button 页 显示代码 + 复制按钮;nav 指示条随滚动移动 */
-await page.evaluate(() => {
-  const els = [...document.querySelectorAll('.nav-item')];
-  els.find((e) => e.textContent.includes('Button'))?.click();
-});
+/* 交互检查:Button 页 显示代码 + 复制按钮 */
+await page.evaluate((sel) => {
+  [...document.querySelectorAll(sel)].find((e) => e.textContent.includes('Button'))?.click();
+}, NAV_SEL);
 await new Promise((r) => setTimeout(r, 350));
 await page.click('.doc-example .doc-codetoggle');
 await new Promise((r) => setTimeout(r, 150));
-const codeShown = await page.$eval('.doc-example .code-block pre', (el) => el.textContent.length > 10);
-const hasCopy = !!(await page.$('.doc-example .code-copy'));
-console.log(`code toggle: ${codeShown ? 'OK' : 'BAD'}, copy btn: ${hasCopy ? 'OK' : 'BAD'}`);
-await page.screenshot({ path: SHOT('doc-button'), clip: { x: 0, y: 0, width: 1280, height: 900 } });
+check('code toggle', await page.$eval('.doc-example .code-block pre', (el) => el.textContent.length > 10));
+check('copy btn', !!(await page.$('.doc-example .code-copy')));
+await shot(page, 'doc-button');
 
-/* 先滚回中部再测跟随(循环结束时列表在最底,+=120 会是无操作) */
-await page.evaluate(() => { document.querySelector('.nav-top').scrollTop = 300; });
+/* nav 指示条跟随滚动(先滚到中部再反向滚) */
+const NAVTOP = '#root > .app > .shell > .nav .nav-top';
+await page.evaluate((s) => { document.querySelector(s).scrollTop = 300; }, NAVTOP);
 await new Promise((r) => setTimeout(r, 300));
-const indBefore = await page.$eval('.nav-indicator', (el) => el.style.transform);
-await page.evaluate(() => { document.querySelector('.nav-top').scrollTop = 150; });
+const indBefore = await page.$eval('#root > .app > .shell > .nav .nav-indicator', (el) => el.style.transform);
+await page.evaluate((s) => { document.querySelector(s).scrollTop = 150; }, NAVTOP);
 await new Promise((r) => setTimeout(r, 450));
-const indAfter = await page.$eval('.nav-indicator', (el) => el.style.transform);
-console.log(`nav indicator follows scroll: ${indBefore !== indAfter ? 'OK' : 'BAD'} (${indBefore} -> ${indAfter})`);
+const indAfter = await page.$eval('#root > .app > .shell > .nav .nav-indicator', (el) => el.style.transform);
+check(`nav indicator follows scroll (${indBefore} -> ${indAfter})`, indBefore !== indAfter);
 
-/* API 表截图(Slider 页,多表) */
-await page.evaluate(() => {
-  [...document.querySelectorAll('.nav-item')].find((e) => e.textContent.includes('Slider'))?.click();
-});
-await new Promise((r) => setTimeout(r, 350));
-await page.evaluate(() => document.querySelector('.api-table')?.scrollIntoView({ block: 'center' }));
-await new Promise((r) => setTimeout(r, 250));
-await page.screenshot({ path: SHOT('doc-api'), clip: { x: 0, y: 0, width: 1280, height: 900 } });
+/* hash 路由:直达 + 刷新保持 */
+await page.goto(`${URL}#/modal`, { waitUntil: 'networkidle0' });
+await new Promise((r) => setTimeout(r, 500));
+check('hash 直达 #/modal', await page.evaluate(() => document.querySelector('.doc-title')?.textContent?.includes('Modal') ?? false));
 
 /* 暗色抽查 */
 await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
 await new Promise((r) => setTimeout(r, 250));
-await page.screenshot({ path: SHOT('doc-dark'), clip: { x: 0, y: 0, width: 1280, height: 900 } });
+await shot(page, 'doc-dark');
 
 console.log(`js errors: ${errors.length}`);
 errors.slice(0, 10).forEach((e) => console.log('  ' + e));
+if (errors.length) failures += errors.length;
 await browser.close();
+
+if (failures > 0) {
+  console.log(`FAILED: ${failures} 项`);
+  process.exitCode = 1;
+} else {
+  console.log('ALL PASS');
+}

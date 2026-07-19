@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: 类型检查
+        run: npx tsc -p apps/template/tsconfig.json
+      - name: 构建库(dist + d.ts)
+        run: npm run build:lib
+      - name: 构建文档站
+        run: npm run build
+      - name: 冒烟(headless Chrome 遍历全站)
+        run: |
+          npx vite preview --config apps/template/vite.config.ts apps/template --port 4173 &
+          sleep 3
+          BROWSER_PATH="$(command -v google-chrome || command -v chromium-browser || command -v chromium)" \
+            node scripts/docsmoke.mjs

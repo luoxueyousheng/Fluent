@@ -12,15 +12,21 @@ const NAV: NavEntry[] = [
   { key: 'home', label: '首页', icon: <Icon name="home" /> },
   ...docGroups.flatMap((g): NavEntry[] => [
     { header: g.title },
-    ...g.items.map((d) => ({ key: d.key, label: `${d.cn} ${d.name}` })),
+    ...g.items.map((d) => ({ key: d.key, label: [d.cn, d.name].filter(Boolean).join(' ') })),
   ]),
   { key: 'settings', label: '设置', icon: <Icon name="settings" strokeWidth={1.3} />, bottom: true },
 ];
 
+/* hash 路由:#/modal 直达组件页(可分享/刷新保持);无效键回落首页 */
+const keyFromHash = (): string => {
+  const k = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
+  return k && (docByKey.has(k) || k === 'home' || k === 'settings') ? k : 'home';
+};
+
 export function App() {
   const toast = useToast();
   const { entries, log, clear } = useLog();
-  const [page, setPage] = useState('home');
+  const [page, setPage] = useState(keyFromHash);
   const [collapsed, setCollapsed] = useState(false);
   const [booted, setBooted] = useState(false);
   const [hasBackdrop, setHasBackdrop] = useState(true);
@@ -44,17 +50,23 @@ export function App() {
 
   useJadeEvent<ToastPayload>('toast', (p) => toast(p));
 
-  /* 返回历史栈(WinUI 3 标题栏返回键) */
+  /* 路由:hash 为真源(浏览器前进/后退经 hashchange 回灌);
+     标题栏返回键走独立历史栈,不与浏览器历史双写 */
   const [hist, setHist] = useState<string[]>([]);
+  useEffect(() => {
+    const onHash = () => setPage(keyFromHash());
+    addEventListener('hashchange', onHash);
+    return () => removeEventListener('hashchange', onHash);
+  }, []);
   const navigate = (k: string) => {
     if (k === page) return;
     setHist((h) => [...h, page]);
-    setPage(k);
+    location.hash = `#/${k}`;
   };
   const goBack = () => {
     setHist((h) => {
       if (!h.length) return h;
-      setPage(h[h.length - 1]);
+      location.hash = `#/${h[h.length - 1]}`;
       return h.slice(0, -1);
     });
   };

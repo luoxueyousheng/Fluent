@@ -37,9 +37,27 @@ npm run build        # 构建 → apps/template/dist(纯静态,走 japk / 协议
 
 # 本地预览构建产物
 npx vite preview --config apps/template/vite.config.ts apps/template --port 4173
-# 整站冒烟(需本地 Edge)
+# 整站冒烟(缺省本机 Edge;CI 用 BROWSER_PATH 指定 Chrome)
 node scripts/docsmoke.mjs
 ```
+
+## 在既有项目中使用
+
+三种方式(在线文档「指南 → 快速上手」有完整接线步骤):
+
+```bash
+# ① 模板起步(推荐):克隆本仓库,apps/template 即完整应用骨架
+git clone https://github.com/luoxueyousheng/Fluent.git
+
+# ② npm pack:构建 dist 后打包安装到你的项目(publishConfig 自动指向 dist + d.ts)
+npm run build:lib
+npm pack -w @fluent-react/ui -w @fluent-react/bridge
+npm i ../Fluent/fluent-react-ui-0.1.0.tgz ../Fluent/fluent-react-bridge-0.1.0.tgz
+
+# ③ 源码引用:把 packages/ 拷进你的 monorepo workspaces(Tailwind 需 @source 扫描 ui 源码)
+```
+
+接线要点:`FluentProvider` 包应用最外层;引 `@fluent-react/ui/theme.css`;浏览器开发引 `@fluent-react/bridge/mock`;Tailwind v4 在 css 里 `@source` 指向 ui 包源码。
 
 ## 组件总览
 

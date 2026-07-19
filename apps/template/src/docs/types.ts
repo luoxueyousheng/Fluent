@@ -44,4 +44,6 @@ export interface DocDef {
 export interface DocGroup {
   title: string;
   items: DocDef[];
+  /** 指南组:出现在导航,但不进首页组件画廊 */
+  guide?: boolean;
 }

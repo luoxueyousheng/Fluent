@@ -70,12 +70,14 @@ export function DocPage({ doc }: { doc: DocDef }) {
 
       {doc.sections.map((s) => <Example key={s.title} section={s} />)}
 
-      <section className="doc-section">
-        <h2>API</h2>
-        <ApiTable title={`${doc.name} Props`} rows={doc.props} kind="props" />
-        {doc.events && doc.events.length > 0 && <ApiTable title={`${doc.name} Events`} rows={doc.events} kind="events" />}
-        {doc.extraApis?.map((g) => <ApiTable key={g.title} title={g.title} rows={g.rows} kind={g.kind ?? 'props'} />)}
-      </section>
+      {(doc.props.length > 0 || (doc.events?.length ?? 0) > 0 || (doc.extraApis?.length ?? 0) > 0) && (
+        <section className="doc-section">
+          <h2>API</h2>
+          {doc.props.length > 0 && <ApiTable title={`${doc.name} Props`} rows={doc.props} kind="props" />}
+          {doc.events && doc.events.length > 0 && <ApiTable title={`${doc.name} Events`} rows={doc.events} kind="events" />}
+          {doc.extraApis?.map((g) => <ApiTable key={g.title} title={g.title} rows={g.rows} kind={g.kind ?? 'props'} />)}
+        </section>
+      )}
     </article>
   );
 }

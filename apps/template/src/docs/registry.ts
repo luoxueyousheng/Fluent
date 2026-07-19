@@ -10,8 +10,10 @@ import { collectionDocs } from './data/collections';
 import { displayDocs } from './data/display';
 import { feedbackDocs } from './data/feedback';
 import { shellDocs } from './data/shell';
+import { guideDocs } from './data/guides';
 
 export const docGroups: DocGroup[] = [
+  { title: '指南', items: guideDocs, guide: true },
   { title: '通用', items: generalDocs },
   { title: '输入', items: inputDocs },
   { title: '文本与表单', items: textDocs },

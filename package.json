@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "npm run dev -w apps/template",
     "build": "npm run build -w apps/template",
+    "build:lib": "npm run build -w @fluent-react/ui && npm run build -w @fluent-react/bridge",
     "typecheck": "tsc -b"
   },
   "devDependencies": {

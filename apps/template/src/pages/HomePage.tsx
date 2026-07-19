@@ -22,8 +22,9 @@ export function HomePage({ entries, clearLog, onOpen }: {
 
   const [query, setQuery] = useState('');
   const q = query.trim().toLowerCase();
+  const componentGroups = useMemo(() => docGroups.filter((g) => !g.guide), []);
   const groups = useMemo(
-    () => docGroups
+    () => componentGroups
       .map((g) => ({
         title: g.title,
         items: q
@@ -32,9 +33,9 @@ export function HomePage({ entries, clearLog, onOpen }: {
           : g.items,
       }))
       .filter((g) => g.items.length > 0),
-    [q, query],
+    [componentGroups, q, query],
   );
-  const total = docGroups.reduce((n, g) => n + g.items.length, 0);
+  const total = componentGroups.reduce((n, g) => n + g.items.length, 0);
   const shown = groups.reduce((n, g) => n + g.items.length, 0);
 
   return (

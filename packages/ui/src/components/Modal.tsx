@@ -3,9 +3,10 @@
  * 受控 open、标题/内容/页脚三段、右上角关闭钮、遮罩点击与 Esc 关闭可配、
  * 长内容体内滚动(不撑破视口)、onOk 返回 Promise 时确定钮自动 loading。
  * 遮罩复用 .smoke:从标题栏下方开始,窗口拖动/控制钮始终可用。 */
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
+import { useFocusTrap } from '../focusTrap';
 import { Button } from './Button';
 import { Icon } from './Icon';
 
@@ -44,6 +45,8 @@ export function Modal({
 }: ModalProps) {
   const [innerLoading, setInnerLoading] = useState(false);
   const loading = confirmLoading ?? innerLoading;
+  const dlgRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dlgRef, open);   // Tab 圈在对话框内,关闭还焦
 
   /* destroyOnClose:退场动画(250ms)结束后再卸载内容,不然内容闪消 */
   const [mounted, setMounted] = useState(open);
@@ -73,7 +76,7 @@ export function Modal({
   return createPortal(
     <div className={cn('smoke', open && 'open')}
          onMouseDown={(e) => { if (maskClosable && e.target === e.currentTarget) onCancel?.(); }}>
-      <div className={cn('dialog', 'modal', className)} role="dialog" aria-modal="true"
+      <div ref={dlgRef} tabIndex={-1} className={cn('dialog', 'modal', className)} role="dialog" aria-modal="true"
            aria-label={typeof title === 'string' ? title : undefined}
            style={{ '--modal-w': `${width}px` } as CSSProperties}>
         {(title != null || closable) && (

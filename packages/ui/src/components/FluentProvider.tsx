@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useFocusTrap } from '../focusTrap';
 import { cn } from '../cn';
 import { Icon } from './Icon';
 import { Button } from './Button';
@@ -133,6 +134,9 @@ export function FluentProvider({ children }: { children: ReactNode }) {
     if (t && t.remaining > 0) { t.started = Date.now(); t.timer = window.setTimeout(() => dismiss(key), t.remaining); }
   };
 
+  const dlgRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dlgRef, !!dlg?.open);   // 确认框焦点陷阱
+
   const value = useMemo<Ctx>(() => ({ toast, confirm }), [toast, confirm]);
 
   // 命令式 API(message/notification/modal)绑定到本 Provider
@@ -176,7 +180,7 @@ export function FluentProvider({ children }: { children: ReactNode }) {
         <div className={cn('smoke', dlg.open && 'open')}
              onMouseDown={(e) => { if (e.target === e.currentTarget) finish(dlg.buttons.length - 1); }}
              onKeyDown={(e) => { if (e.key === 'Escape') finish(dlg.buttons.length - 1); }}>
-          <div className="dialog" role="dialog" aria-modal="true" aria-label={dlg.title}>
+          <div ref={dlgRef} tabIndex={-1} className="dialog" role="dialog" aria-modal="true" aria-label={dlg.title}>
             <h3 className="t-subtitle">{dlg.title}</h3>
             <p>{dlg.message}</p>
             <div className="actions">

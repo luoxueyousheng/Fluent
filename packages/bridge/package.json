@@ -1,12 +1,39 @@
 {
   "name": "@fluent-react/bridge",
   "version": "0.1.0",
-  "private": true,
+  "description": "WebView 宿主桥接(JadeView 默认,通道可配):环境/主题/材质/IPC/mock",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luoxueyousheng/Fluent.git",
+    "directory": "packages/bridge"
+  },
   "type": "module",
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
     "./mock": "./src/mock.ts"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./mock": {
+        "types": "./dist/mock.d.ts",
+        "import": "./dist/mock.js"
+      }
+    }
   },
   "peerDependencies": {
     "react": "^19.0.0"
