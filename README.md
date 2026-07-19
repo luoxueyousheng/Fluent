@@ -57,7 +57,7 @@ npm i ../Fluent/fluent-react-ui-0.1.0.tgz ../Fluent/fluent-react-bridge-0.1.0.tg
 # ③ 源码引用:把 packages/ 拷进你的 monorepo workspaces(Tailwind 需 @source 扫描 ui 源码)
 ```
 
-接线要点:`FluentProvider` 包应用最外层;引 `@fluent-react/ui/theme.css`;浏览器开发引 `@fluent-react/bridge/mock`;Tailwind v4 在 css 里 `@source` 指向 ui 包源码。
+接线要点:`FluentProvider` 包应用最外层;引 `@fluent-react/ui/theme.css`;宿主接入零配置——引一行 `@fluent-react/bridge/auto`(mock + init + 自动 Mica,真机自动让位);Tailwind v4 在 css 里 `@source` 指向 ui 包源码。主题在 global.css 覆盖令牌即可(在线文档「主题定制」附全量令牌可复制)。
 
 ## 组件总览
 

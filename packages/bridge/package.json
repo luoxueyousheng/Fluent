@@ -12,7 +12,8 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./mock": "./src/mock.ts"
+    "./mock": "./src/mock.ts",
+    "./auto": "./src/auto.ts"
   },
   "files": [
     "dist",
@@ -32,6 +33,10 @@
       "./mock": {
         "types": "./dist/mock.d.ts",
         "import": "./dist/mock.js"
+      },
+      "./auto": {
+        "types": "./dist/auto.d.ts",
+        "import": "./dist/auto.js"
       }
     }
   },

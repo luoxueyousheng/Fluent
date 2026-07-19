@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AppShell, Icon, useLog, useToast, type NavEntry } from '@fluent-react/ui';
-import { init, configure, applyBackdrop, useJadeEvent, hasJade, type ToastPayload } from '@fluent-react/bridge';
+import { ready, configure, useJadeEvent, hasJade, type ToastPayload } from '@fluent-react/bridge';
 import { HomePage } from './pages/HomePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { DocPage } from './docs/DocPage';
@@ -31,7 +31,7 @@ export function App() {
   const [booted, setBooted] = useState(false);
   const [hasBackdrop, setHasBackdrop] = useState(true);
 
-  /* ---- 启动:bridge 错误接 Toast,日志接首页 LogPane ---- */
+  /* ---- 启动:auto 入口已完成 init(含默认 Mica),这里只接回调与取结果 ---- */
   const bootRef = useRef(false);
   useEffect(() => {
     if (bootRef.current) return;   // StrictMode 双跑保护
@@ -40,9 +40,8 @@ export function App() {
       onError: (channel, err) => toast({ level: 'error', title: `${channel} 失败`, message: String((err as Error)?.message ?? err) }),
       onLog: (text, ok) => log(text, ok),
     });
-    void init().then((r) => {
+    void ready().then((r) => {
       setHasBackdrop(r.hasBackdrop);
-      if (r.hasBackdrop) void applyBackdrop('mica');
       setBooted(true);
       toast({ level: 'success', title: '已就绪', message: r.hasJade ? 'IPC 通道已连通。' : '独立预览(mock 宿主)。' });
     });

@@ -1,4 +1,4 @@
-import '@fluent-react/bridge/mock';   // 浏览器模拟宿主(真机自动让位)
+import '@fluent-react/bridge/auto';   // 零配置:mock(真机自动让位)+ init + 默认 Mica
 import './index.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

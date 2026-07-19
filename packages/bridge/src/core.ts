@@ -126,7 +126,12 @@ export async function applyBackdrop(type: string): Promise<void> {
 /* ---- 启动 ---- */
 export interface InitResult { hasJade: boolean; ENV: JadeEnv; hasBackdrop: boolean }
 
-export async function init(options: Partial<BridgeConfig> = {}): Promise<InitResult> {
+export interface InitOptions extends Partial<BridgeConfig> {
+  /** 支持材质时自动应用的窗口材质;false 关闭自动应用。默认 'mica' */
+  backdrop?: string | false;
+}
+
+export async function init(options: InitOptions = {}): Promise<InitResult> {
   configure(options);
   // 窗口失焦态:html[data-inactive] 驱动 CSS 降色
   addEventListener('blur', () => (document.documentElement.dataset.inactive = ''));
@@ -140,5 +145,22 @@ export async function init(options: Partial<BridgeConfig> = {}): Promise<InitRes
   const hasBackdrop = ENV.os === 'windows' && ENV.win11;
   if (!hasBackdrop) currentBackdrop = 'none';
   await applyTheme();
+  // 默认行为:支持材质即自动应用(不再需要调用方手动 applyBackdrop)
+  if (hasBackdrop && options.backdrop !== false) {
+    await applyBackdrop(typeof options.backdrop === 'string' ? options.backdrop : 'mica');
+  }
   return { hasJade, ENV, hasBackdrop };
+}
+
+/* ---- 零配置启动:ensureInit 幂等,ready 取结果 ---- */
+let initPromise: Promise<InitResult> | null = null;
+
+/** 幂等初始化:首次调用执行 init(options),后续复用同一结果(auto 入口即调它) */
+export function ensureInit(options: InitOptions = {}): Promise<InitResult> {
+  return (initPromise ??= init(options));
+}
+
+/** 等待初始化完成;若尚未初始化则以默认参数启动 */
+export function ready(): Promise<InitResult> {
+  return ensureInit();
 }
