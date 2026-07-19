@@ -34,9 +34,13 @@ export function NavView({ items, value, onChange, collapsed, onCollapsedChange, 
   const navRef = useRef<HTMLElement>(null);
   const indRef = useRef<HTMLDivElement>(null);
 
-  const move = () => {
+  /** animate=false:滚动跟随等被动重定位须瞬时贴住(禁掉过渡),
+   *  Point 缓动只用于「切换选中项」的滑动——否则滚动时指示条被 250ms
+   *  过渡拖着走,像反应迟钝的漂移 */
+  const move = (animate: unknown = true) => {
     const nav = navRef.current, ind = indRef.current;
     if (!nav || !ind) return;
+    if (!animate) ind.style.transition = 'none';
     const item = nav.querySelector<HTMLElement>('.nav-item.active');
     if (!item) { ind.style.opacity = '0'; return; }   // 搜索过滤掉激活项时藏指示条
     const navRect = nav.getBoundingClientRect();
@@ -53,6 +57,12 @@ export function NavView({ items, value, onChange, collapsed, onCollapsedChange, 
     const barH = Math.max(12, r.height - 16);
     ind.style.height = `${barH}px`;
     ind.style.transform = `translateY(${r.top - navRect.top + (r.height - barH) / 2}px)`;
+    if (!animate) {
+      // 强制回流让「无过渡 + 新位置」先落地,再同步恢复过渡——
+      // 用 rAF 恢复会在同帧样式重算前生效,新 transform 仍带缓动提交(踩过)
+      void ind.offsetHeight;
+      ind.style.transition = '';
+    }
   };
 
   useLayoutEffect(move, [value, collapsed, items]);   // items 含分组标题行
@@ -63,12 +73,13 @@ export function NavView({ items, value, onChange, collapsed, onCollapsedChange, 
     ro.observe(nav);
     const onEnd = (e: TransitionEvent) => { if (e.propertyName === 'width') move(); };
     nav.addEventListener('transitionend', onEnd);
-    // 组件级导航条目多时 nav-top 可滚动,指示条须跟随滚动位置(capture 收 nav-top 的 scroll)
-    nav.addEventListener('scroll', move, { capture: true, passive: true });
+    // 组件级导航条目多时 nav-top 可滚动,指示条须瞬时跟随滚动位置(capture 收 nav-top 的 scroll)
+    const onScroll = () => move(false);
+    nav.addEventListener('scroll', onScroll, { capture: true, passive: true });
     return () => {
       ro.disconnect();
       nav.removeEventListener('transitionend', onEnd);
-      nav.removeEventListener('scroll', move, { capture: true });
+      nav.removeEventListener('scroll', onScroll, { capture: true });
     };
   }, []);
 
