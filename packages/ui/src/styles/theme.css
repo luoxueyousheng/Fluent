@@ -2016,14 +2016,12 @@ html[data-inactive] .tb-cap { color: var(--text-3); }
 .toast { position: relative; overflow: hidden; }
 .toast-progress {
   position: absolute; left: 0; bottom: 0; width: 100%; height: 3px;
-  transform-origin: left; background: var(--accent); opacity: 0.85;
+  transform-origin: left;
+  background: color-mix(in srgb, currentColor 20%, transparent);   /* 低调:半透明前景色,不抢等级色风头 */
   animation: toast-deplete var(--toast-dur, 5000ms) linear forwards;
 }
 /* 悬停暂停:与 Provider 的 JS 计时暂停同一触发,进度与剩余时间保持同步 */
 .toast:hover .toast-progress { animation-play-state: paused; }
-.toast.success .toast-progress { background: var(--success); }
-.toast.warning .toast-progress { background: var(--caution); }
-.toast.error   .toast-progress { background: var(--critical); }
 @keyframes toast-deplete { to { transform: scaleX(0); } }
 
 
