@@ -1,45 +1,96 @@
-import { useState } from 'react';
-import { Button, Card, LogPane, ProgressBar, Reveal, useToast, type LogEntry } from '@fluent-react/ui';
+/* 首页 = 组件画廊:全部组件的预览卡片墙(迷你实时预览 + 名称 + 一句描述),
+ * 点击卡片进入对应文档页;顶部搜索框过滤卡片。宿主通信演示收进底部 Expander。 */
+import { useMemo, useState } from 'react';
+import {
+  Button, Divider, Expander, LogPane, ProgressBar, SearchBox, useToast, type LogEntry,
+} from '@fluent-react/ui';
 import { inv, useJadeEvent } from '@fluent-react/bridge';
+import { docGroups } from '../docs/registry';
 
-export function HomePage({ entries, clearLog }: { entries: LogEntry[]; clearLog: () => void }) {
+const firstSentence = (s: string) => {
+  const i = s.indexOf('。');
+  return i < 0 ? s : s.slice(0, i + 1);
+};
+
+export function HomePage({ entries, clearLog, onOpen }: {
+  entries: LogEntry[];
+  clearLog: () => void;
+  /** 点击卡片打开对应组件文档页 */
+  onOpen: (key: string) => void;
+}) {
   const toast = useToast();
   const [exportPct, setExportPct] = useState(0);
   useJadeEvent<{ task: string; percent: number }>('progress', (p) => {
     if (p.task === 'export') setExportPct(p.percent);
   });
 
+  const [query, setQuery] = useState('');
+  const q = query.trim().toLowerCase();
+  const groups = useMemo(
+    () => docGroups
+      .map((g) => ({
+        title: g.title,
+        items: q
+          ? g.items.filter((d) =>
+              d.name.toLowerCase().includes(q) || d.cn.includes(query.trim()) || d.key.includes(q))
+          : g.items,
+      }))
+      .filter((g) => g.items.length > 0),
+    [q, query],
+  );
+  const total = docGroups.reduce((n, g) => n + g.items.length, 0);
+  const shown = groups.reduce((n, g) => n + g.items.length, 0);
+
   return (
     <>
-      <h1 className="t-title">首页</h1>
-      <p className="desc muted">Fluent 2 React 组件库演示,左侧导航按组件类型分类。</p>
-      <div className="grid-3">
-        {[['WinUI 动效', '进入减速、退出加速,≤333ms'],
-          ['火山 Demo 外壳', '40px 标题栏 + 透明底导航'],
-          ['antd 设计标准', '三层令牌 / API 惯例 / 重型组件换皮']].map(([t, d]) => (
-          <Reveal key={t}>
-            <Card className="stagger-item">
-              <b>{t}</b>
-              <p className="muted" style={{ margin: '8px 0 0' }}>{d}</p>
-            </Card>
-          </Reveal>
-        ))}
+      <h1 className="t-title">Fluent 组件库</h1>
+      <p className="desc muted">
+        {total} 个组件 · WinUI 3 视觉与动效 · antd API 惯例 · 点击卡片查看用法与 API
+      </p>
+      <div className="gallery-search">
+        <SearchBox value={query} onChange={setQuery} placeholder="搜索组件(名称 / 拼写)" />
+        {q && <span className="gallery-count">{shown} / {total}</span>}
       </div>
-      <h2 className="t-subtitle" style={{ margin: '24px 0 12px' }}>后端通信</h2>
-      <div className="row">
-        <Button variant="accent" onClick={() => void inv('export_report', { rows: 200 })}>导出报表(进度推送)</Button>
-        <Button onClick={() => void inv('risky_op')}>故意失败</Button>
-        <Button onClick={async () => {
-          const r = await inv('ping');
-          if (r) toast({ level: 'info', title: 'ping', message: JSON.stringify(r) });
-        }}>ping</Button>
-      </div>
-      <ProgressBar value={exportPct} className="mt-3" />
-      <h2 className="t-subtitle" style={{ margin: '24px 0 12px' }}>IPC 日志</h2>
-      <div className="row" style={{ marginBottom: 8 }}>
-        <Button variant="subtle" onClick={clearLog}>清空</Button>
-      </div>
-      <LogPane entries={entries} />
+
+      {groups.length === 0 && <p className="muted" style={{ marginTop: 24 }}>没有匹配「{query.trim()}」的组件。</p>}
+
+      {groups.map((g) => (
+        <section key={g.title} className="gallery-group">
+          <h2 className="gallery-title">{g.title}</h2>
+          <div className="gallery-grid">
+            {g.items.map((d) => (
+              <div key={d.key} className="gallery-card" role="button" tabIndex={0}
+                   aria-label={`打开 ${d.cn} ${d.name} 文档`}
+                   onClick={() => onOpen(d.key)}
+                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(d.key); } }}>
+                {/* 迷你实时预览:取该组件文档的首个演示,缩放裁切、不可交互 */}
+                <div className="gc-preview" aria-hidden="true">
+                  <div className="gc-fit">{d.sections[0]?.demo}</div>
+                </div>
+                <div className="gc-meta">
+                  <span className="gc-name">{d.cn}<i>{d.name}</i></span>
+                  <span className="gc-desc">{firstSentence(d.description)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <Divider>宿主通信演示</Divider>
+      <Expander summary="IPC 调用与日志(独立预览时由 mock 宿主响应)">
+        <div className="row" style={{ marginBottom: 10 }}>
+          <Button variant="accent" onClick={() => void inv('export_report', { rows: 200 })}>导出报表(进度推送)</Button>
+          <Button onClick={() => void inv('risky_op')}>故意失败</Button>
+          <Button onClick={async () => {
+            const r = await inv('ping');
+            if (r) toast({ level: 'info', title: 'ping', message: JSON.stringify(r) });
+          }}>ping</Button>
+          <Button variant="subtle" onClick={clearLog}>清空日志</Button>
+        </div>
+        <ProgressBar value={exportPct} className="mb-3" />
+        <LogPane entries={entries} />
+      </Expander>
     </>
   );
 }

@@ -1922,4 +1922,39 @@ input[type="password"]::-ms-clear { display: none; }
 .nav-slot .searchbox { width: 100%; }
 .nav[data-collapsed] .nav-slot { display: none; }
 
+
+/* ---- 47. 首页组件画廊(预览卡片墙) ---- */
+.gallery-search { display: flex; align-items: center; gap: 12px; margin: 16px 0 4px; }
+.gallery-search .searchbox { width: min(360px, 100%); }
+.gallery-count { font-size: 12.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.gallery-group { margin-top: 24px; }
+.gallery-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: var(--text-1); }
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(236px, 1fr)); gap: 12px;
+}
+.gallery-card {
+  display: flex; flex-direction: column; overflow: hidden; cursor: pointer;
+  border: 1px solid var(--card-border); border-radius: 8px; background: var(--card);
+  transition: background var(--fast), border-color var(--fast), transform var(--fast) var(--fluent-decelerate);
+}
+.gallery-card:hover { background: var(--fill-subtle); border-color: var(--stroke); transform: translateY(-1px); }
+.gallery-card:active { transform: none; background: var(--fill-secondary); }
+.gallery-card:focus-visible { outline: 2px solid var(--text-1); outline-offset: 2px; }
+/* 迷你预览:缩放裁切、不可交互 */
+.gc-preview {
+  height: 108px; padding: 12px; overflow: hidden; pointer-events: none; user-select: none;
+  background: var(--layer); border-bottom: 1px solid var(--divider); flex-shrink: 0;
+}
+.gc-fit {
+  transform: scale(0.78); transform-origin: top left; width: 128%;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.gc-meta { display: flex; flex-direction: column; gap: 3px; padding: 10px 14px 12px; }
+.gc-name { font-weight: 600; font-size: 13.5px; }
+.gc-name i { font-style: normal; font-weight: 400; font-size: 12px; color: var(--text-3); margin-left: 6px; }
+.gc-desc {
+  font-size: 12px; color: var(--text-2); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
 }
