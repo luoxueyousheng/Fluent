@@ -72,7 +72,7 @@ const start: DocDef = {
   cn: '',
   description:
     '从模板起步是最快路径:本仓库的 apps/template 即完整应用骨架(外壳 + 主题 + 宿主桥接 + mock)。也可以把 packages/ 拷进既有 monorepo,按下述步骤接线。技术栈要求:React 19 + Vite + Tailwind CSS v4。',
-  importCode: `git clone https://github.com/luoxueyousheng/Fluent.git && cd Fluent && npm install && npm run dev`,
+  importCode: `git clone https://github.com/luoxueyousheng/fluent-jade.git && cd fluent-jade && npm install && npm run dev`,
   sections: [
     {
       title: '挂载 Provider 与样式(宿主接入零配置)',

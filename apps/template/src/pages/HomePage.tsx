@@ -47,7 +47,7 @@ export function HomePage({ entries, clearLog, onOpen }: {
 
   return (
     <>
-      <h1 className="t-title">Fluent 组件库</h1>
+      <h1 className="t-title">Fluent UI × JadeView</h1>
       <p className="desc muted">
         {total} 个组件 · WinUI 3 视觉与动效 · antd API 惯例 · 点击卡片查看用法与 API
       </p>
