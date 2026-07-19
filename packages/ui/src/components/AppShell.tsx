@@ -79,17 +79,17 @@ export function AppShell({
 
   return (
     <div ref={rootRef} className={cn('app', frame && 'app-frame', className)}>
+      {/* WinUI 正统位次:返回键在标题栏;汉堡在导航面板顶部(与图标列对齐) */}
       <TitleBar appName={appName} sub={sub} logo={logo}
                 controls={controls} hostControlsWidth={hostControlsWidth}
                 maximized={maximized} dragProps={dragProps}
-                onBack={onBack} backDisabled={backDisabled}
-                onMenu={multi ? () => setCollapsed(!collapsed) : undefined}>
+                onBack={onBack} backDisabled={backDisabled}>
         {titleBarActions}
       </TitleBar>
       {multi ? (
         <div className="shell">
           <NavView items={items} value={value} onChange={onChange ?? (() => {})}
-                   collapsed={collapsed} header={navHeader} />
+                   collapsed={collapsed} onCollapsedChange={setCollapsed} header={navHeader} />
           {content}
         </div>
       ) : content}

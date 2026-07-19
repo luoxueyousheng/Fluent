@@ -243,7 +243,7 @@ html[data-mock] body { background: var(--bg) !important; }
 .title-bar {
   display: flex; align-items: center; gap: var(--sp-m);
   cursor: default; user-select: none;   /* 拖拽区:箭头指针,文字不可选(否则 I 形编辑指针) */
-  padding: 0 var(--sp-l);                /* controls=host 时组件以内联样式预留右侧宿主按钮区 */
+  padding: 0 var(--sp-l) 0 6px;         /* 左侧紧凑(返回键贴边);右侧由 controls 内联控制 */
   position: relative; z-index: 900;      /* 高于一切页内浮层:标题栏永不被遮挡 */
 }
 .title-bar .logo { color: var(--accent-text); }
@@ -265,8 +265,12 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
   transition: width var(--slow) var(--fluent-standard);
 }
 .nav[data-collapsed] { width: 48px; padding: var(--sp-s) 4px; }
+/* 折叠态图标列与展开态同 x(4+16 = 8+12 = 20),展开/收缩动画图标不漂移 */
+.nav[data-collapsed] .nav-item { padding-left: 16px; }
 /* 组件级导航条目多：列表区可滚，汉堡钉顶、设置钉底 */
-.nav-top { flex: 1; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; min-height: 0; overscroll-behavior: contain; }
+.nav-top { flex: 1; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; min-height: 0; overscroll-behavior: contain;
+  scrollbar-width: none; }               /* 滚动条会占宽挤窄条目,与汉堡行错位(WinUI 面板规范:隐藏,滚轮/拖动可滚) */
+.nav-top::-webkit-scrollbar { display: none; }
 .nav-top .nav-item { flex-shrink: 0; }
 .nav-bottom { display: flex; flex-direction: column; gap: 2px; }
 .nav-spacer { flex: 1; }
@@ -1965,7 +1969,7 @@ input[type="password"]::-ms-clear { display: none; }
 
 /* ---- 48. TitleBar WinUI 3 规格:返回/汉堡 + 自绘窗口控制钮 ---- */
 .tb-nav-btn {
-  flex-shrink: 0; width: 36px; height: 30px; margin: 0 -2px;
+  flex-shrink: 0; width: 36px; height: 30px;
   display: inline-flex; align-items: center; justify-content: center;
   border: none; border-radius: 4px; background: transparent; color: var(--text-1);
   cursor: pointer; transition: background 83ms var(--fluent-decelerate);
