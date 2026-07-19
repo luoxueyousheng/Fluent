@@ -44,6 +44,7 @@ const PATHS: Record<string, string> = {
   copy: 'M5.5 5.5 H12.5 V12.5 H5.5 Z M10.5 5.5 V3.5 H3.5 V10.5 H5.5',
   eyeOff: 'M1.5 8 C3.5 4.7 12.5 4.7 14.5 8 C13.8 9.15 12.5 10 11 10.5 M1.5 8 C2.2 9.15 3.5 10 5 10.5 M8 10.8 V12.5 M4.2 10 L3.2 11.6 M11.8 10 L12.8 11.6',
   code: 'M5.5 5 L2.5 8 L5.5 11 M10.5 5 L13.5 8 L10.5 11',
+  back: 'M13 8 H3.2 M7 4 L3 8 L7 12',
 };
 
 export type IconName = keyof typeof PATHS | (string & {});

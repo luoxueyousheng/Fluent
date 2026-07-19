@@ -1,26 +1,109 @@
-/* TitleBar — 火山 Demo 风格标题栏(Windows title-overlay):
- * 右侧 146px 留给库内置控制按钮;拖动区 = jade-region-drag(库运行时注入);
- * jade-region-no-drag 给内部交互元素挖洞。 */
-import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react';
+/* TitleBar — WinUI 3 规格标题栏(40px):
+ * 左起 [返回键][汉堡][logo][标题],右侧窗口控制钮三模式(controls):
+ *   'host'(默认)= 宿主自绘(如 JadeView title-overlay),仅预留 hostControlsWidth;
+ *   'none'      = 不渲染不预留(浏览器 / 宿主自带系统标题栏);
+ *   WindowController = 自绘 WinUI 控制钮,回调注入宿主 IPC——宿主可以是任意语言
+ *   (JadeView / C++ WebView2 / Python pywebview / Go Wails…),库不写死任何一家。
+ * 拖动区默认 jade-region-drag 属性 + CSS app-region 兜底;其他宿主经 dragProps
+ * 覆盖(如 pywebview 传 className, Wails 传 --wails-draggable style)。 */
+import {
+  Children, cloneElement, isValidElement, useEffect, useState,
+  type HTMLAttributes, type ReactElement, type ReactNode,
+} from 'react';
 import { cn } from '../cn';
 import { Icon } from './Icon';
+
+/** 自绘窗口控制钮的宿主回调(缺省的钮不渲染) */
+export interface WindowController {
+  minimize?: () => void;
+  /** 最大化 / 还原切换 */
+  toggleMaximize?: () => void;
+  close?: () => void;
+}
 
 export interface TitleBarProps {
   appName: string;
   sub?: ReactNode;
   logo?: ReactNode;
-  /** 放在标题栏里的交互元素(自动 no-drag) */
+  /** 返回键(最左,WinUI 3 位次);传入即显示 */
+  onBack?: () => void;
+  backDisabled?: boolean;
+  /** 导航展开/收缩汉堡(返回键之后);传入即显示 */
+  onMenu?: () => void;
+  /** 右上角窗口控制,见文件头注释 */
+  controls?: 'host' | 'none' | WindowController;
+  /** 'host' 模式为宿主控制钮预留的宽度 */
+  hostControlsWidth?: number;
+  /** 自绘控制钮的最大化态(切换还原图标);缺省监听 html[data-maximized] */
+  maximized?: boolean;
+  /** 拖动区属性覆盖/追加(非 JadeView 宿主用) */
+  dragProps?: HTMLAttributes<HTMLElement>;
+  /** 放在标题栏里的交互元素(自动 no-drag,靠右、控制钮之前) */
   children?: ReactNode;
   className?: string;
 }
 
-export function TitleBar({ appName, sub, logo, children, className }: TitleBarProps) {
+const NO_DRAG = { 'jade-region-no-drag': '' } as const;
+
+export function TitleBar({
+  appName, sub, logo, onBack, backDisabled, onMenu,
+  controls = 'host', hostControlsWidth = 146, maximized, dragProps,
+  children, className,
+}: TitleBarProps) {
+  const selfDrawn = typeof controls === 'object';
+
+  /* 自绘且未受控时跟随 html[data-maximized](bridge/宿主写入) */
+  const [maxAttr, setMaxAttr] = useState(() =>
+    typeof document !== 'undefined' && document.documentElement.hasAttribute('data-maximized'));
+  useEffect(() => {
+    if (!selfDrawn || maximized != null) return;
+    const root = document.documentElement;
+    const mo = new MutationObserver(() => setMaxAttr(root.hasAttribute('data-maximized')));
+    mo.observe(root, { attributes: true, attributeFilter: ['data-maximized'] });
+    return () => mo.disconnect();
+  }, [selfDrawn, maximized]);
+  const isMax = maximized ?? maxAttr;
+
+  const { className: dragCls, style: dragStyle, ...dragRest } = dragProps ?? {};
+
   return (
-    <header className={cn('title-bar', className)} {...{ 'jade-region-drag': '' }}>
+    <header className={cn('title-bar', dragCls, className)}
+            style={{ ...(controls === 'host' ? { paddingRight: hostControlsWidth } : {}), ...dragStyle }}
+            {...{ 'jade-region-drag': '' }} {...dragRest}>
+      {onBack && (
+        <button className="tb-nav-btn" aria-label="返回" disabled={backDisabled}
+                onClick={onBack} {...NO_DRAG}>
+          <Icon name="back" size={14} strokeWidth={1.3} />
+        </button>
+      )}
+      {onMenu && (
+        <button className="tb-nav-btn" aria-label="展开或收缩导航" onClick={onMenu} {...NO_DRAG}>
+          <Icon name="menu" size={14} strokeWidth={1.3} />
+        </button>
+      )}
       {logo ?? <Icon name="logo" className="logo" strokeWidth={1.3} />}
       <span className="app-name">{appName}</span>
       {sub && <span className="app-sub">{sub}</span>}
-      {children && <div className="tb-actions" {...{ 'jade-region-no-drag': '' }}>{children}</div>}
+      {children && <div className="tb-actions" {...NO_DRAG}>{children}</div>}
+      {selfDrawn && (
+        <div className="tb-caption" {...NO_DRAG}>
+          {controls.minimize && (
+            <button className="tb-cap" aria-label="最小化" onClick={controls.minimize}>
+              <Icon name="min" size={13} strokeWidth={1.1} />
+            </button>
+          )}
+          {controls.toggleMaximize && (
+            <button className="tb-cap" aria-label={isMax ? '还原' : '最大化'} onClick={controls.toggleMaximize}>
+              <Icon name={isMax ? 'restore' : 'max'} size={12} strokeWidth={1.1} />
+            </button>
+          )}
+          {controls.close && (
+            <button className="tb-cap close" aria-label="关闭" onClick={controls.close}>
+              <Icon name="close" size={13} strokeWidth={1.1} />
+            </button>
+          )}
+        </div>
+      )}
     </header>
   );
 }

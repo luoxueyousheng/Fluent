@@ -9,6 +9,7 @@ import { navigationDocs } from './data/navigation';
 import { collectionDocs } from './data/collections';
 import { displayDocs } from './data/display';
 import { feedbackDocs } from './data/feedback';
+import { shellDocs } from './data/shell';
 
 export const docGroups: DocGroup[] = [
   { title: '通用', items: generalDocs },
@@ -20,6 +21,7 @@ export const docGroups: DocGroup[] = [
   { title: '集合', items: collectionDocs },
   { title: '展示', items: displayDocs },
   { title: '反馈', items: feedbackDocs },
+  { title: '外壳', items: shellDocs },
 ];
 
 export const docByKey: ReadonlyMap<string, DocDef> = new Map(
