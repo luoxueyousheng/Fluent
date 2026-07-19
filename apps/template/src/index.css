@@ -1,0 +1,9 @@
+@import "@fluent-react/ui/theme.css";
+/* 组件包在 app 根外,显式纳入 Tailwind 扫描(其内使用的工具类才会生成) */
+@source "../../../packages/ui/src";
+@source "../../../packages/bridge/src";
+
+/* 页内组件分节:大标题 + 节间分割线(模板专用) */
+.comp-section { margin-bottom: 40px; }
+.comp-section + .comp-section { border-top: 1px solid var(--divider); padding-top: 24px; }
+.comp-title { font-size: 22px; line-height: 30px; font-weight: 600; margin: 0 0 16px; }
