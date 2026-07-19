@@ -159,10 +159,10 @@ console.log(r.hasJade ? '宿主内' : '独立预览(mock)');`,
     },
     {
       title: '自定义(通道名 / 回调 / 材质)',
-      description: '通道名因宿主而异时用 configure 覆盖(任意时机,下一次调用生效);想改初始材质或关闭自动应用,自己调 ensureInit 替代 auto 入口。',
-      demo: note('configure 与 auto 不冲突:auto 先跑默认 init,configure 随后改通道/回调即可;只有 backdrop 初始值需要在 init 前定,才用 ensureInit 自启。'),
+      description: '通道名因宿主而异时用 configure 覆盖(任意时机,下一次调用生效);想改初始材质或关闭自动应用,不引 auto、首调 ready(options) 自启即可。',
+      demo: note('configure 与 auto 不冲突:auto 先跑默认初始化,configure 随后改通道/回调即可;只有 backdrop 初始值需要提前定,才自己首调 ready(options)。'),
       code: `
-import { configure, ensureInit } from '@fluent-react/bridge';
+import { configure, ready } from '@fluent-react/bridge';
 // 也可以不引 auto,自己掌控初始化:
 import '@fluent-react/bridge/mock';   // 需要浏览器预览时
 
@@ -177,7 +177,7 @@ configure({
   onLog: (text, ok) => console.log(ok ? 'OK' : 'ERR', text),
 });
 
-await ensureInit({ backdrop: 'micaAlt' });   // 或 backdrop: false 关闭自动材质`,
+await ready({ backdrop: 'micaAlt' });   // 或 backdrop: false 关闭自动材质`,
     },
     {
       title: '调用与事件',
@@ -208,10 +208,8 @@ import '@fluent-react/bridge/mock';`,
     {
       title: 'bridge API',
       rows: [
-        { name: "import '@fluent-react/bridge/auto'", type: 'side-effect', description: '默认行为一行接完:mock + ensureInit()(自动 Mica)。' },
-        { name: 'ready()', type: 'Promise<InitResult>', description: '等待初始化完成并取结果;未初始化则以默认参数启动,幂等。' },
-        { name: 'ensureInit(options?)', type: 'Promise<InitResult>', description: '幂等初始化;options 含 backdrop(初始材质,false 关闭自动应用)与 configure 全部项。' },
-        { name: 'init(options?)', type: 'Promise<{ hasJade, ENV, hasBackdrop }>', description: '底层初始化(每次执行);常规用 ensureInit/auto。' },
+        { name: "import '@fluent-react/bridge/auto'", type: 'side-effect', description: '默认行为一行接完:mock + ready()(自动 Mica)。' },
+        { name: 'ready(options?)', type: 'Promise<InitResult>', description: '等待初始化并取结果 { hasJade, ENV, hasBackdrop };幂等,首调可带 backdrop 等参数。' },
         { name: 'configure({ channels, onError, onLog })', type: 'void', description: '覆盖通道名与全局错误/日志回调。' },
         { name: 'inv(channel, payload?)', type: 'Promise<T | null>', description: '调用宿主;失败返回 null 并走 onError。' },
         { name: 'useJadeEvent(event, cb)', type: 'hook', description: '订阅宿主事件,卸载自动退订。' },

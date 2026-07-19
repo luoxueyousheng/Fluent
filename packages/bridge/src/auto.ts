@@ -4,6 +4,6 @@
  * 需要拿初始化结果时用 ready();需要自定义通道或回调时,
  * 在业务代码里 configure({...}) 即可(任何时机,下一次调用生效)。 */
 import './mock';
-import { ensureInit } from './core';
+import { ready } from './core';
 
-void ensureInit();
+void ready();

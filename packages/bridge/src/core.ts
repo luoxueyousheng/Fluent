@@ -69,6 +69,7 @@ export async function inv<T = unknown>(channel: string, payload: unknown = {}): 
 }
 
 /** jade 事件 payload 可能是字符串——统一解析 */
+/** @internal jade 事件 payload 解析(useJadeEvent 内部使用) */
 export function parsePayload<T = unknown>(p: unknown): T {
   if (typeof p === 'string') {
     try { return JSON.parse(p) as T; } catch { return p as T; }
@@ -89,6 +90,7 @@ export const getBackdrop = (): string => currentBackdrop;
 export const effectiveDark = (): boolean =>
   themeMode === 'dark' || (themeMode === 'system' && !!mqDark?.matches);
 
+/** @internal 由 setThemeMode / 系统主题变化触发,业务侧无需直接调用 */
 export async function applyTheme(): Promise<void> {
   const dark = effectiveDark();
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
@@ -131,6 +133,7 @@ export interface InitOptions extends Partial<BridgeConfig> {
   backdrop?: string | false;
 }
 
+/** 底层初始化(每次执行,不带幂等);常规一律用 ready / auto 入口 */
 export async function init(options: InitOptions = {}): Promise<InitResult> {
   configure(options);
   // 窗口失焦态:html[data-inactive] 驱动 CSS 降色
@@ -152,15 +155,15 @@ export async function init(options: InitOptions = {}): Promise<InitResult> {
   return { hasJade, ENV, hasBackdrop };
 }
 
-/* ---- 零配置启动:ensureInit 幂等,ready 取结果 ---- */
+/* ---- 零配置启动:ready 一个入口打通「初始化 + 取结果」 ---- */
 let initPromise: Promise<InitResult> | null = null;
 
-/** 幂等初始化:首次调用执行 init(options),后续复用同一结果(auto 入口即调它) */
-export function ensureInit(options: InitOptions = {}): Promise<InitResult> {
+/** 等待初始化完成并取结果 { hasJade, ENV, hasBackdrop };幂等——
+ *  首次调用以 options 启动(auto 入口即无参调它),后续复用同一结果。
+ *  需要定制初始材质时首调传参:ready({ backdrop: 'micaAlt' }) / ready({ backdrop: false })。 */
+export function ready(options: InitOptions = {}): Promise<InitResult> {
   return (initPromise ??= init(options));
 }
 
-/** 等待初始化完成;若尚未初始化则以默认参数启动 */
-export function ready(): Promise<InitResult> {
-  return ensureInit();
-}
+/** @deprecated 已并入 ready(options),别名保留兼容 */
+export const ensureInit = ready;

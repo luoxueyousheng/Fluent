@@ -38,13 +38,13 @@ export function MultiPageApp() {
     },
     {
       title: '自绘窗口框(frame)',
-      description: 'frame 让 Web 层画整个窗框:圆角 + 边框 + 阴影(--frame-margin/--frame-radius 可调),自绘控制钮贴右上角。前提:宿主创建「无边框 + 窗口级透明」的窗口(窗口 alpha 透明,不是网页 CSS 背景透明);该模式与 Mica/Acrylic 互斥——材质需要系统窗口参与,bridge 侧 ensureInit({ backdrop: false })。演示容器的渐变模拟透出的桌面。',
+      description: 'frame 让 Web 层画整个窗框:圆角 + 边框 + 阴影(--frame-margin/--frame-radius 可调),自绘控制钮贴右上角。前提:宿主创建「无边框 + 窗口级透明」的窗口(窗口 alpha 透明,不是网页 CSS 背景透明);该模式与 Mica/Acrylic 互斥——材质需要系统窗口参与,bridge 侧 ready({ backdrop: false })。演示容器的渐变模拟透出的桌面。',
       demo: <AppShellFrameDemo />,
       code: `
 // main.tsx:自绘框模式下关闭自动材质(不引 bridge/auto)
 import '@fluent-react/bridge/mock';
-import { ensureInit } from '@fluent-react/bridge';
-void ensureInit({ backdrop: false });
+import { ready } from '@fluent-react/bridge';
+void ready({ backdrop: false });
 
 // App.tsx
 import { AppShell, type WindowController } from '@fluent-react/ui';
@@ -81,7 +81,7 @@ export function SinglePageApp() {
   ],
   props: [
     { name: 'mode', type: "'multi' | 'single'", default: "'multi'", description: '多页(侧导航 + 汉堡)/ 单页(仅标题栏)。' },
-    { name: 'frame', type: 'boolean', default: 'false', description: '自绘窗口框(圆角/边框/阴影,--frame-margin/--frame-radius 调):宿主须为无边框 + 窗口级透明,且与 Mica/Acrylic 互斥(ensureInit({ backdrop: false }))。作应用根挂载时自动置 html[data-frame] 转透明页面底。' },
+    { name: 'frame', type: 'boolean', default: 'false', description: '自绘窗口框(圆角/边框/阴影,--frame-margin/--frame-radius 调):宿主须为无边框 + 窗口级透明,且与 Mica/Acrylic 互斥(ready({ backdrop: false }))。作应用根挂载时自动置 html[data-frame] 转透明页面底。' },
     { name: 'appName / sub / logo', type: 'string / ReactNode / ReactNode', description: '标题栏内容(透传 TitleBar)。' },
     { name: 'controls / hostControlsWidth / maximized / dragProps', type: '同 TitleBar', description: '窗口控制三模式与拖动区注入,宿主不限语言。' },
     { name: 'titleBarActions', type: 'ReactNode', description: '标题栏内交互元素(自动 no-drag)。' },

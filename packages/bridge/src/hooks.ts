@@ -19,6 +19,7 @@ export function useTheme(): { dark: boolean; mode: string; backdrop: string } {
 }
 
 /** 稳定引用的 invoke(等价直接 import { inv },便于依赖数组) */
+/** @deprecated 直接 import { inv } 即可,无需 hook */
 export function useInv(): typeof inv {
   return useCallback(inv, []);
 }
