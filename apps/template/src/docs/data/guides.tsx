@@ -1,6 +1,6 @@
 /* 文档数据:指南 — 快速上手 / 宿主接入 / 主题定制 / 样式定制 / 基础设施(不进首页画廊) */
 import { useEffect, useState } from 'react';
-import { Button, InfoBar, NumberBox, TextArea } from '@fluent-jade/ui';
+import { Button, Checkbox, InfoBar, NumberBox, Slider, Switch, TextArea } from '@fluent-jade/ui';
 import { HomeRegular, SettingsRegular } from '@fluent-jade/icon';
 import { invoke } from '@fluent-jade/bridge';
 import type { DocDef } from '../types';
@@ -118,6 +118,9 @@ function EvSpec({ rows }: { rows: EvRow[] }) {
 interface Lap { ms: number | null; ok: boolean }
 
 const mono = { font: '12px/1.6 Consolas, "Cascadia Code", monospace' } as const;
+
+/* 自定义强调色演示:Tailwind 任意属性重映 accent 三连(等价于 global.css 写类) */
+const brandVars = '[--accent:#6B4FBB] [--accent-hover:color-mix(in_srgb,#6B4FBB,#fff_12%)] [--accent-press:color-mix(in_srgb,#6B4FBB,#000_12%)]';
 
 /** 耗时 → 卡片配色(快绿 / 中黄 / 慢红;失败红) */
 const lapCls = (l: Lap) =>
@@ -648,6 +651,45 @@ const custom: DocDef = {
 .nav { width: 232px; }`,
     },
     {
+      title: '自定义强调色(color 枚举之外的品牌色)',
+      description: '`color` prop 只有六个语义枚举;要品牌色等任意颜色时不用改组件——在组件或任意祖先上用 className 重映 `--accent` 三连,子树内所有 accent 消费者自动跟随。覆盖规则(可控边界):勾选框/单选/开关的选中态、卡片描边与浅充、Slider/RangeSlider 的填充与拇指、按钮 tint 全部生效;唯一例外是 Badge(默认 critical 底、不走 --accent),需直接覆盖 background。',
+      demo: (
+        <div className={`${brandVars} flex flex-col gap-3`}>
+          <Checkbox card defaultChecked description="选中描边、浅充、勾选框全部跟随 accent">品牌紫卡片</Checkbox>
+          <Switch defaultChecked>品牌紫开关</Switch>
+          <Slider value={40} onChange={() => {}} aria-label="品牌紫滑块" />
+        </div>
+      ),
+      code: `
+import { Checkbox, Slider, Switch } from '@fluent-jade/ui';
+
+export function BrandAccentDemo() {
+  return (
+    /* 方式一:Tailwind 任意属性直接写变量(局部、即写即用) */
+    <div className="[--accent:#6B4FBB] [--accent-hover:color-mix(in_srgb,#6B4FBB,#fff_12%)] [--accent-press:color-mix(in_srgb,#6B4FBB,#000_12%)] flex flex-col gap-3">
+      <Checkbox card defaultChecked description="选中描边、浅充、勾选框全部跟随 accent">品牌紫卡片</Checkbox>
+      <Switch defaultChecked>品牌紫开关</Switch>
+      <Slider value={40} onChange={() => {}} aria-label="品牌紫滑块" />
+    </div>
+  );
+}
+
+/* 方式二:global.css 定义类(可复用、可配暗色变体):
+ *
+ * .brand-accent {
+ *   --accent: #6B4FBB;
+ *   --accent-hover: color-mix(in srgb, #6B4FBB, #fff 12%);
+ *   --accent-press:  color-mix(in srgb, #6B4FBB, #000 12%);
+ * }
+ * :root[data-theme="dark"] .brand-accent { --accent: #9A7FE8; }
+ *
+ *   <Checkbox card className="brand-accent" ... />
+ *
+ * 覆盖规则:
+ *   生效 —— 勾选框/单选/开关选中态、卡片描边与浅充、Slider/RangeSlider、按钮 tint
+ *   例外 —— Badge 默认 critical 底不走 --accent:.brand-accent .badge { background: #6B4FBB; } */`,
+    },
+    {
       title: '实例级:className / style / Tailwind',
       description: '全部组件都透传 className(与内部类 cn 合并,不会破坏契约)和 style;文档站示例统一用 Tailwind 工具类(4px 网格,颜色走令牌)。',
       demo: note('例外:Tooltip 自身不渲染元素(克隆子元素注入 data-tip),样式类写在子元素上。'),
@@ -667,6 +709,14 @@ import { Button, Card, Table } from '@fluent-jade/ui';
   ],
   props: [],
   extraApis: [
+    {
+      title: '自定义强调色(className 重映 --accent)',
+      rows: [
+        { name: '--accent / --accent-hover / --accent-press', type: 'CSS 变量', description: '在组件或任意祖先重映,子树内 accent 消费者全部跟随;hover/press 建议 color-mix ±12% 派生。' },
+        { name: '生效范围', type: '规则', description: '勾选框/单选/开关选中态、卡片描边与浅充、Slider/RangeSlider 填充与拇指、按钮 tint。' },
+        { name: '例外', type: '规则', description: 'Badge 默认 critical 底不走 --accent:.brand .badge { background: ... } 单独覆盖。' },
+      ],
+    },
     {
       title: '类契约 · 外壳与通用',
       rows: [

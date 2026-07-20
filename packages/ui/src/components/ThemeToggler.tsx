@@ -3,6 +3,7 @@
  *
  * 使用 View Transitions API(Chrome 111+)实现 clip-path 揭示动效。
  * 不支持时静默降级。默认只切 data-theme;setTheme 可注入 bridge.setThemeMode 同步宿主。
+ * 按钮本体直接复用 Button(iconOnly);暗色态仅图标着 accent 色,按钮本体保持默认描边。
  *
  * 用法:
  *   <ThemeToggler />
@@ -13,7 +14,7 @@
  */
 import { useCallback, useRef, useState } from 'react';
 import { WeatherSunnyRegular, WeatherMoonRegular } from '@fluent-jade/icon';
-import { cn } from '../cn';
+import { Button } from './Button';
 
 export interface ThemeTogglerProps {
   className?: string;
@@ -42,7 +43,7 @@ export function ThemeToggler({
   onThemeChange,
   setTheme,
 }: ThemeTogglerProps) {
-  const btnRef = useRef<HTMLButtonElement>(null);
+  const btnRef = useRef<HTMLSpanElement>(null);
   const isControlled = controlledTheme !== undefined;
   const applyTheme = setTheme ?? setThemeFallback;
 
@@ -106,13 +107,15 @@ export function ThemeToggler({
   const dark = isControlled ? controlledTheme === 'dark' : innerTheme === 'dark';
 
   return (
-    <button
-      ref={btnRef}
-      className={cn('theme-toggler', dark && 'theme-toggler-dark', className)}
-      onClick={toggle}
-      aria-label={dark ? '切换亮色主题' : '切换暗色主题'}
-    >
-      {dark ? <WeatherSunnyRegular size={18} /> : <WeatherMoonRegular size={18} />}
-    </button>
+    <span ref={btnRef} className="inline-flex">
+      <Button iconOnly className={className}
+              onClick={toggle}
+              aria-label={dark ? '切换亮色主题' : '切换暗色主题'}>
+        {/* 暗色态只给图标 accent 色,按钮本体保持默认描边 */}
+        {dark
+          ? <WeatherSunnyRegular size={16} color="var(--accent-text)" />
+          : <WeatherMoonRegular size={16} />}
+      </Button>
+    </span>
   );
 }

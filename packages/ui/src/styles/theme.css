@@ -661,21 +661,7 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
   to   { transform: translateY(calc(-100% - var(--gap))); }
 }
 
-/* ---- 13c. AnimatedThemeToggler —— 主题切换按钮 ---- */
-.theme-toggler {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px; padding: 0;
-  border: 1px solid var(--stroke); border-radius: 50%;
-  background: var(--card); color: var(--text-2);
-  cursor: pointer; transition: background var(--fast) var(--fluent-decelerate),
-                              color var(--fast) var(--fluent-decelerate),
-                              border-color var(--fast) var(--fluent-decelerate);
-  outline: none; position: relative;
-}
-.theme-toggler:hover { background: var(--fill-subtle); color: var(--text-1); }
-.theme-toggler:active { background: var(--fill-secondary); }
-.theme-toggler-dark { color: var(--accent-text); border-color: var(--accent); }
-.theme-toggler-dark:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+/* ---- 13c. AnimatedThemeToggler —— 主题切换按钮(本体复用 .btn icon-only,暗色态 c-primary 着色,无独立样式) ---- */
 
 /* ---- 13d. Dock — 对齐 MagicUI: 托盘视觉高度固定,图标放大向上溢出 ---- */
 .dock {
@@ -1823,9 +1809,10 @@ button.settings-card:active > * { opacity: .85; }
 .cp-trigger.disabled { opacity: .6; cursor: default; }
 .cp-swatch {
   width: 22px; height: 22px; border-radius: calc(var(--r-control) - 1px); overflow: hidden;
-  /* 棋盘底透出透明度 */
+  /* 棋盘底透出透明度;padding-box:勿画到半透明边框下(边缘漏出棋盘格即"马赛克边") */
   background: conic-gradient(rgba(128,128,128,.5) 25%, transparent 0 50%, rgba(128,128,128,.5) 0 75%, transparent 0);
   background-size: 8px 8px;
+  background-clip: padding-box;
   border: 1px solid var(--stroke);
 }
 .cp-swatch i { display: block; width: 100%; height: 100%; background-clip: padding-box; }

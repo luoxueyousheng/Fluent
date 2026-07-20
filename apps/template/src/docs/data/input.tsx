@@ -264,7 +264,7 @@ export function VerticalDisabledExample() {
     },
     {
       title: '着色',
-      description: 'color 语义五色作用于选中态(勾选框/卡片描边)。组组件 CheckboxGroup 同样支持整组 color。',
+      description: 'color 语义五色作用于选中态(勾选框/卡片描边/卡片浅充)。组组件 CheckboxGroup 同样支持整组 color。',
       demo: (
         <div className="flex flex-col gap-3 items-start">
           <div className="flex flex-wrap gap-3">
@@ -274,6 +274,11 @@ export function VerticalDisabledExample() {
           </div>
           <CheckboxGroup color="success" defaultValue={['a']}
             options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }, { value: 'c', label: 'C' }]} />
+          <CheckboxGroup card color="danger" defaultValue={['x']}
+            options={[
+              { value: 'x', label: '卡片着色', description: '选中描边与浅充跟随 color' },
+              { value: 'y', label: '未选中', description: '常态卡片' },
+            ]} />
         </div>
       ),
       code: `
@@ -289,6 +294,12 @@ export function CheckboxColorExample() {
       </div>
       <CheckboxGroup color="success" defaultValue={['a']}
         options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }, { value: 'c', label: 'C' }]} />
+      {/* 卡片模式:选中描边 + 浅充同样跟随 color */}
+      <CheckboxGroup card color="danger" defaultValue={['x']}
+        options={[
+          { value: 'x', label: '卡片着色', description: '选中描边与浅充跟随 color' },
+          { value: 'y', label: '未选中', description: '常态卡片' },
+        ]} />
     </div>
   );
 }`,

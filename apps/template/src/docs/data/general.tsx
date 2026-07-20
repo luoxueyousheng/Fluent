@@ -1,6 +1,7 @@
 /* 文档数据:通用 — Button / ToggleButton / Icons */
 import { useMemo, useState } from 'react';
 import { Button, SearchBox, ToggleButton, ToggleButtonGroup, ThemeToggler, useToast } from '@fluent-jade/ui';
+import { setThemeMode } from '@fluent-jade/bridge';
 import {
   AddRegular,
   CalendarLtrRegular,
@@ -767,7 +768,7 @@ function ThemeTogglerControlledPreview() {
   const [t, setT] = useState<'light' | 'dark'>('light');
   return (
     <div className="flex flex-col items-center gap-3 p-4">
-      <ThemeToggler theme={t} onThemeChange={setT} />
+      <ThemeToggler theme={t} onThemeChange={(v) => { setT(v); void setThemeMode(v); }} />
       <span className="text-xs text-(--text-3) flex items-center gap-1">
         {t === 'dark' ? <WeatherMoonRegular size={14} /> : <WeatherSunnyRegular size={14} />}
         {t === 'dark' ? '暗色' : '亮色'}
@@ -786,10 +787,10 @@ const themetoggler: DocDef = {
   sections: [
     {
       title: '基础用法',
-      description: '默认圆形 clip-path,点击在亮/暗间切换。setTheme 注入 bridge.setThemeMode 即可同步 JadeView 宿主。',
+      description: '默认圆形 clip-path,点击在亮/暗间切换,并经注入的 bridge.setThemeMode 同步宿主(独立预览时由 mock 应答 set-theme)。',
       demo: (
         <div className="flex justify-center p-6">
-          <ThemeToggler />
+          <ThemeToggler setTheme={setThemeMode} />
         </div>
       ),
       code: `
