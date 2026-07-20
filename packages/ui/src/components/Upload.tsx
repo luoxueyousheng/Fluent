@@ -177,19 +177,30 @@ export function Upload(props: UploadProps) {
 }
 
 export interface DraggerProps extends UploadProps {
-  /** 拖放区提示文字(默认「点击或拖拽文件到此处」) */
+  /** 拖放区图标(默认上传箭头;传 null 隐藏) */
+  icon?: ReactNode;
+  /** 主标题(默认「点击或拖拽文件到此处」) */
+  title?: ReactNode;
+  /** 辅助说明行(缺省按 accept 生成「支持: xxx」;传 null 隐藏) */
   hint?: ReactNode;
+  /** 拖放区宽度(px 或 CSS 长度,缺省跟随父容器) */
+  width?: number | string;
+  /** 拖放区最小高度(px 或 CSS 长度,默认 140) */
+  height?: number | string;
 }
 
 function Dragger(props: DraggerProps) {
-  const { accept, multiple, disabled, showFileList = true, hint, children, className } = props;
+  const { accept, multiple, disabled, showFileList = true, icon, title, hint, width, height, children, className } = props;
   const { list, addFiles, remove } = useUploadCore(props);
   const { input, pick } = usePicker(accept, multiple, addFiles);
   const [over, setOver] = useState(false);
+  // hint 未传时按 accept 生成;显式传 null 则整行隐藏
+  const hintLine = hint !== undefined ? hint : accept ? `支持:${accept}` : null;
 
   return (
     <div className={cn('upload', className)}>
       <div className={cn('upload-dragger', over && 'over', disabled && 'disabled')}
+           style={{ ...(width != null && { width }), ...(height != null && { minHeight: height }) }}
            role="button" tabIndex={disabled ? -1 : 0}
            aria-label="上传文件"
            onClick={() => !disabled && pick()}
@@ -203,9 +214,11 @@ function Dragger(props: DraggerProps) {
            }}>
         {children ?? (
           <>
-            <ArrowUploadRegular size={28} className="ud-icon" />
-            <div className="ud-text">{hint ?? '点击或拖拽文件到此处'}</div>
-            {accept && <div className="ud-hint">支持:{accept}</div>}
+            {icon !== null && (icon
+              ? <span className="ud-icon">{icon}</span>
+              : <ArrowUploadRegular size={28} className="ud-icon" />)}
+            <div className="ud-text">{title ?? '点击或拖拽文件到此处'}</div>
+            {hintLine != null && <div className="ud-hint">{hintLine}</div>}
           </>
         )}
       </div>

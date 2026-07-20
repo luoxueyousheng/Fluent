@@ -130,11 +130,14 @@ export function ColorPicker({
       {fly.isOpen && createPortal(
         <div ref={popRef} className={cn('cp-pop', placement.cls, fly.closing && 'closing')}
              style={placement.style} role="dialog" aria-label="颜色选择面板">
-          {/* 纯色相底 + 白/黑双覆盖层(标准 SV 面板写法) */}
+          {/* 纯色相底 + 白/黑双覆盖层(标准 SV 面板写法)。
+              注意:必须用 longhand(backgroundColor/Image)——background 简写会在
+              拖拽重渲染时把 backgroundClip 重置回 border-box,四边漏色(踩过) */}
           <div className="cp-sv" ref={sv.ref} onPointerDown={sv.onPointerDown}
                style={{
-                 background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent), ${pureHue}`,
-                 backgroundClip: 'padding-box',   // 勿画到半透明边框下(四边漏色)
+                 backgroundColor: pureHue,
+                 backgroundImage: 'linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent)',
+                 backgroundClip: 'padding-box',   // 勿画到半透明边框下
                }}>
             <span className="cp-knob" style={{ left: `${hsv.s * 100}%`, top: `${(1 - hsv.v) * 100}%`, background: solid }} />
           </div>

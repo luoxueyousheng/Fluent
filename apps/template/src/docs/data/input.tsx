@@ -17,6 +17,7 @@ import {
   type UploadFile,
   type UploadRequestOptions,
 } from '@fluent-jade/ui';
+import { ImageRegular } from '@fluent-jade/icon';
 import type { DocDef } from '../types';
 
 /* ---- 有状态演示 ---- */
@@ -1405,13 +1406,49 @@ export function DraggerExample() {
 }`,
     },
     {
+      title: '自定义图标与标题',
+      description: 'Dragger 的 icon / title / hint 都可替换:icon 传 null 隐藏图标;hint 是标题下的辅助行,缺省按 accept 自动生成,传 null 隐藏;width / height 控制拖放区尺寸(高度默认 140)。整体重排用 children。',
+      demo: (
+        <Upload.Dragger accept="image/*" customRequest={fakeRequest} width={360} height={180}
+                        icon={<ImageRegular size={28} />}
+                        title="拖拽图片到此处"
+                        hint="支持 PNG / JPG / WebP,单文件不超过 10MB" />
+      ),
+      code: `
+import { Upload, type UploadRequestOptions } from '@fluent-jade/ui';
+import { ImageRegular } from '@fluent-jade/icon';
+
+const fakeRequest = ({ onProgress, onSuccess }: UploadRequestOptions) => {
+  let p = 0;
+  const t = setInterval(() => {
+    p += 20;
+    if (p >= 100) { clearInterval(t); onSuccess(); } else onProgress(p);
+  }, 180);
+};
+
+export function DraggerCustomExample() {
+  return (
+    /* icon 传 null 隐藏图标;hint 传 null 隐藏辅助行 */
+    <Upload.Dragger
+      accept="image/*"
+      customRequest={fakeRequest}
+      width={360}
+      height={180}
+      icon={<ImageRegular size={28} />}
+      title="拖拽图片到此处"
+      hint="支持 PNG / JPG / WebP,单文件不超过 10MB"
+    />
+  );
+}`,
+    },
+    {
       title: '成功后自动移除状态',
       description:
         'autoDismiss 让上传成功的文件行自动消失:true = 2000ms,数字为自定义毫秒数。只移除 done 项(error 保留待用户处理),移除经 onChange 通知、不触发 onRemove。适合"传完即走"的反馈场景,失败行仍会留下。',
       demo: (
         <div style={{ width: 360 }}>
           <Upload.Dragger customRequest={fakeRequest} autoDismiss={1500}
-                          hint="拖入文件,成功 1.5s 后状态行自动消失" />
+                          title="拖入文件,成功 1.5s 后状态行自动消失" />
         </div>
       ),
       code: `
@@ -1433,7 +1470,7 @@ export function AutoDismissExample() {
       <Upload.Dragger
         customRequest={fakeRequest}
         autoDismiss={1500}
-        hint="拖入文件,成功 1.5s 后状态行自动消失"
+        title="拖入文件,成功 1.5s 后状态行自动消失"
       />
     </div>
   );
@@ -1529,6 +1566,16 @@ export function ListModesExample() {
     { name: 'onRemove', type: '(file: UploadFile) => void', description: '移除文件行。' },
   ],
   extraApis: [
+    {
+      title: 'Upload.Dragger(追加)',
+      rows: [
+        { name: 'icon', type: 'ReactNode | null', description: '拖放区图标;null 隐藏。' },
+        { name: 'title', type: 'ReactNode', default: "'点击或拖拽文件到此处'", description: '主标题。' },
+        { name: 'hint', type: 'ReactNode | null', description: '辅助说明行;缺省按 accept 生成,null 隐藏。' },
+        { name: 'width', type: 'number | string', description: '拖放区宽度(px 或 CSS 长度,缺省跟随父容器)。' },
+        { name: 'height', type: 'number | string', default: '140', description: '拖放区最小高度(px 或 CSS 长度)。' },
+      ],
+    },
     {
       title: 'UploadFile',
       rows: [
