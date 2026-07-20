@@ -10,8 +10,15 @@
   },
   "type": "module",
   "main": "src/index.ts",
+  "sideEffects": [
+    "*.css",
+    "**/*.css",
+    "./src/styles.ts",
+    "./dist/styles.*"
+  ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./styles": "./src/styles.ts"
   },
   "files": [
     "dist",
@@ -27,6 +34,10 @@
       ".": {
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js"
+      },
+      "./styles": {
+        "types": "./dist/styles.d.ts",
+        "import": "./dist/styles.js"
       }
     }
   },

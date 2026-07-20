@@ -5,8 +5,10 @@ import {
   type HostCallOptions, type HostResponse,
 } from './types';
 
-export const hasJade =
-  typeof window !== 'undefined' && typeof window.jade !== 'undefined';
+/** 调用时判断(mock 可能在 import bridge 之后才注入 window.jade) */
+export function hasJade(): boolean {
+  return typeof window !== 'undefined' && typeof window.jade !== 'undefined';
+}
 
 /** jade 事件/应答 payload:字符串则尝试 JSON 解析 */
 export function parsePayload<T = unknown>(p: unknown): T {
@@ -46,7 +48,7 @@ async function invokeCall<T = unknown>(
 ): Promise<HostResponse<T>> {
   const t0 = performance.now();
   const timeout = opts.timeout ?? cfg.timeout;
-  if (!hasJade) {
+  if (!hasJade()) {
     const error = new HostError(channel, 'jade 对象不可用(不在宿主内运行)', HostErrorCode.NO_HOST);
     if (!opts.silent) cfg.onError?.(channel, error);
     return { ok: false, data: null, error, channel, ms: 0 };
@@ -103,6 +105,6 @@ export const invoke: {
  * off();
  */
 export function on<T = unknown>(event: string, cb: (payload: T) => void): () => void {
-  if (!hasJade) return () => {};
+  if (!hasJade()) return () => {};
   return window.jade!.on(event, (p) => cb(parsePayload<T>(p)));
 }

@@ -23,10 +23,12 @@ export async function applyTheme(): Promise<void> {
   const dark = effectiveDark();
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   notifyTheme();
-  if (!hasJade) return;
-  const mode = { light: 'Light', dark: 'Dark', system: 'System' }[themeMode];
-  await invokeJson(cfg.channels.setTheme, { mode });
-  if (cfg.channels.applyTitlebar) await invokeJson(cfg.channels.applyTitlebar, { dark });
+  if (!hasJade()) return;
+  try {
+    const mode = { light: 'Light', dark: 'Dark', system: 'System' }[themeMode];
+    await invokeJson(cfg.channels.setTheme, { mode });
+    if (cfg.channels.applyTitlebar) await invokeJson(cfg.channels.applyTitlebar, { dark });
+  } catch { /* 宿主下发失败不影响本地主题状态 */ }
   if (currentBackdrop === 'none') await applyBackdrop('none');
 }
 
@@ -48,6 +50,7 @@ export async function applyBackdrop(type: BackdropType): Promise<void> {
   currentBackdrop = type;
   document.documentElement.dataset.backdrop = type;
   notifyTheme();
+  if (!hasJade()) return;
   const payload: Record<string, unknown> = { type };
   if (type === 'none') payload.color = cfg.solidColor(effectiveDark());
   await invokeJson(cfg.channels.setBackdrop, payload);

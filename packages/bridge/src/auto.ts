@@ -3,4 +3,4 @@
 import './mock';
 import { ready } from './lifecycle';
 
-void ready();
+void ready().catch((e) => console.error('[jade] 初始化失败', e));

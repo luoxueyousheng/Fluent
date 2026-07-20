@@ -126,13 +126,23 @@ export function Table<T extends object>({
   const selType = rowSelection?.type ?? 'checkbox';
   const [innerKeys, setInnerKeys] = useState<string[]>(rowSelection?.defaultSelectedRowKeys ?? []);
   const selKeys = rowSelection?.selectedRowKeys ?? innerKeys;
-  const commitKeys = (keys: string[]) => {
-    if (rowSelection?.selectedRowKeys == null) setInnerKeys(keys);
-    rowSelection?.onChange?.(keys, dataSource.filter((r, i) => keys.includes(keyOf(r, i))));
-  };
 
   const keyOf = (r: T, i: number): string =>
     typeof rowKey === 'function' ? rowKey(r) : String((r as any)[rowKey] ?? i);
+  /* 行键统一以 dataSource 全量索引为口径(记录 → 键),翻页/排序后选择不串行 */
+  const rowKeys = useMemo(() => {
+    const m = new Map<T, string>();
+    dataSource.forEach((r, i) => m.set(r, keyOf(r, i)));
+    return m;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataSource, rowKey]);
+  const rowKeyOf = (r: T): string => rowKeys.get(r) ?? '';
+
+  const commitKeys = (keys: string[]) => {
+    if (rowSelection?.selectedRowKeys == null) setInnerKeys(keys);
+    rowSelection?.onChange?.(keys, dataSource.filter((r) => keys.includes(rowKeyOf(r))));
+  };
+
   const colKey = (c: ColumnType<T>, i: number) => c.key ?? c.dataIndex ?? String(i);
   const rowDisabled = (r: T) => !!rowSelection?.getCheckboxProps?.(r).disabled;
 
@@ -145,8 +155,14 @@ export function Table<T extends object>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataSource, sort, columns]);
 
+  /* dataSource 缩减后当前页可能越界:钳到 [1, maxPage] 并回写内部态
+     (page 为非受控内部 state,不存在受控语义冲突) */
+  const maxPage = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const curPage = Math.min(page, maxPage);
+  useLayoutEffect(() => { if (page !== curPage) setPage(curPage); }, [page, curPage]);
+
   const paged = pagination === false ? sorted
-    : sorted.slice((page - 1) * pageSize, page * pageSize);
+    : sorted.slice((curPage - 1) * pageSize, curPage * pageSize);
 
   /* antd 排序循环:无 → 升 → 降 → 无 */
   const cycleSort = (key: string) => {
@@ -156,7 +172,7 @@ export function Table<T extends object>({
   };
 
   /* 表头全选:作用于当前页可选行(antd 行为);先取键再过滤,免得索引回退错位 */
-  const pageKeys = paged.map((r, i) => ({ r, k: keyOf(r, i) }))
+  const pageKeys = paged.map((r) => ({ r, k: rowKeyOf(r) }))
     .filter(({ r }) => !rowDisabled(r)).map(({ k }) => k);
   const pageSelected = pageKeys.filter((k) => selKeys.includes(k));
   const allChecked = pageKeys.length > 0 && pageSelected.length === pageKeys.length;
@@ -206,12 +222,12 @@ export function Table<T extends object>({
         </div>
         {/* key 随页码/排序变化:表体整体做一次轻微淡入(dg-refresh),
             行不做逐行错峰飞入——数据表格逐行动画在翻页/排序时过于喧闹 */}
-        <div className="dg-body dg-refresh" key={`${page}|${sort?.key ?? ''}|${sort?.dir ?? ''}`}
+        <div className="dg-body dg-refresh" key={`${curPage}|${sort?.key ?? ''}|${sort?.dir ?? ''}`}
              style={maxHeight != null ? { maxHeight } : undefined}>
           {paged.length === 0 && (empty ?? <Empty image="simple" />)}
           {paged.map((r, ri) => {
             const extra = onRow?.(r);
-            const k = keyOf(r, ri);
+            const k = rowKeyOf(r);
             const selected = !!rowSelection && selKeys.includes(k);
             const dis = !!rowSelection && rowDisabled(r);
             return (
@@ -256,7 +272,7 @@ export function Table<T extends object>({
       </div>
       {pagination !== false && (sorted.length > pageSize || pagination.showSizeChanger) && (
         <div className="row" style={{ justifyContent: 'flex-end', marginTop: 12 }}>
-          <Pagination current={page} total={sorted.length} pageSize={pageSize}
+          <Pagination current={curPage} total={sorted.length} pageSize={pageSize}
                       showSizeChanger={pagination.showSizeChanger}
                       pageSizeOptions={pagination.pageSizeOptions}
                       onChange={(p, s) => { setPage(p); if (s !== pageSize) { setInnerSize(s); setPage(1); } }} />

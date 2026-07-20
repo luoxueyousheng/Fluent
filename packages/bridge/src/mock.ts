@@ -70,9 +70,11 @@ if (typeof window !== 'undefined' && !window.jade) {
     },
 
     async 'export_report'({ rows = 100 }: any = {}) {
-      for (let done = 0; done <= rows; done += Math.ceil(rows / 10)) {
-        emit('progress', { task: 'export', percent: Math.min(100, Math.round((done / rows) * 100)) });
-        await sleep(180);
+      if (rows > 0) {
+        for (let done = 0; done <= rows; done += Math.ceil(rows / 10)) {
+          emit('progress', { task: 'export', percent: Math.min(100, Math.round((done / rows) * 100)) });
+          await sleep(180);
+        }
       }
       push('toast', {
         level: 'success', title: '导出完成', message: `report.csv(${rows} 行)已保存。`,

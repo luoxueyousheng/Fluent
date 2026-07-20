@@ -18,6 +18,7 @@
   ```
 
 - API:`size`(默认 16);`color`(默认 `currentColor`)。
+- 样式:应用入口引一次 `import '@fluent-jade/icon/styles'`(headless reset / HCM / RTL;已拆独立入口以保证 tree-shaking)。
 - 目录:文档 Icons 页底部完整列表,或 `iconCatalog` / `iconGroups`。
 - 禁止:
   - emoji 当 `icon` 插槽、菜单前缀、状态徽标

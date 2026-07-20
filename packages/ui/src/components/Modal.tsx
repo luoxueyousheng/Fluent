@@ -69,7 +69,11 @@ export function Modal({
     const r = onOk?.();
     if (r && typeof (r as Promise<unknown>).then === 'function') {
       setInnerLoading(true);
-      void (r as Promise<unknown>).finally(() => setInnerLoading(false));
+      /* then 双参:reject 也要收掉(unhandled rejection),且 antd 惯例 reject 即阻止关闭 */
+      void (r as Promise<unknown>).then(
+        () => setInnerLoading(false),
+        () => setInnerLoading(false),
+      );
     }
   };
 

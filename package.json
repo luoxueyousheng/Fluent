@@ -11,7 +11,7 @@
     "dev": "npm run dev -w apps/template",
     "build": "npm run build -w apps/template",
     "build:lib": "npm run build -w @fluent-jade/icon && npm run build -w @fluent-jade/ui && npm run build -w @fluent-jade/bridge",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -p apps/template/tsconfig.json --noEmit"
   },
   "devDependencies": {
     "puppeteer-core": "^25.3.0",

@@ -111,13 +111,12 @@ for (const [group, mod, names] of GROUPS) {
   for (const n of names) {
     if (seen.has(n)) throw new Error(`dup ${n}`);
     seen.add(n);
-    wrapLines.push(`export const ${n} = wrapIcon(${n}Base, '${n}');`);
+    wrapLines.push(`export const ${n} = /*#__PURE__*/ wrapIcon(${n}Base, '${n}');`);
     catalogItems.push(`  { name: '${n}', group: '${group}', Component: ${n} },`);
   }
 }
 
 const iconsTsx = `/* 自动生成:node scripts/gen-icon-package.mjs —— 勿手改 */
-import '@fluentui/react-icons/headless/styles.css';
 import { wrapIcon } from './wrap';
 ${importLines.join('\n')}
 
@@ -149,7 +148,7 @@ export type IconExportName = (typeof iconCatalog)[number]['name'];
 const indexTs = `/* @fluent-jade/icon — Fluent System Icons
  * 与 @fluent-jade/ui 组件库分离:
  *   import { HomeRegular, SearchRegular } from '@fluent-jade/icon';
- *   <HomeRegular size={20} />
+ *   <HomeRegular size={20} color="currentColor" />
  * 硬性约定:禁止 emoji 当图标。完整目录见 iconCatalog / 官方 Icons Catalog。
  */
 export type { IconProps, FluentIcon } from './wrap';
@@ -158,8 +157,14 @@ export * from './icons';
 export { iconCatalog, iconGroups, type IconCatalogItem, type IconExportName } from './catalog';
 `;
 
+/* 图标基础样式独立入口(tree-shaking 友好):消费方按需 import '@fluent-jade/icon/styles' */
+const stylesTs = `/* 自动生成:node scripts/gen-icon-package.mjs —— 勿手改 */
+import '@fluentui/react-icons/headless/styles.css';
+`;
+
 fs.mkdirSync(OUT, { recursive: true });
 fs.writeFileSync(path.join(OUT, 'icons.tsx'), iconsTsx);
 fs.writeFileSync(path.join(OUT, 'catalog.ts'), catalogTs);
 fs.writeFileSync(path.join(OUT, 'index.ts'), indexTs);
+fs.writeFileSync(path.join(OUT, 'styles.ts'), stylesTs);
 console.log(`generated ${seen.size} icons`);

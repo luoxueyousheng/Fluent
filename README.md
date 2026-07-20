@@ -66,7 +66,7 @@ npm pack -w @fluent-jade/ui -w @fluent-jade/icon -w @fluent-jade/bridge
 2. 引入 `@fluent-jade/ui/theme.css`
 3. 宿主零配置:`import '@fluent-jade/bridge/auto'`(mock + init + 默认 Mica)
 4. Tailwind v4 需 `@source` 扫描 ui 包源码
-5. 图标从 `@fluent-jade/icon` 命名导入,禁止 emoji 当图标
+5. 图标从 `@fluent-jade/icon` 命名导入,禁止 emoji 当图标;入口需引一次 `import '@fluent-jade/icon/styles'`(headless 图标基础样式,已拆为独立入口以保证 tree-shaking)
 
 ## 组件总览
 

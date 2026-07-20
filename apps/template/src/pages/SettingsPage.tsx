@@ -56,7 +56,7 @@ export function SettingsPage({ hasBackdrop }: { hasBackdrop: boolean }) {
                       onClick={() => message.info('(演示)打开关于页')} />
       </div>
 
-      <p className="t-caption">运行环境:{hasJade ? (window.jade?._isMock ? 'mock 宿主' : 'JadeView 宿主') : '无宿主'}</p>
+      <p className="t-caption">运行环境:{hasJade() ? (window.jade?._isMock ? 'mock 宿主' : 'JadeView 宿主') : '无宿主'}</p>
     </>
   );
 }

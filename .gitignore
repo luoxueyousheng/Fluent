@@ -4,3 +4,5 @@ dist/
 .vite/
 *.log
 .DS_Store
+shot*.png
+combo*.png

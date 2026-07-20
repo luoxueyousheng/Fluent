@@ -2,18 +2,17 @@
  * 源自 MagicUI (https://magicui.design),适配 Fluent UI × JadeView。
  *
  * 使用 View Transitions API(Chrome 111+)实现 clip-path 揭示动效。
- * 不支持时静默降级。自动使用 bridge.setThemeMode 同步到宿主,
- * bridge 不可用时直接切换 data-theme。
+ * 不支持时静默降级。默认只切 data-theme;setTheme 可注入 bridge.setThemeMode 同步宿主。
  *
  * 用法:
- *   <ThemeToggler />                                    // 自动管理 + 同步宿主
+ *   <ThemeToggler />
  *   <ThemeToggler duration={600} />
  *   <ThemeToggler fromCenter />
- *   <ThemeToggler theme={t} onThemeChange={setT} />     // 受控模式
+ *   <ThemeToggler setTheme={(t) => setThemeMode(t)} />   // 同步宿主
+ *   <ThemeToggler theme={t} onThemeChange={setT} />       // 受控
  */
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { WeatherSunnyRegular, WeatherMoonRegular } from '@fluent-jade/icon';
-import { setThemeMode } from '@fluent-jade/bridge';
 import { cn } from '../cn';
 
 export interface ThemeTogglerProps {
@@ -26,20 +25,13 @@ export interface ThemeTogglerProps {
   theme?: 'light' | 'dark';
   /** 主题切换回调(受控模式必传) */
   onThemeChange?: (theme: 'light' | 'dark') => void;
+  /** 自定义主题写入(如 bridge.setThemeMode);缺省只切 data-theme */
+  setTheme?: (theme: 'light' | 'dark') => void | Promise<void>;
 }
 
-/** 无 bridge 时回退:直接写 data-theme */
+/** 缺省:只切 DOM,不通知宿主 */
 function setThemeFallback(theme: 'light' | 'dark') {
   document.documentElement.dataset.theme = theme;
-}
-
-function doSetTheme(theme: 'light' | 'dark') {
-  try {
-    // setThemeMode 会同步到 DOM + 通知宿主(JadeView invoke)
-    void setThemeMode(theme);
-  } catch {
-    setThemeFallback(theme);
-  }
 }
 
 export function ThemeToggler({
@@ -48,27 +40,33 @@ export function ThemeToggler({
   fromCenter = false,
   theme: controlledTheme,
   onThemeChange,
+  setTheme,
 }: ThemeTogglerProps) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const isControlled = controlledTheme !== undefined;
+  const applyTheme = setTheme ?? setThemeFallback;
+
+  /* 非受控:本地 state 驱动图标/aria-label;初值在懒初始化里读一次 dataset,
+     渲染期不直接读 document(SSR 安全) */
+  const [innerTheme, setInnerTheme] = useState<'light' | 'dark'>(() =>
+    typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 
   const toggle = useCallback(() => {
-    const current = isControlled ? controlledTheme : (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+    const current = isControlled ? controlledTheme : innerTheme;
     const next = current === 'dark' ? 'light' : 'dark';
 
-    // 受控模式:只回调,不直接改 DOM
     if (isControlled) {
       onThemeChange?.(next);
       return;
     }
 
-    // 不支持 View Transitions:直接切换
+    setInnerTheme(next);
+
     if (typeof document === 'undefined' || !('startViewTransition' in document)) {
-      doSetTheme(next);
+      void applyTheme(next);
       return;
     }
 
-    // 计算展开原点
     let startClip: string;
     if (fromCenter) {
       const cx = window.innerWidth / 2;
@@ -89,7 +87,7 @@ export function ThemeToggler({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transition = (document as any).startViewTransition(() => {
-      doSetTheme(next);
+      void applyTheme(next);
     });
 
     void transition.ready.then(() => {
@@ -102,18 +100,14 @@ export function ThemeToggler({
         },
       );
     });
-  }, [isControlled, controlledTheme, duration, fromCenter, onThemeChange]);
+  }, [isControlled, controlledTheme, innerTheme, duration, fromCenter, onThemeChange, applyTheme]);
 
-  const dark = isControlled ? controlledTheme === 'dark' : document.documentElement.dataset.theme === 'dark';
+  const dark = isControlled ? controlledTheme === 'dark' : innerTheme === 'dark';
 
   return (
     <button
       ref={btnRef}
-      className={cn(
-        'theme-toggler',
-        dark && 'theme-toggler-dark',
-        className,
-      )}
+      className={cn('theme-toggler', dark && 'theme-toggler-dark', className)}
       onClick={toggle}
       aria-label={dark ? '切换亮色主题' : '切换暗色主题'}
     >
