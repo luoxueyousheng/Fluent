@@ -35,6 +35,12 @@ export function Carousel({
     setIndex(((i % count) + count) % count);
   }, [count]);
 
+  /* 子项变少时索引可能越界:渲染期用有效索引,count 变化后回写 state */
+  const safeIndex = Math.min(index, Math.max(0, count - 1));
+  useEffect(() => {
+    if (index !== safeIndex) setIndex(safeIndex);
+  }, [index, safeIndex]);
+
   /* 可见性感知:切走页面(display:none)/滚出视口/后台标签页时不轮播,
      省掉隐藏状态下每周期的状态更新与 afterChange 副作用 */
   useEffect(() => {
@@ -65,17 +71,17 @@ export function Carousel({
   return (
     <div ref={rootRef} className={cn('carousel', className)} role="region" aria-roledescription="轮播"
          onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <div className="car-track" style={{ transform: `translateX(-${index * 100}%)` }}>
+      <div className="car-track" style={{ transform: `translateX(-${safeIndex * 100}%)` }}>
         {slides.map((s, i) => (
-          <div key={i} className="car-slide" aria-hidden={i !== index}>{s}</div>
+          <div key={i} className="car-slide" aria-hidden={i !== safeIndex}>{s}</div>
         ))}
       </div>
       {arrows && count > 1 && (
         <>
-          <button className="car-arrow prev" aria-label="上一张" onClick={() => goTo(index - 1)}>
+          <button className="car-arrow prev" aria-label="上一张" onClick={() => goTo(safeIndex - 1)}>
             <ChevronLeftRegular size={12} />
           </button>
-          <button className="car-arrow next" aria-label="下一张" onClick={() => goTo(index + 1)}>
+          <button className="car-arrow next" aria-label="下一张" onClick={() => goTo(safeIndex + 1)}>
             <ChevronRightRegular size={12} />
           </button>
         </>
@@ -83,8 +89,8 @@ export function Carousel({
       {dots && count > 1 && (
         <div className="car-dots" role="tablist" aria-label="选择幻灯片">
           {slides.map((_, i) => (
-            <button key={i} className={cn('car-dot', i === index && 'active')}
-                    role="tab" aria-selected={i === index} aria-label={`第 ${i + 1} 张`}
+            <button key={i} className={cn('car-dot', i === safeIndex && 'active')}
+                    role="tab" aria-selected={i === safeIndex} aria-label={`第 ${i + 1} 张`}
                     onClick={() => goTo(i)} />
           ))}
         </div>

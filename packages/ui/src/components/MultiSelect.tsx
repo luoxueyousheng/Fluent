@@ -55,11 +55,12 @@ export function MultiSelect({
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') { fly.close(); return; }
+    const n = options.length;
+    if (n === 0) return;                     // 空 options:方向键取模得 NaN,Enter 开空浮层
     if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
       e.preventDefault();
       if (!fly.isOpen) { setActiveIdx(-1); fly.open(); return; }
     }
-    const n = options.length;
     if (e.key === 'ArrowDown') setActiveIdx((i) => (i + 1) % n);
     else if (e.key === 'ArrowUp') setActiveIdx((i) => ((i <= 0 ? n : i) - 1) % n);
     else if ((e.key === 'Enter' || e.key === ' ') && activeIdx >= 0) toggleValue(options[activeIdx].value);
@@ -67,7 +68,7 @@ export function MultiSelect({
 
   return (
     <div ref={rootRef} className={cn('multiselect', colorClass(color), radiusClass(radius), className)}>
-      <button className={cn('combo-trigger', 'ms-trigger', sizeClass(size), statusClass(status))}
+      <button type="button" className={cn('combo-trigger', 'ms-trigger', sizeClass(size), statusClass(status))}
               disabled={disabled} aria-haspopup="listbox" aria-expanded={fly.isOpen}
               aria-label={aria['aria-label']}
               onClick={fly.toggle} onKeyDown={onKeyDown}>

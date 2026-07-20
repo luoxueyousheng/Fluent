@@ -90,6 +90,7 @@ export function ThemeToggler({
       void applyTheme(next);
     });
 
+    /* then 双参:过渡被跳过(如连续快速切换)时 ready 会 reject,吞掉避免 unhandled rejection */
     void transition.ready.then(() => {
       document.documentElement.animate(
         { clipPath: [startClip, endClip] },
@@ -99,7 +100,7 @@ export function ThemeToggler({
           pseudoElement: '::view-transition-new(root)',
         },
       );
-    });
+    }, () => { /* 过渡被跳过,无需动效 */ });
   }, [isControlled, controlledTheme, innerTheme, duration, fromCenter, onThemeChange, applyTheme]);
 
   const dark = isControlled ? controlledTheme === 'dark' : innerTheme === 'dark';

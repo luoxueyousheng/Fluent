@@ -3,6 +3,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import { useFocusTrap } from '../focusTrap';
+import { pushEsc } from './escStack';
 import {
   DismissRegular,
 } from '@fluent-jade/icon';
@@ -26,9 +27,7 @@ export function Drawer({ open, onClose, title, placement = 'right', size, width,
   useFocusTrap(panelRef, open);   // Tab 圈在面板内,关闭还焦
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    addEventListener('keydown', onKey);
-    return () => removeEventListener('keydown', onKey);
+    return pushEsc(onClose);   // Esc 走全局栈:叠层时一次 Esc 只关最上层
   }, [open, onClose]);
 
   /* 关闭期间冻结方位:调用方若在收起时改 placement(如用同一状态编码开合与方位),
@@ -44,7 +43,8 @@ export function Drawer({ open, onClose, title, placement = 'right', size, width,
   return createPortal(
     <div className={cn('smoke drawer-smoke', open && 'open')}
          onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <aside ref={panelRef} tabIndex={-1} className={cn('drawer', className)}
+      {/* 关闭只是 opacity:0,inert 把内容移出 Tab 序/交互,打开时移除 */}
+      <aside ref={panelRef} tabIndex={-1} inert={!open} className={cn('drawer', className)}
              data-placement={pl}
              style={horizontal ? { width: px } : { height: px }}
              role="dialog" aria-modal="true" aria-label={title}>

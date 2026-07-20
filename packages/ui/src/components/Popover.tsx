@@ -42,10 +42,12 @@ export function Popover({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fly.isOpen]);
 
-  /* 受控同步:open 属性驱动内部状态机 */
+  /* 受控同步:open 属性驱动内部状态机。
+   * closing 态 isOpen 仍为 true,父级此时改回 open=true 会被 `!fly.isOpen` 挡住、
+   * 150ms 后被关闭定时器强杀;closing 也算未开,直接 fly.open() 取消收尾定时器 */
   useEffect(() => {
     if (openProp == null) return;
-    if (openProp && !fly.isOpen) fly.open();
+    if (openProp && (!fly.isOpen || fly.closing)) fly.open();
     else if (!openProp && fly.isOpen) fly.close();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openProp]);

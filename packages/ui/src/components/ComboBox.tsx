@@ -100,6 +100,8 @@ export function ComboBox({
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') { fly.close(); return; }
+    if (options.length === 0) return;        // 空 options:方向键取模得 NaN,Enter 开空浮层
     if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
       e.preventDefault();
       if (!fly.isOpen) return openPop();
@@ -108,12 +110,12 @@ export function ComboBox({
     else if (e.key === 'ArrowUp') setActive((activeIdx < 0 ? selIdx : activeIdx) - 1);
     else if (e.key === 'Enter' || e.key === ' ') {
       if (fly.isOpen && activeIdx >= 0) choose(options[activeIdx]);
-    } else if (e.key === 'Escape') fly.close();
+    }
   };
 
   return (
     <div ref={rootRef} className={cn('combobox', colorClass(color), radiusClass(radius), className)}>
-      <button className={cn('combo-trigger', sizeClass(size), statusClass(status))}
+      <button type="button" className={cn('combo-trigger', sizeClass(size), statusClass(status))}
               aria-haspopup="listbox" aria-expanded={fly.isOpen}
               onClick={fly.toggle} onKeyDown={onKeyDown} aria-label={aria['aria-label']}>
         <span className={cn('combo-value', !current && 'placeholder')}>

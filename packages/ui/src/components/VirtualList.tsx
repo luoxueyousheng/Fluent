@@ -11,6 +11,8 @@ export interface VirtualListProps<T = unknown> {
   itemHeight: number;
   /** 渲染每行 */
   renderItem: (item: T, index: number) => ReactNode;
+  /** 行 key(缺省退回索引,索引 key 在数据增删时会导致行复用错位) */
+  itemKey?: (item: T, index: number) => string | number;
   /** 容器高度(px) */
   height: number;
   /** 额外渲染的上下行数 */
@@ -21,7 +23,7 @@ export interface VirtualListProps<T = unknown> {
 }
 
 export function VirtualList<T>({
-  items, itemHeight, renderItem, height, overscan = 3, className, onScroll,
+  items, itemHeight, renderItem, itemKey, height, overscan = 3, className, onScroll,
 }: VirtualListProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
@@ -43,7 +45,7 @@ export function VirtualList<T>({
         {visibleItems.map((item, i) => {
           const realIndex = startIndex + i;
           return (
-            <div key={realIndex} className="vlist-item" style={{ position: 'absolute', top: realIndex * itemHeight, left: 0, right: 0, height: itemHeight }}>
+            <div key={itemKey ? itemKey(item, realIndex) : realIndex} className="vlist-item" style={{ position: 'absolute', top: realIndex * itemHeight, left: 0, right: 0, height: itemHeight }}>
               {renderItem(item, realIndex)}
             </div>
           );

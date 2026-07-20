@@ -29,8 +29,14 @@ export function SearchBox({
   color, radius, placeholder = '搜索', className,
 }: SearchBoxProps) {
   const [value, setValue] = useMergedState(defaultValue, valueProp, onChange);
+  // 有 suggestions 时 Enter 冒泡到此外层提交;AutoSuggest 选中候选的 Enter 已
+  // preventDefault,不会误触(保持 AutoSuggest 单独使用行为不变)
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.defaultPrevented) onSubmit?.(value);
+  };
   return (
-    <div className={cn('searchbox', colorClass(color), radiusClass(radius), className)}>
+    <div className={cn('searchbox', colorClass(color), radiusClass(radius), className)}
+         onKeyDown={onKeyDown}>
       <SearchRegular size={14} className="sb-icon" />
       {suggestions ? (
         <AutoSuggest options={suggestions} value={value} onChange={setValue}
@@ -38,11 +44,10 @@ export function SearchBox({
                      placeholder={placeholder} aria-label={placeholder} />
       ) : (
         <input className={cn('input', sizeClass(size))} value={value} placeholder={placeholder} aria-label={placeholder}
-               onChange={(e) => setValue(e.target.value)}
-               onKeyDown={(e) => { if (e.key === 'Enter') onSubmit?.(value); }} />
+               onChange={(e) => setValue(e.target.value)} />
       )}
       {value && (
-        <button className="sb-clear" aria-label="清除" onClick={() => setValue('')}>
+        <button type="button" className="sb-clear" aria-label="清除" onClick={() => setValue('')}>
           <DismissRegular size={11} />
         </button>
       )}

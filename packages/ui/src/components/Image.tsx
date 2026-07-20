@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
+import { pushEsc } from './escStack';
 import {
   ArrowClockwiseRegular,
   DismissRegular,
@@ -46,10 +47,19 @@ function PreviewOverlay({ src, alt, onClose }: { src: string; alt?: string; onCl
   const reset = () => { setScale(1); setDeg(0); setOff({ x: 0, y: 0 }); };
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    addEventListener('keydown', onKey);
-    return () => removeEventListener('keydown', onKey);
+    return pushEsc(onClose);   // Esc 走全局栈:叠层时一次 Esc 只关最上层
   }, [onClose]);
+
+  /* React 19 的合成 onWheel 是 passive 监听,preventDefault 无效——
+     挂原生 wheel 监听({ passive: false })才能拦下页面滚动 */
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = overlayRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => { e.preventDefault(); zoom(e.deltaY < 0 ? 1.1 : 1 / 1.1); };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [zoom]);
 
   const tools = [
     { key: 'zoomOut', label: '缩小', Icon: ZoomOutRegular, fn: () => zoom(1 / 1.25) },
@@ -58,9 +68,8 @@ function PreviewOverlay({ src, alt, onClose }: { src: string; alt?: string; onCl
   ] as const;
 
   return createPortal(
-    <div className="smoke open img-preview"
-         onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
-         onWheel={(e) => { e.preventDefault(); zoom(e.deltaY < 0 ? 1.1 : 1 / 1.1); }}>
+    <div ref={overlayRef} className="smoke open img-preview"
+         onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <img className={cn('imgp-stage', dragging && 'dragging')} src={src} alt={alt} draggable={false}
            style={{ transform: `translate(${off.x}px, ${off.y}px) scale(${scale}) rotate(${deg}deg)` }}
            onPointerDown={(e) => {

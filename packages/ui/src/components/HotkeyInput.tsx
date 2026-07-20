@@ -46,6 +46,8 @@ export function HotkeyInput({
   const stopRecord = useCallback((e: KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // Esc 取消录入(不记为快捷键)
+    if (e.key === 'Escape') { setRecording(false); return; }
     const hk = formatKey(e);
     if (['Control', 'Alt', 'Shift', 'Meta'].includes(e.key)) return;
     setRecording(false);
@@ -75,6 +77,7 @@ export function HotkeyInput({
       ref={inputRef}
       className={cn('hotkey-input', recording && 'hotkey-recording', size === 'small' && 'hotkey-sm', size === 'large' && 'hotkey-lg', disabled && 'disabled', className)}
       onClick={startRecord}
+      onBlur={() => setRecording(false)}
       role="button"
       tabIndex={disabled ? -1 : 0}
       aria-label={value || placeholder}

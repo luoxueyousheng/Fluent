@@ -47,9 +47,10 @@ export function Popconfirm({
   const controlled = openProp != null;
   const isOpen = controlled ? openProp : open;
 
+  /* onOpenChange(false) 不在这里直发:150ms 后 Popover 内部 fly.isOpen 变 false,
+   * 由 Popover 的同步 effect 统一发出(外点/Esc 也走该路径),直发会双发 */
   const close = () => {
     if (!controlled) setOpen(false);
-    onOpenChange?.(false);
   };
 
   return (

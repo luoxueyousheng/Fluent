@@ -137,12 +137,13 @@ export function Reveal({ children, className, ...rest }: { children: ReactNode; 
     const child = children as ReactElement<Record<string, unknown>>;
     const childProps = child.props as { className?: string; onPointerMove?: (e: React.PointerEvent) => void };
     return cloneElement(child, {
+      /* rest 先展开:合并后的 className / onPointerMove 放最后,避免被 rest 覆盖 */
+      ...rest,
       className: cn('reveal', childProps.className, className),
       onPointerMove: (e: React.PointerEvent) => {
         childProps.onPointerMove?.(e);
         track(e.currentTarget as HTMLElement, e);
       },
-      ...rest,
     });
   }
   return (

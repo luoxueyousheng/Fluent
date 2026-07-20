@@ -60,7 +60,7 @@ function getLabelsByPath(options: CascaderOption[], path: string[]): ReactNode[]
 
 export function Cascader({
   options, value: valueProp, defaultValue, onChange, placeholder = '请选择', changeOnSelect,
-  disabled, size, status, className,
+  disabled, size, status, expandTrigger = 'hover', className,
 }: CascaderProps) {
   const [value, setValue] = useMergedState<string[]>(defaultValue ?? [], valueProp);
   const [openLevel, setOpenLevel] = useState(0); // 当前展开层级(0=根)
@@ -77,20 +77,24 @@ export function Cascader({
     setActivePath(newPath);
 
     if (!opt.children || opt.children.length === 0 || changeOnSelect) {
-      const finalPath = opt.children && opt.children.length > 0 && !changeOnSelect ? newPath : newPath;
+      const finalPath = newPath;
       setValue(finalPath);
-      onChange?.(finalPath, finalPath.map((v, i) => {
+      onChange?.(finalPath, finalPath.map((_, i) => {
+        // 沿 finalPath[0..i] 从根逐级下钻,取第 i 级节点
         let opts = options;
         let found: CascaderOption | undefined;
-        for (let j = i; j < finalPath.length; j++) {
+        for (let j = 0; j <= i; j++) {
           found = opts.find((o) => o.value === finalPath[j]);
           if (found) opts = found.children ?? [];
         }
         return found!;
       }));
       if (!opt.children || opt.children.length === 0) fly.close();
+    } else if (expandTrigger === 'click') {
+      // click 模式:点击父级展开子菜单
+      setOpenLevel(level + 1);
     }
-  }, [activePath, changeOnSelect, options, setValue, onChange, fly]);
+  }, [activePath, changeOnSelect, expandTrigger, options, setValue, onChange, fly]);
 
   const handleHover = useCallback((opt: CascaderOption, level: number) => {
     if (opt.disabled) return;
@@ -99,12 +103,14 @@ export function Cascader({
     setOpenLevel(opt.children && opt.children.length > 0 ? level + 1 : level);
   }, [activePath]);
 
-  /* 重新从 value 恢复 activePath */
+  /* 浮层由关到开时从 value 恢复路径;打开期间 value 变化不重置 openLevel */
+  const prevOpen = useRef(false);
   useEffect(() => {
-    if (fly.isOpen && value.length > 0) {
+    if (fly.isOpen && !prevOpen.current && value.length > 0) {
       setActivePath(value);
       setOpenLevel(value.length - 1);
     }
+    prevOpen.current = fly.isOpen;
   }, [fly.isOpen, value]);
 
   const renderLevel = (opts: CascaderOption[], level: number) => (
@@ -117,7 +123,7 @@ export function Cascader({
             key={opt.value}
             className={cn('cascader-item', isActive && 'cascader-item-active', opt.disabled && 'disabled')}
             onClick={() => !opt.disabled && selectOption(opt, level)}
-            onMouseEnter={() => handleHover(opt, level)}
+            onMouseEnter={expandTrigger === 'hover' ? () => handleHover(opt, level) : undefined}
           >
             <span className="cascader-label">{opt.label}</span>
             {hasChildren && <ChevronRightRegular size={12} className="cascader-arrow" />}
@@ -144,6 +150,11 @@ export function Cascader({
         ref={rootRef}
         className={cn('cascader', fly.isOpen && 'open', size === 'small' && 'cascader-sm', size === 'large' && 'cascader-lg', status && `status-${status}`, disabled && 'disabled', className)}
         onClick={() => !disabled && fly.toggle()}
+        tabIndex={disabled ? -1 : 0}
+        onKeyDown={(e) => {
+          if (disabled) return;
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); fly.open(); }
+        }}
       >
         <span className={cn('cascader-display', displayLabels.length === 0 && 'cascader-placeholder')}>
           {displayLabels.length > 0 ? displayLabels.join(' / ') : placeholder}

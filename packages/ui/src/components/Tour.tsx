@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
+import { pushEsc } from './escStack';
 import { Button } from './Button';
 import {
   DismissRegular,
@@ -50,8 +51,9 @@ function getRect(target: string | HTMLElement | null): DOMRect | null {
   return el.getBoundingClientRect();
 }
 
-function getPlacement(step: TourStep, targetRect: DOMRect): TourStep['placement'] {
+function getPlacement(step: TourStep, targetRect: DOMRect | null): TourStep['placement'] {
   if (step.placement) return step.placement;
+  if (!targetRect) return 'bottom';   // 无目标:回退 bottom,浮层居中展示
   if (targetRect.top > window.innerHeight / 2) return 'top';
   return 'bottom';
 }
@@ -87,22 +89,22 @@ export function Tour({
     if (current > 0) setStep(current - 1);
   }, [current, setStep]);
 
-  /* Esc 退出 */
+  /* Esc 走全局栈(叠层时一次 Esc 只关最上层);方向键导航不属于 Esc 体系,保留本地监听 */
   useEffect(() => {
     if (!open) return;
+    const popEsc = pushEsc(() => onClose?.());
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose?.();
       if (e.key === 'ArrowRight') goNext();
       if (e.key === 'ArrowLeft') goPrev();
     };
     addEventListener('keydown', onKey);
-    return () => removeEventListener('keydown', onKey);
+    return () => { popEsc(); removeEventListener('keydown', onKey); };
   }, [open, goNext, goPrev, onClose]);
 
   if (!open || !step) return null;
 
   const targetRect = getRect(step.target);
-  const placement = getPlacement(step, targetRect!);
+  const placement = getPlacement(step, targetRect);
   const pos = targetRect ? getPopPosition(placement, targetRect) : { top: '50%', left: '50%', transform: 'translate(-50%,-50%)' };
 
   return createPortal(

@@ -69,7 +69,9 @@ export function Pagination({
         <ComboBox aria-label="每页条数" className="pager-size"
                   options={pageSizeOptions.map((n) => ({ value: String(n), label: `${n} 条/页` }))}
                   value={String(size)}
-                  onChange={(v) => { setSize(+v); go(1); onChange?.(1, +v); }} />
+                  /* 直接 setSize + setCurrent(1) + 单次 onChange:走 go(1) 会按旧
+                     pageSize 先发一次 onChange,再显式发一次,换页大小双发 */
+                  onChange={(v) => { setSize(+v); setCurrent(1); onChange?.(1, +v); }} />
       )}
     </div>
   );

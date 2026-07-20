@@ -1,5 +1,5 @@
 /* RadioGroup — antd 惯例的单选组容器(options + value/defaultValue/onChange) */
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import { cn } from '../cn';
 import { Radio } from './Basics';
 import { useMergedState } from '../useMergedState';
@@ -20,11 +20,10 @@ export interface RadioGroupProps {
   className?: string;
 }
 
-let seq = 0;
-
 export function RadioGroup({ options, value, defaultValue = null, onChange, vertical, card, name, color, className }: RadioGroupProps) {
   const [current, setCurrent] = useMergedState<string | null>(defaultValue, value, onChange as (v: string | null) => void);
-  const groupName = name ?? `rg-${++seq}`;
+  const uid = useId();
+  const groupName = name ?? `rg-${uid}`;
   return (
     <div className={cn('radio-group', vertical && 'vertical', card && 'cards', colorClass(color), className)} role="radiogroup">
       {options.map((o) => (

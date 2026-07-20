@@ -24,18 +24,20 @@ export function Rating({
 }: RatingProps) {
   const [value, setValue] = useMergedState(defaultValue, valueProp, onChange);
   const [hover, setHover] = useState(0);
-  const shown = hover || value;
+  // 受控 value 越界时渲染期钳到 [0, max]
+  const cv = Math.min(max, Math.max(0, value));
+  const shown = hover || cv;
 
   return (
     <div className={cn('rating', readOnly && 'readonly', colorClass(color), className)}
-         role="slider" aria-valuemin={0} aria-valuemax={max} aria-valuenow={value}
+         role="slider" aria-valuemin={0} aria-valuemax={max} aria-valuenow={cv}
          aria-label={aria['aria-label'] ?? '评分'}
          tabIndex={readOnly ? -1 : 0}
          onMouseLeave={() => setHover(0)}
          onKeyDown={(e) => {
            if (readOnly) return;
-           if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); setValue(Math.min(max, value + 1)); }
-           else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); setValue(Math.max(0, value - 1)); }
+           if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); setValue(Math.min(max, cv + 1)); }
+           else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); setValue(Math.max(0, cv - 1)); }
          }}>
       {Array.from({ length: max }, (_, i) => (
         <button key={i} type="button" tabIndex={-1} disabled={readOnly}

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import { useFocusTrap } from '../focusTrap';
+import { pushEsc } from './escStack';
 import { Button } from './Button';
 import {
   DismissRegular,
@@ -60,9 +61,7 @@ export function Modal({
 
   useEffect(() => {
     if (!open || !keyboard) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel?.(); };
-    addEventListener('keydown', onKey);
-    return () => removeEventListener('keydown', onKey);
+    return pushEsc(() => onCancel?.());   // Esc 走全局栈:叠层时一次 Esc 只关最上层
   }, [open, keyboard, onCancel]);
 
   const handleOk = () => {
@@ -82,7 +81,8 @@ export function Modal({
   return createPortal(
     <div className={cn('smoke', open && 'open')}
          onMouseDown={(e) => { if (maskClosable && e.target === e.currentTarget) onCancel?.(); }}>
-      <div ref={dlgRef} tabIndex={-1} className={cn('dialog', 'modal', className)} role="dialog" aria-modal="true"
+      {/* 关闭只是 opacity:0,inert 把内容移出 Tab 序/交互,打开时移除 */}
+      <div ref={dlgRef} tabIndex={-1} inert={!open} className={cn('dialog', 'modal', className)} role="dialog" aria-modal="true"
            aria-label={typeof title === 'string' ? title : undefined}
            style={{ '--modal-w': `${width}px` } as CSSProperties}>
         {(title != null || closable) && (

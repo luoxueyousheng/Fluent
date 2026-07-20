@@ -1,6 +1,6 @@
 /* FluentProvider — Toast + ContentDialog(confirm)上下文。
  * Toast 契约与 fluent-kit 一致:{level,title,message,duration,id,action}
- * 规则:同 id 去重重置计时;hover 暂停;error 不自动消失且 assertive;
+ * 规则:同 id 去重重置计时;hover 暂停;error assertive 播报;
  *       含 action 不自动消失;上限 5 条挤掉最旧。 */
 import {
   createContext, useCallback, useContext, useEffect, useMemo, useRef, useState,
@@ -18,6 +18,7 @@ import {
   WarningRegular,
 } from '@fluent-jade/icon';
 import { Button } from './Button';
+import { pushEsc } from './escStack';
 import { _bindImperative } from '../imperative';
 import { installScrollIndicators } from '../scrollIndicator';
 
@@ -93,6 +94,7 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const timers = useRef(new Map<number, { timer: number; remaining: number; started: number }>());
   const [dlg, setDlg] = useState<ConfirmState | null>(null);
+  const dlgTimer = useRef(0);   // 确认框退场后清空 state 的定时器句柄
 
   const dismiss = useCallback((key: number) => {
     const t = timers.current.get(key);
@@ -117,11 +119,11 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
       let next = list;
       if (opts.id) {
         const old = next.find((x) => x.id === opts.id);
-        if (old) { const t = timers.current.get(old.key); if (t) clearTimeout(t.timer); next = next.filter((x) => x.id !== opts.id); }
+        if (old) { const t = timers.current.get(old.key); if (t) { clearTimeout(t.timer); timers.current.delete(old.key); } next = next.filter((x) => x.id !== opts.id); }
       }
       if (next.length >= 5) {
         const oldest = next[0];
-        const t = timers.current.get(oldest.key); if (t) clearTimeout(t.timer);
+        const t = timers.current.get(oldest.key); if (t) { clearTimeout(t.timer); timers.current.delete(oldest.key); }
         next = next.slice(1);
       }
       return [...next, { ...opts, level, key, autoMs: duration, placement: opts.placement ?? toastPlacement }];
@@ -131,11 +133,18 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
 
   const confirm = useCallback((opts: ConfirmOptions) => {
     return new Promise<number>((resolve) => {
-      setDlg({
-        title: opts.title, message: opts.message,
-        buttons: opts.buttons ?? ['确定', '取消'],
-        danger: opts.danger, defaultId: opts.defaultId ?? 0,
-        open: false, resolve,
+      /* 上一个对话框的退场定时器可能还没跑:先取消,免得 220ms 后把新框抹掉、
+         新 Promise 永不 resolve */
+      window.clearTimeout(dlgTimer.current);
+      setDlg((d) => {
+        /* 并发 confirm:已有未决框时先用 fallback(取消语义)resolve 它,再开新的 */
+        d?.resolve(d.buttons.length - 1);
+        return {
+          title: opts.title, message: opts.message,
+          buttons: opts.buttons ?? ['确定', '取消'],
+          danger: opts.danger, defaultId: opts.defaultId ?? 0,
+          open: false, resolve,
+        };
       });
       requestAnimationFrame(() => setDlg((d) => (d ? { ...d, open: true } : d)));
     });
@@ -146,7 +155,9 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
       if (d) { d.resolve(i); }
       return d ? { ...d, open: false } : d;
     });
-    window.setTimeout(() => setDlg(null), 220);
+    /* 句柄存 ref:220ms 内再次 confirm 会被 confirm() 开头 clearTimeout 救回 */
+    window.clearTimeout(dlgTimer.current);
+    dlgTimer.current = window.setTimeout(() => setDlg(null), 220);
   }, []);
 
   const pause = (key: number) => {
@@ -155,11 +166,28 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
   };
   const resume = (key: number) => {
     const t = timers.current.get(key);
-    if (t && t.remaining > 0) { t.started = Date.now(); t.timer = window.setTimeout(() => dismiss(key), t.remaining); }
+    if (!t) return;
+    /* hover 暂停期间已耗尽:移开直接关,别留永不消失的幽灵 toast */
+    if (t.remaining <= 0) { dismiss(key); return; }
+    t.started = Date.now();
+    t.timer = window.setTimeout(() => dismiss(key), t.remaining);
   };
 
   const dlgRef = useRef<HTMLDivElement>(null);
   useFocusTrap(dlgRef, !!dlg?.open);   // 确认框焦点陷阱
+
+  /* 确认框 Esc 走全局栈:叠层(如 Modal 上调 confirm)时一次 Esc 只关最上层 */
+  useEffect(() => {
+    if (!dlg?.open) return;
+    return pushEsc(() => finish(dlg.buttons.length - 1));
+  }, [dlg?.open, dlg?.buttons, finish]);
+
+  /* 卸载时清掉所有 toast/确认框定时器,防止泄漏 */
+  useEffect(() => () => {
+    for (const t of timers.current.values()) clearTimeout(t.timer);
+    timers.current.clear();
+    window.clearTimeout(dlgTimer.current);
+  }, []);
 
   const value = useMemo<Ctx>(() => ({ toast, confirm }), [toast, confirm]);
 
@@ -225,8 +253,7 @@ export function FluentProvider({ children, toastPlacement = 'bottomRight' }: Flu
       )}
       {dlg && createPortal(
         <div className={cn('smoke', dlg.open && 'open')}
-             onMouseDown={(e) => { if (e.target === e.currentTarget) finish(dlg.buttons.length - 1); }}
-             onKeyDown={(e) => { if (e.key === 'Escape') finish(dlg.buttons.length - 1); }}>
+             onMouseDown={(e) => { if (e.target === e.currentTarget) finish(dlg.buttons.length - 1); }}>
           <div ref={dlgRef} tabIndex={-1} className="dialog" role="dialog" aria-modal="true" aria-label={dlg.title}>
             <h3 className="t-subtitle">{dlg.title}</h3>
             <p>{dlg.message}</p>

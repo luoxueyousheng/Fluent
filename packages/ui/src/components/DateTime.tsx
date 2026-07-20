@@ -1,7 +1,7 @@
 /* Calendar / DatePicker / TimePicker — antd API 规范,WinUI 3 形态自研(无 dayjs,原生 Date)。
  * Calendar = WinUI CalendarView:日/月/年三级缩放(点标题上钻,点格下钻),
  * 周一起始、今日 accent 描边、选中 accent 实底;上下 chevron 翻页。 */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
 import {
@@ -15,7 +15,9 @@ import { useFixedPlacement, useFlyout } from './Flyout';
 
 /* ---- 日期工具 ---- */
 const pad = (n: number) => String(n).padStart(2, '0');
+/* 非法日期(Invalid Date)返回空串,避免输出 NaN-NaN-NaN */
 export const formatDate = (d: Date, fmt = 'YYYY-MM-DD'): string =>
+  isNaN(d.getTime()) ? '' :
   fmt.replace('YYYY', String(d.getFullYear())).replace('MM', pad(d.getMonth() + 1)).replace('DD', pad(d.getDate()))
      .replace('HH', pad(d.getHours())).replace('mm', pad(d.getMinutes()));
 const sameDay = (a: Date | null | undefined, b: Date) =>
@@ -44,10 +46,20 @@ export function Calendar({
 }: CalendarProps) {
   const [value, setValue] = useMergedState<Date | null>(defaultValue, valueProp, onChange as (d: Date | null) => void);
   const today = new Date();
-  const anchor = value ?? today;
+  /* 受控传入 Invalid Date 时回退到今天,否则 vy/vm 为 NaN、
+     dayCells 产 Invalid Date,key={d.toISOString()} 直接抛 RangeError */
+  const anchor = value && !isNaN(value.getTime()) ? value : today;
   const [view, setView] = useState<'day' | 'month' | 'year'>('day');
   const [vy, setVy] = useState(anchor.getFullYear());
   const [vm, setVm] = useState(anchor.getMonth());
+
+  /* 受控 value 外部变化(如表单重置/回填)时同步视图年月;
+     依赖 value 而非 anchor:翻页只动 vy/vm 不动 value,不打断用户翻页 */
+  useEffect(() => {
+    setVy(anchor.getFullYear());
+    setVm(anchor.getMonth());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   /* 日视图 42 格(周一起始) */
   const dayCells = (): Date[] => {
@@ -215,6 +227,9 @@ export function TimePicker({
   const [value, setValue] = useMergedState<Date | null>(defaultValue, valueProp, onChange);
   const [tempH, setTempH] = useState<number | null>(null);
 
+  /* 面板关闭(点了小时未选分钟就外点)即丢弃临时小时,再打开不残留高亮 */
+  useEffect(() => { if (!fly.isOpen) setTempH(null); }, [fly.isOpen]);
+
   const apply = (h: number, m: number) => {
     const d = new Date(value ?? new Date());
     d.setHours(h, m, 0, 0);
@@ -223,7 +238,9 @@ export function TimePicker({
     fly.close(true);   // 提交立即关闭,避免淡出期选中着色迁移闪烁
   };
   const curH = tempH ?? value?.getHours() ?? null;
-  const minutes = Array.from({ length: Math.ceil(60 / minuteStep) }, (_, i) => i * minuteStep);
+  /* minuteStep 钳到 [1,60] 整数:0/负数会让 Math.ceil(60/step) 得 Infinity 抛 RangeError */
+  const step = Math.min(60, Math.max(1, Math.round(minuteStep)));
+  const minutes = Array.from({ length: Math.ceil(60 / step) }, (_, i) => i * step);
 
   return (
     <div ref={rootRef} className={cn('timepicker', className)}>

@@ -86,6 +86,10 @@ export function NumberBox({
   };
   useEffect(() => stopHold, []);
 
+  // 滚轮监听只挂载一次:经 ref 始终调最新 nudge,避免闭包捕获首渲染的 step/min/max
+  const nudgeRef = useRef(nudge);
+  nudgeRef.current = nudge;
+
   /* 聚焦时滚轮微调(原生监听,passive:false 才能拦住页面滚动) */
   useEffect(() => {
     const el = inputRef.current;
@@ -93,7 +97,7 @@ export function NumberBox({
     const onWheel = (e: WheelEvent) => {
       if (document.activeElement !== el) return;
       e.preventDefault();
-      nudge(e.deltaY < 0 ? 1 : -1);
+      nudgeRef.current(e.deltaY < 0 ? 1 : -1);
     };
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);

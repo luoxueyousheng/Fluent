@@ -33,12 +33,12 @@ export function Descriptions({
   const column = columnProp ?? 3;
   const cls = cn('desc', bordered && 'desc-bordered', size === 'small' && 'desc-sm', size === 'large' && 'desc-lg', vertical && 'desc-vertical', className);
 
-  /* 按 span 分行 */
+  /* 按 span 分行(span 钳制到 column,避免单项撑破网格) */
   const rows: DescriptionsItem[][] = [];
   let row: DescriptionsItem[] = [];
   let spanSum = 0;
   for (const item of items) {
-    const s = item.span ?? 1;
+    const s = Math.min(item.span ?? 1, column);
     if (spanSum + s > column && row.length > 0) {
       rows.push(row);
       row = [];
@@ -54,9 +54,10 @@ export function Descriptions({
       {title != null && <div className="desc-title">{title}</div>}
       <div className="desc-body">
         {rows.map((r, ri) => (
-          <div key={ri} className="desc-row">
+          // 列数随 column 走(theme.css 的 repeat(3) 仅作兜底)
+          <div key={ri} className="desc-row" style={{ gridTemplateColumns: `repeat(${column}, minmax(0,1fr))` }}>
             {r.map((item, ci) => (
-              <div key={ci} className="desc-item" style={{ gridColumn: `span ${item.span ?? 1}` }}>
+              <div key={ci} className="desc-item" style={{ gridColumn: `span ${Math.min(item.span ?? 1, column)}` }}>
                 <div className="desc-label">{item.label}</div>
                 <div className="desc-value">{item.children}</div>
               </div>

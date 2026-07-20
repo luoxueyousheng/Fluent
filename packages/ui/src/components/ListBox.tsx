@@ -29,6 +29,8 @@ export function ListBox(props: ListBoxProps) {
   const { items, className } = props;
   const [cursor, setCursor] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
+  // items 动态收缩后 cursor 可能越界,渲染期钳回 [0, items.length-1]
+  const cur = items.length > 0 ? Math.min(cursor, items.length - 1) : 0;
 
   const isSelected = (v: string) => (props.multi ? props.value.includes(v) : props.value === v);
 
@@ -46,9 +48,14 @@ export function ListBox(props: ListBoxProps) {
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown') { e.preventDefault(); focusIdx(Math.min(items.length - 1, cursor + 1)); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); focusIdx(Math.max(0, cursor - 1)); }
-    else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); pick(items[cursor].value); }
+    if (items.length === 0) return;            // 空列表:无项可导航/选中
+    if (e.key === 'ArrowDown') { e.preventDefault(); focusIdx(Math.min(items.length - 1, cur + 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); focusIdx(Math.max(0, cur - 1)); }
+    else if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      const v = items[cur]?.value;             // items 可能为空/收缩越界,防御
+      if (v != null) pick(v);
+    }
   };
 
   return (
@@ -58,7 +65,7 @@ export function ListBox(props: ListBoxProps) {
       {items.length === 0 && <Empty image="simple" />}
       {items.map((it, i) => (
         <div key={it.value} className="lb-item" role="option"
-             aria-selected={isSelected(it.value)} tabIndex={i === cursor ? 0 : -1}
+             aria-selected={isSelected(it.value)} tabIndex={i === cur ? 0 : -1}
              onClick={() => { setCursor(i); pick(it.value); }}>
           {it.icon}
           {it.label}

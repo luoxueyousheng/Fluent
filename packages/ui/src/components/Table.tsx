@@ -103,7 +103,9 @@ export function Table<T extends object>({
   const [innerSize, setInnerSize] = useState(
     pagination === false ? 10 : (pagination.pageSize ?? pagination.pageSizeOptions?.[0] ?? 10),
   );
-  const pageSize = pagination === false ? dataSource.length : innerSize;
+  /* pageSize 至少为 1:pagination===false 且 dataSource 为空时为 0,
+     会让 maxPage=Math.ceil(0/0)=NaN,进而 setPage(NaN) */
+  const pageSize = Math.max(1, pagination === false ? dataSource.length : innerSize);
   const nameRef = useRef('');
   if (!nameRef.current) nameRef.current = `tbl-${++tblSeq}`;
 
@@ -121,6 +123,15 @@ export function Table<T extends object>({
     m.style.left = `${Math.max(8, Math.min(ctx.x, innerWidth - r.width - 8))}px`;
     m.style.top = `${Math.max(48, Math.min(ctx.y, innerHeight - r.height - 8))}px`;
   }, [ctxFly.isOpen, ctx]);
+
+  /* fixed 菜单只在打开时按视口钳位,滚动后会悬空:打开期间挂 capture
+     滚动监听(含嵌套滚动容器),一滚动即关 */
+  useLayoutEffect(() => {
+    if (!ctxFly.isOpen) return;
+    const onScroll = () => ctxFly.close();
+    addEventListener('scroll', onScroll, true);
+    return () => removeEventListener('scroll', onScroll, true);
+  }, [ctxFly.isOpen, ctxFly.close]);
 
   /* 行选择(受控/非受控) */
   const selType = rowSelection?.type ?? 'checkbox';

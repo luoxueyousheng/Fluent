@@ -66,13 +66,17 @@ function useUploadCore(props: UploadProps) {
   const [list, setList] = useMergedState<UploadFile[]>(defaultFileList, listProp, undefined);
   const listRef = useRef(list);
   listRef.current = list;
+  const controlled = listProp !== undefined;
 
   const commit = (next: UploadFile[], changed: UploadFile) => {
-    listRef.current = next;
+    // 受控时以 props 为准:listRef 由渲染期同步,这里不写,避免与 props 分叉
+    if (!controlled) listRef.current = next;
     setList(next);
     onChange?.({ file: changed, fileList: next });
   };
   const patch = (uid: string, part: Partial<UploadFile>) => {
+    // 文件可能已在上传中被移除:找不到 uid 直接放弃,不外抛 onChange
+    if (!listRef.current.some((f) => f.uid === uid)) return;
     const next = listRef.current.map((f) => (f.uid === uid ? { ...f, ...part } : f));
     const changed = next.find((f) => f.uid === uid)!;
     commit(next, changed);

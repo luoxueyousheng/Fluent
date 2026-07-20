@@ -995,7 +995,13 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
   opacity: 0; pointer-events: none; transition: opacity var(--normal) var(--fluent-standard);
 }
 :root[data-theme="dark"] .smoke { background: rgba(0,0,0,0.50); }
-.smoke.open { opacity: 1; pointer-events: auto; }
+/* 关闭态同时隐藏可见性,避免 opacity:0 的遮罩仍拦截命中测试外的聚焦/阅读器;
+   visibility 延迟到 opacity 淡出结束后切换,不截断关闭动画 */
+.smoke:not(.open) {
+  visibility: hidden;
+  transition: opacity var(--normal) var(--fluent-standard), visibility 0s var(--normal);
+}
+.smoke.open { opacity: 1; visibility: visible; pointer-events: auto; }
 .dialog {
   width: min(420px, calc(100vw - 48px));
   background: var(--bg); border: 1px solid var(--stroke); border-radius: var(--r-window);
@@ -1570,7 +1576,8 @@ button.settings-card:active > * { opacity: .85; }
 /* TeachingTip(锚定引导气泡,Acrylic + 小尾巴) */
 .tt-anchor { position: relative; display: inline-block; }
 .teaching-tip {
-  position: fixed; z-index: 700; transform: translateX(-50%);
+  /* 850 档:高于 Modal/Drawer 遮罩(800),引导气泡不被盖住 */
+  position: fixed; z-index: 850; transform: translateX(-50%);
   width: 300px; padding: var(--sp-l);
   background: var(--acrylic-bg); backdrop-filter: blur(60px) saturate(125%);
   border: 1px solid var(--stroke); border-radius: var(--r-window); box-shadow: var(--shadow-16);

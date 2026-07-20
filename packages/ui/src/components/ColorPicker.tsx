@@ -120,7 +120,7 @@ export function ColorPicker({
 
   return (
     <div ref={rootRef} className={cn('colorpicker', className)}>
-      <button className={cn('cp-trigger', disabled && 'disabled')} disabled={disabled}
+      <button type="button" className={cn('cp-trigger', disabled && 'disabled')} disabled={disabled}
               aria-haspopup="dialog" aria-expanded={fly.isOpen}
               aria-label={aria['aria-label'] ?? '选择颜色'}
               onClick={fly.toggle}>
@@ -163,7 +163,7 @@ export function ColorPicker({
           {presets && presets.length > 0 && (
             <div className="cp-presets" role="listbox" aria-label="预设颜色">
               {presets.map((c) => (
-                <button key={c} className={cn('cp-preset', c.toLowerCase() === displayHex.toLowerCase() && 'selected')}
+                <button key={c} type="button" className={cn('cp-preset', c.toLowerCase() === displayHex.toLowerCase() && 'selected')}
                         style={{ background: c }} aria-label={c}
                         onClick={() => { const p = hexToHsv(c); if (p) commit(p); }} />
               ))}

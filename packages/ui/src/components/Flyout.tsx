@@ -18,13 +18,17 @@ let openFlyoutCloser: (() => void) | null = null;
  * 从旧项迁到新项会闪一下(踩过),提交关闭必须干脆。 */
 export function useFlyout(rootRef: RefObject<HTMLElement | null>, portalRef?: RefObject<HTMLElement | null>) {
   const [state, setState] = useState<'closed' | 'open' | 'closing'>('closed');
+  /* 关闭动画定时器句柄:open()/immediate close/卸载都要清,
+   * 否则 150ms 内重开会被旧定时器强杀(竞态踩过) */
+  const closeTimer = useRef<number | undefined>(undefined);
 
   const close = useCallback((immediate = false) => {
+    window.clearTimeout(closeTimer.current);
     if (immediate) {
       setState('closed');
     } else {
       setState((s) => (s === 'open' ? 'closing' : s));
-      window.setTimeout(() => setState('closed'), 150);
+      closeTimer.current = window.setTimeout(() => setState('closed'), 150);
     }
     if (openFlyoutCloser === close) openFlyoutCloser = null;
   }, []);
@@ -32,8 +36,11 @@ export function useFlyout(rootRef: RefObject<HTMLElement | null>, portalRef?: Re
   const open = useCallback(() => {
     if (openFlyoutCloser && openFlyoutCloser !== close) openFlyoutCloser();
     openFlyoutCloser = close;
+    window.clearTimeout(closeTimer.current);
     setState('open');
   }, [close]);
+
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
 
   useEffect(() => {
     if (state !== 'open') return;
@@ -42,8 +49,14 @@ export function useFlyout(rootRef: RefObject<HTMLElement | null>, portalRef?: Re
       // portal 到 body 的浮层不在 rootRef 树内,需单独判包含,否则点浮层内部就关
       if (rootRef.current && !rootRef.current.contains(t) && !portalRef?.current?.contains(t)) close();
     };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
     const t = window.setTimeout(() => addEventListener('pointerdown', outside, true));
-    return () => { clearTimeout(t); removeEventListener('pointerdown', outside, true); };
+    addEventListener('keydown', onKey);
+    return () => {
+      clearTimeout(t);
+      removeEventListener('pointerdown', outside, true);
+      removeEventListener('keydown', onKey);
+    };
   }, [state, close, rootRef, portalRef]);
 
   return { isOpen: state !== 'closed', closing: state === 'closing', open, close, toggle: () => (state === 'open' ? close() : open()) };
@@ -143,7 +156,7 @@ export function MenuList({ items, onPick, closing, style, className, ref }: {
         it.divider ? (
           <div key={it.key} className="menu-divider" role="separator" />
         ) : (
-          <button key={it.key} className={cn('menu-item', it.danger && 'danger')} role="menuitem"
+          <button key={it.key} type="button" className={cn('menu-item', it.danger && 'danger')} role="menuitem"
                   disabled={it.disabled} onClick={() => onPick(it.key)}>
             {it.icon}
             {it.label}
@@ -175,14 +188,14 @@ export function DropDownButton({ label, items, onPick, onClick, variant, split, 
     <div ref={rootRef} className={cn('dropdown', className)}>
       {split ? (
         <span className="split-group">
-          <button className={cn('btn', vcls, 'split-main')} onClick={onClick}>{label}</button>
-          <button className={cn('btn', vcls, 'split-arrow')} aria-haspopup="menu" aria-expanded={fly.isOpen}
+          <button type="button" className={cn('btn', vcls, 'split-main')} onClick={onClick}>{label}</button>
+          <button type="button" className={cn('btn', vcls, 'split-arrow')} aria-haspopup="menu" aria-expanded={fly.isOpen}
                   aria-label="更多选项" onClick={fly.toggle}>
             <ChevronDownRegular size={12} />
           </button>
         </span>
       ) : (
-        <button className={cn('btn', vcls)} aria-haspopup="menu" aria-expanded={fly.isOpen} onClick={fly.toggle}>
+        <button type="button" className={cn('btn', vcls)} aria-haspopup="menu" aria-expanded={fly.isOpen} onClick={fly.toggle}>
           {label}
           <ChevronDownRegular size={12} className="combo-chev" />
         </button>
@@ -217,6 +230,16 @@ export function ContextMenuArea({ items, onPick, children, className }: {
     m.style.left = `${Math.max(8, Math.min(pos.x, innerWidth - r.width - 8))}px`;
     m.style.top = `${Math.max(48, Math.min(pos.y, innerHeight - r.height - 8))}px`;
   }, [fly.isOpen, pos]);
+
+  /* 打开期间滚动即收(capture,immediate 与 MenuBar 一致):
+   * fixed 坐标只在打开时钳一次,不收的话滚动后菜单悬空 */
+  useEffect(() => {
+    if (!fly.isOpen) return;
+    const onScroll = () => fly.close(true);
+    addEventListener('scroll', onScroll, true);
+    return () => removeEventListener('scroll', onScroll, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fly.isOpen]);
 
   return (
     <div ref={rootRef} className={cn('ctx-area', className)}

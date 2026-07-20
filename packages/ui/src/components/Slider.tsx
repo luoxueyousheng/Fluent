@@ -41,16 +41,21 @@ export function Slider({
 }: SliderProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
-  const p = (value - min) / (max - min);
-  const po = fillFrom != null ? Math.min(1, Math.max(0, (fillFrom - min) / (max - min))) : null;
+  // 受控 value 越界时渲染期钳到 [min,max];min===max 时归一化取 0,避免 NaN
+  const cv = Math.min(max, Math.max(min, value));
+  const p = max === min ? 0 : Math.min(1, Math.max(0, (cv - min) / (max - min)));
+  const po = fillFrom != null ? (max === min ? 0 : Math.min(1, Math.max(0, (fillFrom - min) / (max - min)))) : null;
 
   const tickEls = useMemo(() => {
-    if (!ticks || ticks <= 0) return null;
+    if (!ticks || ticks <= 0 || max === min) return null;
     const els = [];
-    for (let v = min; v <= max; v += ticks) {
+    // 按索引反算 v,避免 v += ticks 的浮点累积误差
+    const count = Math.floor((max - min) / ticks);
+    for (let i = 0; i <= count; i++) {
+      const v = min + i * ticks;
       const pct = ((v - min) / (max - min)) * 100;
       const isMajor = !!majorTicks && Math.round((v - min) % majorTicks) === 0;
-      els.push(<i key={v} className={isMajor ? 'major' : ''}
+      els.push(<i key={i} className={isMajor ? 'major' : ''}
                   style={vertical ? { bottom: `${pct}%` } : { left: `${pct}%` }} />);
     }
     return els;
@@ -66,12 +71,12 @@ export function Slider({
       {(header || showValue) && (
         <div className="sld-head">
           {header && <span>{header}</span>}
-          {showValue && <span className="sld-val">{format(value)}</span>}
+          {showValue && <span className="sld-val">{format(cv)}</span>}
         </div>
       )}
       <div ref={wrapRef} className={cn('slider-wrap', vertical && 'vertical', dragging && 'show-bubble')}>
         <input type="range" className={cn('slider', vertical && 'vertical', po != null && 'from-origin', colorClass(color))}
-               min={min} max={max} step={step} value={value} disabled={disabled}
+               min={min} max={max} step={step} value={cv} disabled={disabled}
                style={{ '--p': p, ...(po != null ? { '--po': po } : {}) } as CSSProperties}
                aria-label={header}
                onChange={(e) => onChange(+e.target.value)}
@@ -81,7 +86,7 @@ export function Slider({
                onKeyUp={(e) => { if (END_KEYS.includes(e.key)) onChangeEnd?.(+e.currentTarget.value); }}
                onBlur={() => setDragging(false)} />
         {ticks && <div className="slider-ticks">{tickEls}</div>}
-        <div className="slider-bubble" style={bubblePos}>{format(value)}</div>
+        <div className="slider-bubble" style={bubblePos}>{format(cv)}</div>
       </div>
       {marks && (
         <div className="slider-marks">
@@ -109,8 +114,12 @@ export interface RangeSliderProps {
 }
 
 export function RangeSlider({ value, onChange, onChangeEnd, min = 0, max = 100, step = 1, color, className, ...aria }: RangeSliderProps) {
-  const [lo, hi] = value;
-  const pct = (v: number) => ((v - min) / (max - min)) * 100;
+  // 受控 value 越界时渲染期钳到 [min,max]
+  const clampV = (v: number) => Math.min(max, Math.max(min, v));
+  const lo = clampV(value[0]);
+  const hi = clampV(value[1]);
+  // min===max 时取 0,避免 NaN
+  const pct = (v: number) => (max === min ? 0 : Math.min(100, Math.max(0, ((v - min) / (max - min)) * 100)));
   const set = (a: number, b: number) => onChange(a <= b ? [a, b] : [b, a]);
   // 结束值同样读 DOM,并与另一端排序(拖拽中可能交叉换位)
   const end = (raw: number, other: number) => {

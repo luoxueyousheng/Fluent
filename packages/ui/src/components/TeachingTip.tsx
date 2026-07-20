@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '../cn';
+import { pushEsc } from './escStack';
 import {
   DismissRegular,
 } from '@fluent-jade/icon';
@@ -41,12 +42,11 @@ export function TeachingTip({ open, onClose, title, content, actions, placement 
   useLayoutEffect(() => { if (open) measure(); }, [open, measure]);
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    addEventListener('keydown', onKey);
+    const popEsc = pushEsc(onClose);   // Esc 走全局栈:叠层时一次 Esc 只关最上层
     addEventListener('resize', measure);
     addEventListener('scroll', measure, true);   // capture:内容区滚动也跟随
     return () => {
-      removeEventListener('keydown', onKey);
+      popEsc();
       removeEventListener('resize', measure);
       removeEventListener('scroll', measure, true);
     };
