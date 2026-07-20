@@ -33,6 +33,11 @@ if (typeof window !== 'undefined' && !window.jade) {
   /* 模拟后端命令(command -> async handler);抛 {code,message} 即错误信封 */
   const handlers: Record<string, (payload?: any) => Promise<any>> = {
     async ping() { return { pong: true, at: 'mock-backend' }; },
+    /* 延迟测试专用:模拟网络抖动后回显序号 */
+    async send_test({ seq }: any = {}) {
+      await sleep(20 + Math.random() * 160);
+      return { pong: true, seq: seq ?? null, at: Date.now() };
+    },
     async env() { return JSON.stringify({ os: 'windows', arch: 'amd64', win11: true }); },
 
     async 'read_config'({ key }: any = {}) {
