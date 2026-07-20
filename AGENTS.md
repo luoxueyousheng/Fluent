@@ -29,5 +29,6 @@
 ## 视觉与 API
 
 - 视觉/动效:WinUI 3;组件 API 惯例:antd 风格(`value/defaultValue`、`size` 三档等)。
+- 宽度契约:默认宽度写在挂 className 的根元素上,内层控件 `width:100%; min-width:0` 跟随,绝对定位附件(调节钮/显隐钮/图标)贴外层右缘——保证用户 className(w-20/w-full 等)改宽时整体生效。
 - 文档示例:完整可复制文件格式(`import` + 具名 `export function`),布局用 `className`(Tailwind v4),不要在 code 块里写内联 `style`。
 - 改完先 `tsc` + build(+ 相关无头脚本)再汇报;未经用户确认不要 commit/push。

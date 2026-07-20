@@ -506,13 +506,13 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
  * §25 Slider 扩展：位置气泡 / 刻度 / 范围标识 / 纵向 / 双滑块
  * ========================================================================== */
 
-/* 字段包装：Header + 轨道区 + 范围标签 */
-.slider-field { display: inline-flex; flex-direction: column; gap: 6px; }
+/* 字段包装：Header + 轨道区 + 范围标签;默认宽度 240px 写在挂 className 的根上,子元素 100% 跟随 */
+.slider-field { display: inline-flex; flex-direction: column; gap: 6px; width: 240px; }
 .slider-field > .sld-head { display: flex; align-items: baseline; gap: 8px; }
 .slider-field > .sld-head .sld-val { margin-left: auto; font-variant-numeric: tabular-nums;
   color: var(--accent-text); font-weight: 600; }
 
-.slider-wrap { position: relative; width: 240px; height: 32px; display: flex; align-items: center; }
+.slider-wrap { position: relative; width: 100%; height: 32px; display: flex; align-items: center; }
 .slider-wrap > .slider { width: 100%; position: relative; z-index: 2; }
 
 /* 刻度轨（在轨道下方）。--ticks 为刻度数，用 JS 设置 */
@@ -522,9 +522,9 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
 .slider-ticks i.major { height: 8px; top: -1px; background: var(--text-2); }
 
 /* 范围标签（两端 min/max 或自定义刻度文字） */
-.slider-ends { display: flex; justify-content: space-between; width: 240px;
+.slider-ends { display: flex; justify-content: space-between; width: 100%;
   font-size: 12px; color: var(--text-2); }
-.slider-marks { position: relative; width: 240px; height: 16px; font-size: 12px; color: var(--text-2); }
+.slider-marks { position: relative; width: 100%; height: 16px; font-size: 12px; color: var(--text-2); }
 .slider-marks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
 
 /* 位置气泡（拖拽时跟随 thumb 出现，Acrylic 小气泡） */
@@ -546,7 +546,7 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
   background: linear-gradient(to top, var(--sld) var(--fp), var(--fill-secondary) var(--fp)); }
 .slider.vertical::-webkit-slider-thumb { margin-top: 0; margin-left: -8px; }
 
-.slider-field.vertical { align-items: center; }
+.slider-field.vertical { align-items: center; width: fit-content; } /* 纵向豁免默认 240px 宽 */
 .slider-wrap.vertical { flex-direction: column; width: 56px; height: 200px; justify-content: center; }
 .slider-wrap.vertical > .slider { width: 20px; height: 100%; }
 .slider-wrap.vertical .slider-ticks { left: auto; right: 14px; top: 10px; bottom: 10px; height: auto; width: 6px; }
@@ -1340,8 +1340,8 @@ html[data-inactive] .accent-text { filter: saturate(0.6); }
 
 /* NumberBox:WinUI 3 内联 SpinButton——两个全高方按钮横排在输入框右端内侧,
    透明底 + hover 淡底 + 按下加深(四态与 .btn 同源);按住连发由 JS 驱动 */
-.numberbox { position: relative; display: inline-flex; width: fit-content; } /* 防 Field 纵向 flex 拉伸 */
-.numberbox > .input { padding-right: 52px; width: 140px; font-variant-numeric: tabular-nums; }
+.numberbox { position: relative; display: inline-flex; width: 140px; } /* 默认宽度;className 覆盖时 input 始终填满,调节器跟随右缘 */
+.numberbox > .input { padding-right: 52px; width: 100%; min-width: 0; font-variant-numeric: tabular-nums; }
 .numberbox .nb-spin {
   position: absolute; right: 2px; top: 2px; bottom: 2px;
   display: flex; gap: 2px;
@@ -1805,6 +1805,7 @@ button.settings-card:active > * { opacity: .85; }
 .colorpicker { position: relative; display: inline-block; }
 .cp-trigger {
   display: inline-flex; align-items: center; gap: var(--sp-s);
+  width: 100%; /* className 定宽时触发器填满;shrink-to-fit 下解析为 auto,默认外观不变 */
   height: 32px; padding: 4px; min-width: 32px;
   border: 1px solid var(--stroke); border-bottom-color: var(--stroke-strong);
   border-radius: var(--r-control); background: var(--control); cursor: pointer;
@@ -2257,7 +2258,7 @@ button.settings-card:active > * { opacity: .85; }
 
 /* ---- 44. PasswordBox / Timeline(ToggleButton 复用 .btn.accent) ---- */
 .passwordbox { position: relative; display: inline-flex; }
-.passwordbox .input { padding-right: 32px; }
+.passwordbox .input { padding-right: 32px; width: 100%; min-width: 0; } /* className 定宽时填满,显隐钮随外层右缘 */
 .pb-reveal {
   position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
   width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;
